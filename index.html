@@ -2,43 +2,60 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Modern Gradient Background</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vanessa Depraute - Front End Developer</title>
     <style>
-      body,
-      html {
-        height: 100%;
+      body {
         margin: 0;
-        font-family: "Plus Jakarta Sans", sans-serif; /* Optional: Use a modern font */
-        color: white; /* Set text color to white */
+        height: 100vh;
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
-        text-align: center;
-      }
-
-      body {
-        background: linear-gradient(
-          180deg,
-          black 0%,
-          #3c096c 100%
-        ); /* Subtle gradient from black to dark purple */
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        color: #ffffff;
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
       }
 
       h1 {
-        font-size: 3em;
+        font-size: 2.5rem;
+        font-weight: 300;
         margin: 0;
+        letter-spacing: 0.1em;
+        animation: fadeIn 2s ease-in;
       }
 
       p {
-        font-size: 1.5em;
-        margin: 0;
+        font-size: 1.2rem;
+        margin: 1rem 0;
+        opacity: 0.8;
+        font-weight: 300;
+        letter-spacing: 0.05em;
+      }
+
+      .coming-soon {
+        margin-top: 2rem;
+        font-size: 1rem;
+        opacity: 0.6;
+        font-style: italic;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
     </style>
   </head>
   <body>
-    <div>
-      <h1>vanessa depraute</h1>
-      <p>coming soon</p>
-    </div>
+    <h1>Vanessa Depraute</h1>
+    <p>Front End Developer</p>
+    <div class="coming-soon">Coming soon</div>
   </body>
 </html>

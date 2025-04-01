@@ -1,0 +1,24 @@
+.catbot-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+}
+
+.catbot-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  cursor: pointer;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.catbot-container.hidden {
+  opacity: 0.5;
+}
+
+.catbot-container.visible {
+  opacity: 1;
+}

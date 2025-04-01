@@ -1,0 +1,123 @@
+/* Typing indicator animation */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  column-gap: 4px;
+  padding: 2px;
+}
+
+.typing-indicator span {
+  height: 6px;
+  width: 6px;
+  background-color: rgba(0, 0, 0, 0.25);
+  border-radius: 50%;
+  display: inline-block;
+  animation: typing-animation 1.5s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.typing-indicator span:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+@keyframes typing-animation {
+  0% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.4;
+  }
+}
+
+/* Scrollbar styling */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Message bubbles */
+.bg-primary {
+  background-color: #4d7aff;
+  color: white;
+}
+
+.bg-muted {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+/* Form styling */
+textarea {
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 8px 4px;
+  min-height: 24px;
+  max-height: 120px;
+}
+
+textarea:focus {
+  outline: none;
+}
+
+button[type="submit"] {
+  background-color: #4d7aff;
+  transition: background-color 0.2s ease;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+  background-color: #3d6ae8;
+}
+
+button[type="submit"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .bg-muted {
+    background-color: #2a2a2a;
+    color: #e0e0e0;
+  }
+
+  .typing-indicator span {
+    background-color: rgba(255, 255, 255, 0.4);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}

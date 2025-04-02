@@ -110,7 +110,6 @@ function App() {
             <div className="cover">
               <div
                 style={{
-                  zoom: 0.5,
                   position: "absolute",
                   top: "50%",
                   left: "50%",
@@ -120,7 +119,7 @@ function App() {
                   zIndex: 5,
                 }}
               >
-                <CoderGirl size={1} />
+                <CoderGirl size="100%" />
               </div>
             </div>
           </div>

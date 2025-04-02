@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 
-import { Chat, Message } from "@/components/ui/chat";
+import { Message } from "@/components/ui/chat";
 import { Select } from "@/components/ui/select";
+import { TypingAnimation } from "@/registry/magicui/terminal";
 import catImage from "../../assets/cat.webp";
 import catBotData from "./catbotdata.json";
 import angryCatData from "./angrycat.json";
@@ -12,21 +13,21 @@ import "@/components/ui/chat.css";
 // Type for personality options
 type PersonalityType = "normal" | "angry" | "happy";
 
-// Title mapping for different personalities
-const personalityTitles: Record<PersonalityType, string> = {
-  normal: "CatBot",
-  angry: "GrumpyCat",
-  happy: "HappyCat",
+// Type for message with animation state
+type CatMessage = Message & {
+  animationShown?: boolean;
 };
 
 export function CatBot() {
   try {
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [input, setInput] = useState("");
-    const [messages, setMessages] = useState<Message[]>([]);
+    const [messages, setMessages] = useState<CatMessage[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
     const [personality, setPersonality] = useState<PersonalityType>("normal");
     const timeoutRef = useRef<number | null>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
 
     // Clean up any pending timeouts on unmount
     useEffect(() => {
@@ -40,6 +41,40 @@ export function CatBot() {
         }
       };
     }, []);
+
+    // Scroll to bottom when messages change
+    useEffect(() => {
+      try {
+        if (messagesEndRef.current) {
+          messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+      } catch (error) {
+        console.error("Error scrolling to bottom:", error);
+      }
+    }, [messages, isGenerating]);
+
+    // Focus input when chat opens
+    useEffect(() => {
+      try {
+        if (isChatOpen && inputRef.current) {
+          inputRef.current.focus();
+        }
+      } catch (error) {
+        console.error("Error focusing input:", error);
+      }
+    }, [isChatOpen]);
+
+    // Focus input after message is sent or received
+    useEffect(() => {
+      try {
+        // Focus back on input after a new message is sent or received
+        if (isChatOpen && !isGenerating && inputRef.current) {
+          inputRef.current.focus();
+        }
+      } catch (error) {
+        console.error("Error focusing input after message:", error);
+      }
+    }, [isChatOpen, messages, isGenerating]);
 
     // Generate a random ID for messages
     const generateId = () => {
@@ -91,7 +126,9 @@ export function CatBot() {
       }
     };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handleInputChange = (
+      e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    ) => {
       try {
         setInput(e.target.value);
       } catch (error) {
@@ -107,7 +144,7 @@ export function CatBot() {
         if (!input.trim()) return;
 
         // Add user message
-        const userMessage: Message = {
+        const userMessage: CatMessage = {
           id: generateId(),
           content: input,
           role: "user",
@@ -129,15 +166,29 @@ export function CatBot() {
         timeoutRef.current = window.setTimeout(() => {
           try {
             timeoutRef.current = null;
+            let botResponseContent = "";
 
-            const botResponse: Message = {
+            try {
+              botResponseContent = getRandomResponse();
+            } catch (error) {
+              console.error("Error getting random response:", error);
+              botResponseContent = "Meow? (An error occurred)";
+            }
+
+            const botResponse: CatMessage = {
               id: generateId(),
-              content: getRandomResponse(),
+              content: botResponseContent,
               role: "assistant",
+              animationShown: false,
             };
 
             setMessages((prev) => [...prev, botResponse]);
             setIsGenerating(false);
+
+            // Focus input after adding response
+            if (inputRef.current) {
+              inputRef.current.focus();
+            }
           } catch (error) {
             console.error("Error generating bot response:", error);
             setIsGenerating(false);
@@ -209,45 +260,149 @@ export function CatBot() {
       }
     }, [isChatOpen]);
 
+    // Render chat messages
+    const renderMessages = () => {
+      try {
+        return messages.map((message) => {
+          if (message.role === "user") {
+            return (
+              <div
+                key={message.id}
+                className="chat-message self-end bg-blue-500 text-white max-w-xs rounded-lg px-3 py-1.5 text-sm"
+              >
+                {message.content}
+              </div>
+            );
+          }
+
+          // For assistant messages
+          const currentMessage = message;
+          if (currentMessage.animationShown === false) {
+            // Update the animation state so it's only shown once
+            currentMessage.animationShown = true;
+
+            return (
+              <div
+                key={message.id}
+                className="chat-message self-start bg-zinc-500 text-white max-w-xs rounded-lg px-3 py-1.5 text-sm min-h-[28px]"
+              >
+                <TypingAnimation delay={0}>{message.content}</TypingAnimation>
+              </div>
+            );
+          }
+
+          // For messages that have already shown animation
+          return (
+            <div
+              key={message.id}
+              className="chat-message self-start bg-zinc-500 text-white max-w-xs rounded-lg px-3 py-1.5 text-sm min-h-[28px]"
+            >
+              {message.content}
+            </div>
+          );
+        });
+      } catch (error) {
+        console.error("Error rendering messages:", error);
+        return null;
+      }
+    };
+
     return (
       <div className="catbot-container">
         {isChatOpen && (
-          <div className="catbot-chat-container">
-            <div className="catbot-close-button" onClick={closeChat}>
-              ×
-            </div>
-            <div className="catbot-header">
-              <h3 className="catbot-title">{personalityTitles[personality]}</h3>
-              <Select
-                className="catbot-select"
-                value={personality}
-                onChange={handlePersonalityChange}
-                options={[
-                  { value: "normal", label: "Normal Cat" },
-                  { value: "angry", label: "Angry Cat" },
-                  { value: "happy", label: "Happy Cat" },
-                ]}
-              />
-            </div>
-            <div className="catbot-chat-wrapper">
-              <Chat
-                messages={messages}
-                input={input}
-                handleInputChange={handleInputChange}
-                handleSubmit={handleSubmit}
-                isGenerating={isGenerating}
-                stop={stopGeneration}
-              />
+          <div className="max-w-md mx-auto bg-white dark:bg-zinc-800 shadow-md rounded-lg overflow-hidden">
+            <div className="flex flex-col h-[400px]">
+              <div className="px-4 py-3 border-b dark:border-zinc-700">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-lg font-semibold text-zinc-800 dark:text-white">
+                    CatGPT
+                  </h2>
+                  <div className="flex items-center gap-2">
+                    <div className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                      Online
+                    </div>
+                    <Select
+                      className="catbot-select text-sm"
+                      value={personality}
+                      onChange={handlePersonalityChange}
+                      options={[
+                        { value: "normal", label: "CatGPT" },
+                        { value: "angry", label: "CatGPT" },
+                        { value: "happy", label: "CatGPT" },
+                      ]}
+                    />
+                    <button
+                      className="text-zinc-400 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-white"
+                      onClick={closeChat}
+                    >
+                      ×
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex-1 p-3 overflow-y-auto flex flex-col space-y-2">
+                {messages.length === 0 ? (
+                  <>
+                    <div className="chat-message self-start bg-zinc-500 text-white max-w-xs rounded-lg px-3 py-1.5 text-sm min-h-[28px]">
+                      Hello! How can I assist you today?
+                    </div>
+                  </>
+                ) : (
+                  renderMessages()
+                )}
+                {isGenerating && (
+                  <div className="chat-message self-start bg-zinc-500 text-white max-w-xs rounded-lg px-3 py-1.5 text-sm min-h-[28px]">
+                    <div className="typing-indicator">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+
+              <div className="px-3 py-2 border-t dark:border-zinc-700">
+                <form onSubmit={handleSubmit} className="flex gap-2">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={input}
+                    onChange={handleInputChange}
+                    placeholder="Type your message..."
+                    className="flex-1 p-2 border rounded-lg dark:bg-zinc-700 dark:text-white dark:border-zinc-600 text-sm"
+                    disabled={isGenerating}
+                  />
+                  {isGenerating ? (
+                    <button
+                      type="button"
+                      onClick={stopGeneration}
+                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-1.5 px-3 rounded-lg transition duration-300 ease-in-out text-sm"
+                    >
+                      Stop
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1.5 px-3 rounded-lg transition duration-300 ease-in-out text-sm"
+                      disabled={!input.trim() || isGenerating}
+                    >
+                      Send
+                    </button>
+                  )}
+                </form>
+              </div>
             </div>
           </div>
         )}
 
         <img
           src={catImage}
-          alt="CatBot"
+          alt="CatGPT"
           className="catbot-image"
           onClick={toggleChat}
-          title="Chat with CatBot"
+          title="Chat with CatGPT"
         />
       </div>
     );

@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
+import { TypingAnimation } from "@/components/magicui/typing-animation";
+
 export type Message = {
   id: string;
   content: string;
@@ -104,19 +106,36 @@ export function MessageList({
   try {
     return (
       <div className="flex flex-col gap-3">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={cn(
-              "flex max-w-[85%] text-sm",
-              message.role === "user"
-                ? "ml-auto bg-primary text-primary-foreground px-3 py-2 rounded-lg"
-                : "bg-muted px-3 py-2 rounded-lg"
-            )}
-          >
-            {message.content}
-          </div>
-        ))}
+        {messages.map((message) => {
+          // User messages don't need typing animation
+          if (message.role === "user") {
+            return (
+              <div
+                key={message.id}
+                className={cn(
+                  "flex max-w-[85%] text-sm",
+                  "ml-auto bg-primary text-primary-foreground px-3 py-2 rounded-lg"
+                )}
+              >
+                {message.content}
+              </div>
+            );
+          }
+
+          // Assistant messages use typing animation
+          return (
+            <TypingAnimation
+              key={message.id}
+              className={cn(
+                "flex max-w-[85%] text-sm bg-muted px-3 py-2 rounded-lg"
+              )}
+              duration={30}
+              delay={300}
+            >
+              {message.content}
+            </TypingAnimation>
+          );
+        })}
         {isTyping && (
           <div className="bg-muted w-max max-w-[85%] px-3 py-2 rounded-lg">
             <div className="typing-indicator">

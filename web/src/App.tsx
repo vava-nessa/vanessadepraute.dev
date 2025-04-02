@@ -4,10 +4,13 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import { TerminalDemo } from "./TerminalDemo.tsx";
 import { CatBot } from "./components/CatBot/CatBot.tsx";
+import CoderGirl from "./components/CoderGirl/CoderGirl.tsx";
+import girlImage from "./assets/girl.png";
 
 function App() {
   const [count, setCount] = useState(0);
   const [error, setError] = useState<Error | null>(null);
+  // Example size value
 
   // Error boundary pattern using hooks
   useEffect(() => {
@@ -41,9 +44,8 @@ function App() {
   try {
     return (
       <>
-        <h1>Vite + React</h1>
-        <TerminalDemo />
         <CatBot />
+        <CoderGirl size="0.6" />
       </>
     );
   } catch (error) {

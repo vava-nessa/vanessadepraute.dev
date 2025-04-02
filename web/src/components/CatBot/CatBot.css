@@ -124,6 +124,21 @@
   width: 100%;
 }
 
+/* Bot message with typing animation */
+.catbot-chat-wrapper div[class*="flex-col"] .bg-muted {
+  background-color: #f0f0f0;
+  border-radius: 18px 18px 18px 0;
+  word-break: break-word;
+  margin-top: 4px;
+}
+
+/* Typing animation text style */
+.catbot-chat-wrapper .bg-muted .typing-animation {
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.4;
+}
+
 /* Input area */
 .catbot-chat-wrapper form {
   position: absolute;

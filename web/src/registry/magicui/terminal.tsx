@@ -9,9 +9,7 @@ export function Terminal({
   className?: string;
 }) {
   return (
-    <div
-      className={`p-4 bg-black text-white font-mono rounded-md overflow-hidden ${className}`}
-    >
+    <div className={`p-2 text-white font-mono overflow-hidden ${className}`}>
       <div className="space-y-2">{children}</div>
     </div>
   );

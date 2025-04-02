@@ -1,0 +1,68 @@
+/* Conteneur principal qui maintient l'image et l'écran simulé */
+.coder-container {
+  position: relative;
+  width: 1024px;
+  height: 1024px;
+  margin: 0 auto;
+  background-image: url("../../assets/girl.png");
+  z-index: 2;
+  image-rendering: high-quality; /* Modern browsers */
+  image-rendering: -webkit-optimize-contrast; /* Safari */
+}
+
+/* Style pour l'image de l'iMac */
+.coder-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  perspective: 3000px;
+  transform-style: preserve-3d;
+}
+
+/* 
+ * Style pour la div qui simule l'écran
+ * Les valeurs sont basées sur les coordonnées précises visibles dans l'image Photoshop
+ */
+.screen-content {
+  position: absolute;
+  top: 89px;
+  left: 194px;
+  width: 247px;
+  height: 204px;
+  z-index: -1;
+  overflow: hidden;
+  transform-origin: center center;
+  transform: skew(0deg, 349deg) rotate3d(10, 100, 1, 9deg);
+  box-shadow: inset 100px 0 100px rgba(85, 85, 85, 0.548);
+}
+
+/* Style pour le texte à l'intérieur de l'écran */
+.screen-text {
+  width: 100%;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Animation pour le texte de l'écran */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.screen-text.animate {
+  animation: fadeIn 1.2s ease-out forwards;
+}

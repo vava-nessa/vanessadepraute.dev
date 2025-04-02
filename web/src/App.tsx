@@ -3,9 +3,25 @@ import "./App.css";
 import { CatBot } from "./components/CatBot/CatBot.tsx";
 import CoderGirl from "./components/CoderGirl/CoderGirl.tsx";
 import Particles from "./components/Particles";
+import wavingHand from "./assets/waving_hand.webp";
 
 function App() {
   const [error, setError] = useState<Error | null>(null);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  // Hook pour détecter la taille de l'écran
+  useEffect(() => {
+    const handleResize = () => {
+      try {
+        setWindowWidth(window.innerWidth);
+      } catch (error) {
+        console.error("Error handling resize:", error);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Personnaliser les options de particules
   const particleOptions = {
@@ -41,34 +57,72 @@ function App() {
   try {
     return (
       <div className="absolute top-0 z-[-2] h-screen w-screen  transform bg-white bg-[radial-gradient(60%_120%_at_50%_50%,hsla(0,0%,100%,0)_0,rgba(252,205,238,.5)_100%)]">
-        <h1
+        <div
+          className="wrapper"
           style={{
-            color: "purple",
-            fontSize: "2.5em",
-            marginTop: "20px",
-            fontWeight: "bold",
+            display: "flex",
+            flexDirection: windowWidth <= 1000 ? "column" : "row",
+            width: "100%",
+            gap: "20px",
+            padding: "20px",
           }}
         >
-          Vanessa Depraute
-        </h1>
-        <h2 style={{ color: "purple", fontSize: "1.2em" }}>
-          Designer + Developer
-        </h2>
-        <p style={{ color: "purple", fontSize: "1em" }}>coming soon...</p>
-        <div className="cover">
           <div
+            className="column"
             style={{
-              zoom: 0.5,
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "100%",
-              height: "100%",
-              zIndex: 5,
+              flex: 1,
+              padding: "20px",
+              textAlign: "left",
+              width: windowWidth <= 1000 ? "100%" : "auto",
             }}
           >
-            <CoderGirl size={1} />
+            <h1>
+              Hi there!{" "}
+              <img
+                src={wavingHand}
+                alt="Waving Hand"
+                style={{
+                  width: "54px",
+                  height: "54px",
+                  display: "inline",
+                }}
+              />
+            </h1>
+            <h2>I'm Vanessa.</h2>
+            <p> a software engineer and UI-UX Designer.</p>
+            <p>
+              I've been crafting custom web solutions and sharing insights about
+              freelance development for the past 15 years. I'm passionate about
+              designing web apps, from UI/UX concepts to solving real-life
+              complex problems with code. 🚀 Feel free to contact me !
+            </p>
+          </div>
+          <div
+            className="column"
+            style={{
+              flex: 1,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: windowWidth <= 1000 ? "300px" : "auto",
+            }}
+          >
+            <div className="cover">
+              <div
+                style={{
+                  zoom: 0.5,
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: "100%",
+                  height: "100%",
+                  zIndex: 5,
+                }}
+              >
+                <CoderGirl size={1} />
+              </div>
+            </div>
           </div>
         </div>
         <CatBot />

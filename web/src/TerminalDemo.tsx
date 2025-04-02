@@ -666,14 +666,6 @@ export default function TerminalDemo() {
     }
   }, [currentScreenIndex, isInitialized, transitionToNextScreen]);
 
-  const terminalStyle = {
-    textAlign: "left",
-    fontFamily: "monospace",
-    paddingLeft: "8px",
-    height: "250px",
-    overflowY: "hidden", // Prevent scrolling
-  };
-
   try {
     // Get the current screen sequence
     const currentScreen = screenSequences[currentScreenIndex];

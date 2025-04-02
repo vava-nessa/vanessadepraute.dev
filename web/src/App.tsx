@@ -1,14 +1,11 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import TerminalDemo from "./TerminalDemo.tsx";
 import { CatBot } from "./components/CatBot/CatBot.tsx";
 import CoderGirl from "./components/CoderGirl/CoderGirl.tsx";
 import Particles from "./components/Particles";
 
 function App() {
-  const [count, setCount] = useState(0);
   const [error, setError] = useState<Error | null>(null);
-  // Example size value
 
   // Personnaliser les options de particules
   const particleOptions = {
@@ -30,15 +27,6 @@ function App() {
       setError(error instanceof Error ? error : new Error(String(error)));
     }
   }, []);
-
-  const incrementCount = () => {
-    try {
-      setCount((prevCount) => prevCount + 1);
-    } catch (error) {
-      console.error("Error incrementing count:", error);
-      setError(error instanceof Error ? error : new Error(String(error)));
-    }
-  };
 
   // If there was an error, show error fallback UI
   if (error) {

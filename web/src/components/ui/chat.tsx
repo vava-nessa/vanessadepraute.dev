@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 import { TypingAnimation } from "@/components/magicui/typing-animation";
@@ -34,7 +34,7 @@ export function Chat({
         <ChatMessages>
           <MessageList messages={messages} isTyping={isGenerating} />
         </ChatMessages>
-        <ChatForm handleSubmit={handleSubmit} isPending={isGenerating}>
+        <ChatForm handleSubmit={handleSubmit}>
           {() => (
             <MessageInput
               value={input}
@@ -156,11 +156,9 @@ export function MessageList({
 
 export function ChatForm({
   handleSubmit,
-  isPending,
   children,
 }: {
   handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-  isPending: boolean;
   children: () => React.ReactNode;
 }) {
   try {

@@ -9,13 +9,13 @@ function App() {
 
   // Personnaliser les options de particules
   const particleOptions = {
-    particleCount: 200,
+    particleCount: 50,
     particleBaseHue: 240,
-    particleHueRange: 100,
-    particleBaseRadius: 0.8,
-    particleRadiusRange: 10.5,
-    glowBrightness: 150,
-    backgroundColor: "hsl(293, 100.00%, 94.70%)",
+    particleHueRange: 60,
+    particleBaseRadius: 4.8,
+    particleRadiusRange: 1,
+    glowBrightness: 100,
+    backgroundColor: "hsl(293deg 100% 90%)",
   };
 
   // Error boundary pattern using hooks
@@ -40,7 +40,7 @@ function App() {
 
   try {
     return (
-      <>
+      <div className="absolute top-0 z-[-2] h-screen w-screen  transform bg-white bg-[radial-gradient(60%_120%_at_50%_50%,hsla(0,0%,100%,0)_0,rgba(252,205,238,.5)_100%)]">
         <h1
           style={{
             color: "purple",
@@ -56,24 +56,24 @@ function App() {
         </h2>
         <p style={{ color: "purple", fontSize: "1em" }}>coming soon...</p>
         <div className="cover">
-          <Particles options={particleOptions}>
-            <div
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: "100%",
-                height: "100%",
-                zIndex: 5,
-              }}
-            >
-              <CoderGirl size={1} />
-            </div>
-          </Particles>
+          <div
+            style={{
+              zoom: 0.5,
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "100%",
+              height: "100%",
+              zIndex: 5,
+            }}
+          >
+            <CoderGirl size={1} />
+          </div>
         </div>
         <CatBot />
-      </>
+        <Particles options={particleOptions}></Particles>
+      </div>
     );
   } catch (error) {
     console.error("Error rendering App:", error);

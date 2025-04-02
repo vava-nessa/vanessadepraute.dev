@@ -1,7 +1,7 @@
 .catbot-container {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 10px;
+  right: 10px;
   z-index: 1000;
   transition: opacity 0.3s ease;
   display: flex;
@@ -10,8 +10,8 @@
 }
 
 .catbot-image {
-  width: 70px;
-  height: 70px;
+  width: 150px;
+
   object-fit: cover;
   cursor: pointer;
   transition: transform 0.2s ease;

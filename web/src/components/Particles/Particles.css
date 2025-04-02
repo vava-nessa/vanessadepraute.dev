@@ -1,0 +1,13 @@
+.particles-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: block;
+}
+
+/* Assurer que le contenu à l'intérieur des particules reste cliquable */
+.particles-container > *:not(canvas) {
+  position: relative;
+  z-index: 1;
+}

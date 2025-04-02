@@ -56,7 +56,10 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
 
   try {
     return (
-      <div className="coder-container" style={{ transform: `scale(${size})` }}>
+      <div
+        className="coder-girl-container"
+        style={{ transform: `scale(${size})` }}
+      >
         <div
           className="screen-content"
           style={{

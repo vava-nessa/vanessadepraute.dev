@@ -1,16 +1,24 @@
-/* Conteneur principal qui maintient l'image et l'écran simulé */
-.coder-container {
-  position: relative;
+.coder-girl-container {
+  position: absolute;
+  top: 0;
   width: 1024px;
   height: 1024px;
   margin: 0 auto;
-  background-image: url("../../assets/girl.png");
+  display: block;
   z-index: 2;
-  image-rendering: high-quality; /* Modern browsers */
-  image-rendering: -webkit-optimize-contrast; /* Safari */
 }
 
-/* Style pour l'image de l'iMac */
+.coder-girl-container img {
+  image-rendering: high-quality;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
+}
+
 .coder-image {
   position: absolute;
   top: 0;
@@ -20,12 +28,13 @@
   z-index: 3;
   perspective: 3000px;
   transform-style: preserve-3d;
+
+  /* Image smoothing */
+  image-rendering: high-quality;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
-/* 
- * Style pour la div qui simule l'écran
- * Les valeurs sont basées sur les coordonnées précises visibles dans l'image Photoshop
- */
 .screen-content {
   position: absolute;
   top: 89px;
@@ -37,9 +46,12 @@
   transform-origin: center center;
   transform: skew(0deg, 349deg) rotate3d(10, 100, 1, 9deg);
   box-shadow: inset 100px 0 100px rgba(85, 85, 85, 0.548);
+
+  /* Improved rendering */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
-/* Style pour le texte à l'intérieur de l'écran */
 .screen-text {
   width: 100%;
   height: 100%;
@@ -49,9 +61,14 @@
   font-weight: bold;
   text-align: center;
   padding: 20px;
+
+  /* Enhanced text rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  letter-spacing: 0.02em;
 }
 
-/* Animation pour le texte de l'écran */
 @keyframes fadeIn {
   from {
     opacity: 0;

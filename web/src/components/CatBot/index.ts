@@ -1,1 +1,1 @@
-export { default as CatBot } from "./CatBot";
+export { CatBot } from "./CatBot";

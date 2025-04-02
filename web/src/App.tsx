@@ -1,12 +1,9 @@
 import { useState, useEffect } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
-import { TerminalDemo } from "./TerminalDemo.tsx";
+import TerminalDemo from "./TerminalDemo.tsx";
 import { CatBot } from "./components/CatBot/CatBot.tsx";
 import CoderGirl from "./components/CoderGirl/CoderGirl.tsx";
 import Particles from "./components/Particles";
-import girlImage from "./assets/girl.png";
 
 function App() {
   const [count, setCount] = useState(0);

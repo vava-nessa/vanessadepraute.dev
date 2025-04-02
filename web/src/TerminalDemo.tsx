@@ -37,11 +37,7 @@ export default function TerminalDemo() {
       maxVisibleLines: 7,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation
-            speed={1.5}
-            className="block text-left"
-            completed={elapsed >= 1200}
-          >
+          <TypingAnimation delay={800} className="block text-left">
             &gt; pnpm dlx shadcn@latest init
           </TypingAnimation>
 
@@ -93,11 +89,7 @@ export default function TerminalDemo() {
       maxVisibleLines: 7,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation
-            speed={1.5}
-            className="block text-left"
-            completed={elapsed >= 1500}
-          >
+          <TypingAnimation delay={800} className="block text-left">
             &gt; pnpm dlx shadcn@latest install button
           </TypingAnimation>
 
@@ -128,9 +120,8 @@ export default function TerminalDemo() {
 
           {typingComplete && elapsed >= 5000 && (
             <TypingAnimation
-              speed={1.5}
+              delay={1000}
               className="text-muted-foreground block text-left"
-              completed={elapsed >= 6000}
             >
               Success! Component installation completed.
             </TypingAnimation>
@@ -138,9 +129,8 @@ export default function TerminalDemo() {
 
           {typingComplete && elapsed >= 6500 && (
             <TypingAnimation
-              speed={1.5}
+              delay={1000}
               className="text-muted-foreground block text-left"
-              completed={elapsed >= 7500}
             >
               You may now use the Button component.
             </TypingAnimation>
@@ -158,11 +148,7 @@ export default function TerminalDemo() {
       maxVisibleLines: 7,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation
-            speed={1.5}
-            className="block text-left"
-            completed={elapsed >= 1300}
-          >
+          <TypingAnimation delay={800} className="block text-left">
             &gt; node inspect src/utils/dataUtils.js
           </TypingAnimation>
 
@@ -234,11 +220,7 @@ export default function TerminalDemo() {
       maxVisibleLines: 7,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation
-            speed={1.5}
-            className="block text-left"
-            completed={elapsed >= 1300}
-          >
+          <TypingAnimation delay={800} className="block text-left">
             &gt; vim src/components/DataProcessor.tsx
           </TypingAnimation>
 
@@ -328,11 +310,7 @@ export default function TerminalDemo() {
       maxVisibleLines: 7,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation
-            speed={1.5}
-            className="block text-left"
-            completed={elapsed >= 1000}
-          >
+          <TypingAnimation delay={800} className="block text-left">
             &gt; vim src/components/DataProcessor.tsx (continued)
           </TypingAnimation>
 
@@ -424,11 +402,7 @@ export default function TerminalDemo() {
       maxVisibleLines: 7,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation
-            speed={1.5}
-            className="block text-left"
-            completed={elapsed >= 900}
-          >
+          <TypingAnimation delay={800} className="block text-left">
             &gt; npm run dev
           </TypingAnimation>
 
@@ -483,11 +457,7 @@ export default function TerminalDemo() {
       maxVisibleLines: 7,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation
-            speed={1.5}
-            className="block text-left"
-            completed={elapsed >= 800}
-          >
+          <TypingAnimation delay={800} className="block text-left">
             &gt; npm run build
           </TypingAnimation>
 
@@ -548,11 +518,7 @@ export default function TerminalDemo() {
       maxVisibleLines: 7,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation
-            speed={1.5}
-            className="block text-left"
-            completed={elapsed >= 800}
-          >
+          <TypingAnimation delay={800} className="block text-left">
             &gt; npm run build
           </TypingAnimation>
 
@@ -713,9 +679,13 @@ export default function TerminalDemo() {
     const currentScreen = screenSequences[currentScreenIndex];
 
     return (
-      <Terminal className="w-full" style={terminalStyle}>
-        {showScreen && currentScreen.content(elapsedTime, isTypingComplete)}
-      </Terminal>
+      <>
+        {showScreen && (
+          <Terminal className="bg-black text-white border border-gray-700 shadow-lg">
+            {currentScreen?.content(elapsedTime, isTypingComplete)}
+          </Terminal>
+        )}
+      </>
     );
   } catch (error) {
     console.error("Error rendering TerminalDemo:", error);

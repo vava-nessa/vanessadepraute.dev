@@ -5,24 +5,19 @@ import TerminalDemo from "../../TerminalDemo";
 interface CoderGirlProps {
   // Propriétés optionnelles pour personnaliser le contenu
   backgroundColor?: string;
-  textColor?: string;
   size?: number;
 }
 
 const CoderGirl: React.FC<CoderGirlProps> = ({
-  backgroundColor = "#000",
-  textColor = "#fff",
+  backgroundColor = "rgb(109 5 70)",
   size = 1,
 }) => {
-  // État pour suivre les animations si nécessaire
-  const [isAnimating, setIsAnimating] = useState(false);
   // État pour gérer les erreurs de rendu
   const [renderError, setRenderError] = useState<Error | null>(null);
 
   // Effet pour démarrer les animations au chargement
   useEffect(() => {
     try {
-      setIsAnimating(true);
       // Vous pouvez ajouter ici d'autres logiques d'animation
     } catch (error) {
       console.error("Error during animation setup:", error);

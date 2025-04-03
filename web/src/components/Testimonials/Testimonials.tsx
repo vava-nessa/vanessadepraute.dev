@@ -8,7 +8,6 @@ import caisse from "../../assets/caisse.png";
 import kogama from "../../assets/kogama.jpg";
 import airbus from "../../assets/airbus.png";
 import loreal from "../../assets/loreal.png";
-import Star from "../Star/Star";
 
 const people = [
   {

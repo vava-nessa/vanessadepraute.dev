@@ -78,7 +78,7 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
   // Generate container styles
   const getContainerStyles = (): CSSProperties => {
     try {
-      const scaleFactor = getScaleFactor();
+      // const scaleFactor = getScaleFactor(); // Removed unused variable
 
       if (size === "100%") {
         return {
@@ -142,7 +142,7 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
         zIndex: 3,
         perspective: "3000px",
         transformStyle: "preserve-3d",
-        imageRendering: "high-quality",
+        imageRendering: "auto",
         backfaceVisibility: "hidden",
         transform: "translateZ(0)",
         willChange: "transform",

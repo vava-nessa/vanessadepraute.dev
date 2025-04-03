@@ -36,7 +36,7 @@ function PasswordProtection({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex flex-col items-center justify-center min-h-screen  bg-white bg-[radial-gradient(60%_120%_at_50%_50%,hsla(0,0%,100%,0)_0,rgba(255, 180, 232, 0.5)_100%)]">
       <h1 className="text-3xl font-bold mb-8 text-center max-w-2xl">
         Vanessa Depraute : Personal portfolio - Développeuse fullstack JS et
         Designer UI UX

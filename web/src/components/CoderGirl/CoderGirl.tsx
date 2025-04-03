@@ -23,7 +23,7 @@ const BASE_DIMENSIONS = {
 };
 
 const CoderGirl: React.FC<CoderGirlProps> = ({
-  backgroundColor = "rgb(109 5 70)",
+  backgroundColor = "rgb(249 255 250)",
   size = 1,
   containerClassName = "",
 }) => {

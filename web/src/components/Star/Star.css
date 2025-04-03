@@ -1,8 +1,8 @@
 .star {
   --star-color: rgb(250, 190, 21);
   position: relative;
-  width: 64px;
-  height: 64px;
+  width: 30px;
+  height: 30px;
   transition: transform 0.3s ease;
 }
 

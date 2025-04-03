@@ -1,6 +1,6 @@
 import { AnimatedTooltip } from "../ui/animated-tooltip";
 import { AnimatedGradientText } from "@/components/magicui/animated-gradient-text";
-
+import Star from "@/components/Star/Star";
 // Import images
 import orange from "../../assets/orange.png";
 import livee from "../../assets/livee.jpg";
@@ -50,20 +50,18 @@ const people = [
 
 export function Testimonials() {
   return (
-    <>
-      {" "}
-      <AnimatedGradientText
-        speed={2}
-        colorFrom="#4ade80"
-        colorTo="#06b6d4"
-        className="text-4xl font-semibold tracking-tight"
-      >
-        Customer work
-      </AnimatedGradientText>
-      <div className="z-90 flex flex-row items-center justify-center mb-10 w-full">
+    <div className="flex flex-col items-center justify-center">
+      <div className="z-90 flex flex-row items-center justify-center mb-10 ">
         <AnimatedTooltip items={people} />
       </div>
-      <div className="flex flex-row items-center justify-center gap-2 mb-10"></div>
-    </>
+
+      <div className="flex justify-center items-center mb-4">
+        <Star delay={1800} color="rgb(255, 189, 9)" />
+        <Star delay={2100} color="rgb(255, 189, 9)" />
+        <Star delay={2400} color="rgb(255, 189, 9)" />
+        <Star delay={2700} color="rgb(255, 189, 9)" />
+        <Star delay={3000} color="rgb(255, 189, 9)" />
+      </div>
+    </div>
   );
 }

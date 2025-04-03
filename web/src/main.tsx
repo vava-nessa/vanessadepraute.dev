@@ -24,9 +24,13 @@ function PasswordProtection({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <h1 className="text-3xl font-bold mb-8 text-center max-w-2xl">
+        Vanessa Depraute : Personal portfolio - Développeuse fullstack JS et
+        Designer UI UX
+      </h1>
       <div className="p-8 bg-white shadow-md rounded-lg max-w-md w-full">
-        <h1 className="text-2xl font-bold mb-4">Site en développement</h1>
+        <h2 className="text-2xl font-bold mb-4">Site en développement</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label

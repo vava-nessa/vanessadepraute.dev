@@ -5,10 +5,14 @@ import CoderGirl from "./components/CoderGirl/CoderGirl.tsx";
 import Particles from "./components/Particles";
 import wavingHand from "./assets/waving_hand.webp";
 import { Testimonials } from "./components/Testimonials/Testimonials.tsx";
+import { TypingAnimation } from "@/components/magicui/typing-animation";
+import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
+
 function App() {
   const [error, setError] = useState<Error | null>(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
+  const words = `I've been crafting custom web solutions and sharing insights about freelance development for the past 15 years. I'm passionate about designing web apps, from UI/UX concepts to solving real-life  complex problems with code. 🚀 Feel free to contact me !
+`;
   // Hook pour détecter la taille de l'écran
   useEffect(() => {
     const handleResize = () => {
@@ -89,13 +93,7 @@ function App() {
               />
             </h1>
             <h2>I'm Vanessa.</h2>
-            <p> a software engineer and UI-UX Designer.</p>
-            <p>
-              I've been crafting custom web solutions and sharing insights about
-              freelance development for the past 15 years. I'm passionate about
-              designing web apps, from UI/UX concepts to solving real-life
-              complex problems with code. 🚀 Feel free to contact me !
-            </p>
+            <TextGenerateEffect duration="2" words={words} />;
           </div>
           <div
             className="column"

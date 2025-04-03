@@ -25,10 +25,13 @@ body {
 
 h1,
 h2 {
+  font-family: "Kanit", cursive;
+  font-weight: 600;
   font-size: 2rem;
-  font-weight: 900;
+  color: #570063;
 }
 
 .text-generate {
-  font-family: "Merienda", cursive;
+  font-family: "Kanit", cursive;
+  font-weight: normal;
 }

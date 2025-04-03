@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { Message } from "@/components/ui/chat";
 import { Select } from "@/components/ui/select";
 import { TypingAnimation } from "@/registry/magicui/terminal";
-import catImage from "../../assets/cat.webp";
+import catImage from "../../assets/cat.png";
 import catBotData from "./catbotdata.json";
 import angryCatData from "./angrycat.json";
 import happyCatData from "./happycat.json";

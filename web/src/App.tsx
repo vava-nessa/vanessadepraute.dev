@@ -4,13 +4,15 @@ import { CatBot } from "./components/CatBot/CatBot.tsx";
 import CoderGirl from "./components/CoderGirl/CoderGirl.tsx";
 import Particles from "./components/Particles";
 import wavingHand from "./assets/waving_hand.webp";
+import rocket from "./assets/rocket.webp";
 import { Testimonials } from "./components/Testimonials/Testimonials.tsx";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
+import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 
 function App() {
   const [error, setError] = useState<Error | null>(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const words = `I've been crafting custom web solutions and sharing insights about freelance development for the past 15 years. I'm passionate about designing web apps, from UI/UX concepts to solving real-life  complex problems with code. 🚀 Feel free to contact me !
+  const words = `I've been crafting custom web solutions and sharing insights about freelance development for the past 15 years. I'm passionate about designing web apps, from UI/UX concepts to solving real-life  complex problems with code.  Feel free to contact me !
 `;
   // Hook pour détecter la taille de l'écran
   useEffect(() => {
@@ -39,12 +41,7 @@ function App() {
 
   // Error boundary pattern using hooks
   useEffect(() => {
-    try {
-      // Component initialization logic (if needed)
-    } catch (error) {
-      console.error("Error initializing App:", error);
-      setError(error instanceof Error ? error : new Error(String(error)));
-    }
+    // Component initialization logic (if needed)
   }, []);
 
   // If there was an error, show error fallback UI
@@ -57,9 +54,10 @@ function App() {
     );
   }
 
-  try {
-    return (
-      <div className="absolute top-0 z-[-2] h-screen w-screen  transform bg-white bg-[radial-gradient(60%_120%_at_50%_50%,hsla(0,0%,100%,0)_0,rgba(252,205,238,.5)_100%)]">
+  return (
+    <div className="absolute top-0 z-[-2] h-screen w-screen transform bg-white bg-[radial-gradient(60%_120%_at_50%_50%,hsla(0,0%,100%,0)_0,rgba(252,205,238,.5)_100%)]">
+      {/* <BackgroundGradientAnimation> */}
+      <div className="z-0 ">
         <div
           className="wrapper"
           style={{
@@ -92,7 +90,8 @@ function App() {
               />
             </h1>
             <h2>I'm Vanessa.</h2>
-            <TextGenerateEffect words={words} />;
+            <TextGenerateEffect words={words} />
+            <img src={rocket} width="80px" height="80px" />
           </div>
           <div
             className="column"
@@ -124,17 +123,11 @@ function App() {
         <CatBot />
         <Testimonials />
         <Particles options={particleOptions}></Particles>
+        <p>Currently learning portuguese and chinese</p>
       </div>
-    );
-  } catch (error) {
-    console.error("Error rendering App:", error);
-    return (
-      <div className="error-container">
-        <h2>Something went wrong</h2>
-        <p>{error instanceof Error ? error.message : String(error)}</p>
-      </div>
-    );
-  }
+      {/* </BackgroundGradientAnimation> */}
+    </div>
+  );
 }
 
 export default App;

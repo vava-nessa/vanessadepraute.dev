@@ -7,7 +7,7 @@ export const TextGenerateEffect = ({
   words,
 
   filter = true,
-  duration = 0.5,
+  duration = 0.4,
 }: {
   words: string;
   className?: string;

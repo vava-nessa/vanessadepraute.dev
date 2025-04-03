@@ -49,7 +49,7 @@ const people = [
 
 export function Testimonials() {
   return (
-    <div className="flex flex-row items-center justify-center mb-10 w-full">
+    <div className="z-90 flex flex-row items-center justify-center mb-10 w-full">
       <AnimatedTooltip items={people} />
     </div>
   );

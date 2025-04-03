@@ -8,12 +8,23 @@ import { Analytics } from "@vercel/analytics/react";
 
 function PasswordProtection({ children }: { children: React.ReactNode }) {
   const [password, setPassword] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    try {
+      return localStorage.getItem("isAuthenticated") === "true";
+    } catch (error) {
+      console.error("Error accessing localStorage:", error);
+      return false;
+    }
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      setIsAuthenticated(password === "vava");
+      const authenticated = password === "vava";
+      setIsAuthenticated(authenticated);
+      if (authenticated) {
+        localStorage.setItem("isAuthenticated", "true");
+      }
     } catch (error) {
       console.error("Authentication error:", error);
     }

@@ -12,8 +12,8 @@ import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 function App() {
   const [error, setError] = useState<Error | null>(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const words = `I've been crafting custom web solutions and sharing insights about freelance development for the past 15 years. I'm passionate about designing web apps, from UI/UX concepts to solving real-life  complex problems with code.  Feel free to contact me !
-`;
+  const words = `I've been crafting custom web solutions and sharing insights about freelance development for the past 15 years. I'm passionate about designing web apps, from UI/UX concepts to solving real-life complex problems with code. Feel free to contact me !`;
+
   // Hook pour détecter la taille de l'écran
   useEffect(() => {
     const handleResize = () => {
@@ -54,80 +54,91 @@ function App() {
     );
   }
 
-  return (
-    <div className="absolute top-0 z-[-2] h-screen w-screen transform bg-white bg-[radial-gradient(60%_120%_at_50%_50%,hsla(0,0%,100%,0)_0,rgba(252,205,238,.5)_100%)]">
-      {/* <BackgroundGradientAnimation> */}
-      <div className="z-0 ">
-        <div
-          className="wrapper"
-          style={{
-            display: "flex",
-            flexDirection: windowWidth <= 1000 ? "column" : "row",
-            width: "100%",
-            gap: "20px",
-            padding: "20px",
-          }}
-        >
+  try {
+    return (
+      <div className="absolute top-0 z-[-2] h-screen w-screen transform bg-white bg-[radial-gradient(60%_120%_at_50%_50%,hsla(0,0%,100%,0)_0,rgba(252,205,238,.5)_100%)]">
+        {/* <BackgroundGradientAnimation> */}
+        <div className="z-0 ">
           <div
-            className="column"
+            className="wrapper"
             style={{
-              flex: 1,
-              padding: "20px",
-              textAlign: "left",
-              width: windowWidth <= 1000 ? "100%" : "auto",
-            }}
-          >
-            <h1>
-              Hi there!{" "}
-              <img
-                src={wavingHand}
-                alt="Waving Hand"
-                style={{
-                  width: "54px",
-                  height: "54px",
-                  display: "inline",
-                }}
-              />
-            </h1>
-            <h2>I'm Vanessa.</h2>
-            <TextGenerateEffect words={words} />
-            <img src={rocket} width="80px" height="80px" />
-          </div>
-          <div
-            className="column"
-            style={{
-              flex: 1,
               display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              minHeight: windowWidth <= 1000 ? "300px" : "auto",
+              flexDirection: windowWidth <= 1000 ? "column" : "row",
+              width: "100%",
+              gap: "20px",
+              padding: "20px",
             }}
           >
-            <div className="cover">
-              <div
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  width: "100%",
-                  height: "100%",
-                  zIndex: 5,
-                }}
-              >
-                <CoderGirl size="100%" />
+            <div
+              className="column"
+              style={{
+                flex: 1,
+                padding: "20px",
+                textAlign: "left",
+                width: windowWidth <= 1000 ? "100%" : "auto",
+              }}
+            >
+              <h1>
+                Hi there!{" "}
+                <img
+                  src={wavingHand}
+                  alt="Waving Hand"
+                  style={{
+                    width: "54px",
+                    height: "54px",
+                    display: "inline",
+                  }}
+                />
+              </h1>
+              <h2>I'm Vanessa.</h2>
+              <TextGenerateEffect words={words} />
+              <img src={rocket} width="80px" height="80px" />
+            </div>
+            <div
+              className="column"
+              style={{
+                flex: 1,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: windowWidth <= 1000 ? "300px" : "auto",
+              }}
+            >
+              <div className="cover">
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: "100%",
+                    height: "100%",
+                    zIndex: 5,
+                  }}
+                >
+                  <CoderGirl size="100%" />
+                </div>
               </div>
             </div>
           </div>
+          <CatBot />
+          <Testimonials />
+          <Particles options={particleOptions}></Particles>
+          <p>Currently learning Portuguese and Chinese</p>
         </div>
-        <CatBot />
-        <Testimonials />
-        <Particles options={particleOptions}></Particles>
-        <p>Currently learning portuguese and chinese</p>
+        {/* </BackgroundGradientAnimation> */}
       </div>
-      {/* </BackgroundGradientAnimation> */}
-    </div>
-  );
+    );
+  } catch (error) {
+    console.error("Error rendering App:", error);
+    setError(error instanceof Error ? error : new Error(String(error)));
+    return (
+      <div className="error-container">
+        <h2>Something went wrong</h2>
+        <p>{error instanceof Error ? error.message : String(error)}</p>
+      </div>
+    );
+  }
 }
 
 export default App;

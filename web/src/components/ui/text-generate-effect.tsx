@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 export const TextGenerateEffect = ({
   words,
-  className,
+
   filter = true,
   duration = 0.5,
 }: {

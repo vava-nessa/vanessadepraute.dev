@@ -5,7 +5,6 @@ import CoderGirl from "./components/CoderGirl/CoderGirl.tsx";
 import Particles from "./components/Particles";
 import wavingHand from "./assets/waving_hand.webp";
 import { Testimonials } from "./components/Testimonials/Testimonials.tsx";
-import { TypingAnimation } from "@/components/magicui/typing-animation";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 
 function App() {
@@ -93,7 +92,7 @@ function App() {
               />
             </h1>
             <h2>I'm Vanessa.</h2>
-            <TextGenerateEffect duration="2" words={words} />;
+            <TextGenerateEffect words={words} />;
           </div>
           <div
             className="column"

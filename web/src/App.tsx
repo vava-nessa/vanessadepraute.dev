@@ -7,7 +7,7 @@ import wavingHand from "./assets/waving_hand.webp";
 import rocket from "./assets/rocket.webp";
 import { Testimonials } from "./components/Testimonials/Testimonials.tsx";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
-import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
+// import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 
 function App() {
   const [error, setError] = useState<Error | null>(null);

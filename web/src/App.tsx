@@ -4,7 +4,7 @@ import { CatBot } from "./components/CatBot/CatBot.tsx";
 import CoderGirl from "./components/CoderGirl/CoderGirl.tsx";
 import Particles from "./components/Particles";
 import wavingHand from "./assets/waving_hand.webp";
-
+import { Testimonials } from "./components/Testimonials/Testimonials.tsx";
 function App() {
   const [error, setError] = useState<Error | null>(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -125,6 +125,7 @@ function App() {
           </div>
         </div>
         <CatBot />
+        <Testimonials />
         <Particles options={particleOptions}></Particles>
       </div>
     );

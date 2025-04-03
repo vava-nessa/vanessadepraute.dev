@@ -7,8 +7,9 @@ import wavingHand from "./assets/waving_hand.webp";
 import rocket from "./assets/rocket.webp";
 import { Testimonials } from "./components/Testimonials/Testimonials.tsx";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
+import Star from "./components/Star/Star.tsx";
 // import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
-
+import ContactButton from "./components/ContactButton";
 function App() {
   const [error, setError] = useState<Error | null>(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -92,6 +93,7 @@ function App() {
               </h1>
               <h2>I'm Vanessa.</h2>
               <TextGenerateEffect words={words} />
+              <div className="flex mt-4 mb-2"></div>
               <img src={rocket} width="80px" height="80px" />
             </div>
             <div
@@ -122,9 +124,22 @@ function App() {
             </div>
           </div>
           <CatBot />
-          <Testimonials />
+          <div className="flex justify-center">
+            <Testimonials />
+          </div>
           <Particles options={particleOptions}></Particles>
           <p>Currently learning Portuguese and Chinese</p>
+          <div className="flex justify-center items-center mb-4">
+            <ContactButton />
+            <div className="flex ml-4"></div>
+          </div>
+          <div className="flex justify-center items-center mb-4">
+            <Star delay={1800} color="rgb(235, 190, 68)" />
+            <Star delay={2100} color="rgb(245, 180, 105)" />
+            <Star delay={2400} color="rgb(238, 175, 92)" />
+            <Star delay={2700} color="rgb(201, 126, 64)" />
+            <Star delay={3000} color="rgb(180, 79, 39)" />
+          </div>
         </div>
         {/* </BackgroundGradientAnimation> */}
       </div>

@@ -9,14 +9,6 @@
   align-items: flex-end;
 }
 
-.catbot-image {
-  width: 150px;
-
-  object-fit: cover;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
 .catbot-image:hover {
   transform: scale(1.1);
 }

@@ -4,9 +4,9 @@
  * A 3D model viewer component using React Three Fiber to display and animate GLTF models.
  * This component plays the animation for 1 complete cycle before adopting the provided
  * playAnimation state. When playAnimation becomes false, the animation finishes the current
- * cycle and then stops at the final pose. It provides a subtle rotation effect when clicking
- * and dragging on the model, and positions the model at 80% zoom with some margin. The camera
- * is positioned slightly higher to provide a better view angle.
+ * cycle and then stops at the final pose. The component includes a global mouse tracking
+ * feature that rotates the model based on the mouse position anywhere on the page.
+ * The camera is positioned slightly higher to provide a better view angle.
  */
 
 // Dependencies:
@@ -17,83 +17,61 @@
 //
 // Props:
 // - modelPath: string - Path to the GLTF model file
-// - playAnimation?: boolean - Whether to play the animation (after initial 3s period)
+// - playAnimation?: boolean - Whether to play the animation (after initial cycle)
 // - onToggleAnimation?: () => void - Callback when animation is toggled
 // - width?: number | string - Width of the viewer container
 // - fallbackBackgroundColor?: string - Background color to show while loading
 // - onClick?: (event: React.MouseEvent) => void - Click callback
-// - rotateFactor?: number - How responsive the rotation is to mouse movement when clicked
 
 import React, { Suspense, useRef, useEffect, useMemo, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, useGLTF, Box } from "@react-three/drei";
 import * as THREE from "three";
 
-// --- Hook personnalisé pour l'effet de rotation lors du clic maintenu ---
-const useDragRotateCamera = (
+// --- Hook personnalisé pour la rotation suivant la souris ---
+const useGlobalMouseRotation = (
+  camera: THREE.Camera,
+  targetLookAt: THREE.Vector3,
   basePosition: THREE.Vector3,
-  targetPosition: THREE.Vector3,
-  rotateFactor: number = 0.5,
-  lerpFactor: number = 0.05
+  sensitivity: number = 0.0015
 ) => {
-  const { camera } = useThree();
-  const targetCameraPosition = useMemo(() => new THREE.Vector3(), []);
-  const isDraggingRef = useRef(false);
+  const mousePosition = useRef({ x: 0, y: 0 });
+  const initialCameraPosition = useRef(new THREE.Vector3().copy(basePosition));
 
-  // Set up mouse down/up detection
   useEffect(() => {
-    const canvas = document.querySelector("canvas");
-    if (canvas) {
-      const handleMouseDown = () => {
-        isDraggingRef.current = true;
-      };
-      const handleMouseUp = () => {
-        isDraggingRef.current = false;
-      };
-      const handleMouseLeave = () => {
-        isDraggingRef.current = false;
-      };
+    // Fonction pour suivre la position de la souris n'importe où sur la page
+    const handleMouseMove = (event: MouseEvent) => {
+      // Convertir les coordonnées de la souris en valeurs normalisées (-1 à 1)
+      const x = (event.clientX / window.innerWidth) * 2 - 1;
+      const y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-      canvas.addEventListener("mousedown", handleMouseDown);
-      canvas.addEventListener("mouseup", handleMouseUp);
-      canvas.addEventListener("mouseleave", handleMouseLeave);
+      mousePosition.current = { x, y };
+    };
 
-      // Also add touch events for mobile support
-      canvas.addEventListener("touchstart", handleMouseDown);
-      canvas.addEventListener("touchend", handleMouseUp);
-      canvas.addEventListener("touchcancel", handleMouseLeave);
+    // Ajouter l'écouteur d'événement au document entier
+    document.addEventListener("mousemove", handleMouseMove);
 
-      return () => {
-        canvas.removeEventListener("mousedown", handleMouseDown);
-        canvas.removeEventListener("mouseup", handleMouseUp);
-        canvas.removeEventListener("mouseleave", handleMouseLeave);
-        canvas.removeEventListener("touchstart", handleMouseDown);
-        canvas.removeEventListener("touchend", handleMouseUp);
-        canvas.removeEventListener("touchcancel", handleMouseLeave);
-      };
-    }
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+    };
   }, []);
 
-  useFrame((state) => {
-    // Only apply rotation effect when mouse button is pressed
-    if (isDraggingRef.current) {
-      const effectiveRotateFactor = rotateFactor;
-      const offsetX = state.pointer.x * effectiveRotateFactor;
-      const offsetY = -state.pointer.y * effectiveRotateFactor;
+  useFrame(() => {
+    // Calculer les angles de rotation basés sur la position de la souris
+    const rotX = (mousePosition.current.x * Math.PI) / 6; // ±30 degrés max en horizontal
+    const rotY = (mousePosition.current.y * Math.PI) / 8; // ±22.5 degrés max en vertical
 
-      targetCameraPosition.set(
-        basePosition.x + offsetX,
-        basePosition.y + offsetY,
-        basePosition.z
-      );
-    } else {
-      // When not dragging, return to the base position
-      targetCameraPosition.copy(basePosition);
-    }
+    // Position de la caméra basée sur les angles
+    const radius = initialCameraPosition.current.distanceTo(targetLookAt);
+    const newX = Math.sin(rotX) * radius;
+    const newY = basePosition.y + rotY * radius * 0.5;
+    const newZ = Math.cos(rotX) * radius;
 
-    // Smooth transition
-    camera.position.lerp(targetCameraPosition, lerpFactor);
-    camera.lookAt(targetPosition);
+    // Appliquer la nouvelle position à la caméra
+    camera.position.set(basePosition.x + newX, newY, basePosition.z + newZ);
+
+    // S'assurer que la caméra regarde toujours vers le centre
+    camera.lookAt(targetLookAt);
   });
 };
 
@@ -245,7 +223,6 @@ interface ModelViewerFiberProps {
   width?: number | string;
   fallbackBackgroundColor?: string;
   onClick?: (event: React.MouseEvent) => void;
-  rotateFactor?: number;
 }
 
 // --- Fallback component when model is loading ---
@@ -253,19 +230,18 @@ const FallbackMesh: React.FC = () => {
   return <Box args={[1, 1, 1]} position={[0, 0, 0]} />;
 };
 
-// --- Hook for drag rotation camera effect ---
-interface DragRotateCameraEffectHookProps {
-  basePosition: THREE.Vector3;
+// --- Hook for global mouse rotation effect ---
+interface GlobalMouseRotationHookProps {
   targetPosition: THREE.Vector3;
-  rotateFactor: number;
+  basePosition: THREE.Vector3;
 }
 
-const DragRotateCameraEffectHook: React.FC<DragRotateCameraEffectHookProps> = ({
-  basePosition,
+const GlobalMouseRotationHook: React.FC<GlobalMouseRotationHookProps> = ({
   targetPosition,
-  rotateFactor,
+  basePosition,
 }) => {
-  useDragRotateCamera(basePosition, targetPosition, rotateFactor);
+  const { camera } = useThree();
+  useGlobalMouseRotation(camera, targetPosition, basePosition);
   return null;
 };
 
@@ -309,17 +285,16 @@ const ModelViewerFiber: React.FC<ModelViewerFiberProps> = ({
           gl={{ antialias: true, alpha: true }}
           camera={{
             position: baseCameraPosition.toArray() as [number, number, number],
-            fov: 30,
-            near: 0.2,
-            far: 1000,
+            fov: 12,
+            near: 0.3,
+            far: 500,
           }}
           style={{ background: "transparent", touchAction: "none" }}
         >
-          {/* Effet de rotation au clic maintenu */}
-          <DragRotateCameraEffectHook
+          {/* Effet de rotation globale suivant la souris */}
+          <GlobalMouseRotationHook
             basePosition={baseCameraPosition}
             targetPosition={targetLookAt}
-            rotateFactor={rotateFactor}
           />
 
           <ambientLight intensity={1.0} />
@@ -341,15 +316,10 @@ const ModelViewerFiber: React.FC<ModelViewerFiberProps> = ({
           </Suspense>
 
           <OrbitControls
-            enabled={true}
+            enabled={false} // Désactivé car nous utilisons notre propre système de rotation
             enableZoom={false}
             enablePan={false}
             target={targetLookAt.toArray() as [number, number, number]}
-            minPolarAngle={Math.PI / 2.4} // Limite l'angle vers le bas
-            maxPolarAngle={Math.PI / 1.6} // Limite l'angle vers le haut
-            minAzimuthAngle={-Math.PI / 6} // Limite la rotation horizontale à gauche (environ -30 degrés)
-            maxAzimuthAngle={Math.PI / 6} // Limite la rotation horizontale à droite (environ +30 degrés)
-            rotateSpeed={0.6} // Vitesse de rotation modérée
           />
         </Canvas>
       </div>

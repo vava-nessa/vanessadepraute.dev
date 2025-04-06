@@ -1,5 +1,5 @@
 import { AnimatedTooltip } from "../ui/animated-tooltip";
-import { AnimatedGradientText } from "@/components/magicui/animated-gradient-text";
+
 import Star from "@/components/Star/Star";
 // Import images
 import orange from "../../assets/orange.png";

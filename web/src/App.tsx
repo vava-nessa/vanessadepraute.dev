@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import { CatBot } from "./components/CatBot/CatBot.tsx";
 import CoderGirl from "./components/CoderGirl/CoderGirl.tsx";
-import Particles from "./components/Particles";
+// import Particles from "./components/Particles";
 import wavingHand from "./assets/waving_hand.webp";
 
 import rocket from "./assets/rocket.webp";
@@ -32,7 +32,7 @@ function App() {
   }, []);
 
   // Personnaliser les options de particules
-  const particleOptions = {
+  /* const particleOptions = {
     particleCount: 50,
     particleBaseHue: 240,
     particleHueRange: 60,
@@ -40,7 +40,7 @@ function App() {
     particleRadiusRange: 1,
     glowBrightness: 100,
     backgroundColor: "hsl(293deg 100% 90%)",
-  };
+  }; */
 
   // Error boundary pattern using hooks
   useEffect(() => {

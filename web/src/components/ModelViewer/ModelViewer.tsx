@@ -20,6 +20,7 @@
 // - playAnimation?: boolean - Whether to play the animation (after initial cycle)
 // - onToggleAnimation?: () => void - Callback when animation is toggled
 // - width?: number | string - Width of the viewer container
+// - height?: number | string - Height of the viewer container
 // - fallbackBackgroundColor?: string - Background color to show while loading
 // - onClick?: (event: React.MouseEvent) => void - Click callback
 
@@ -32,8 +33,7 @@ import * as THREE from "three";
 const useGlobalMouseRotation = (
   camera: THREE.Camera,
   targetLookAt: THREE.Vector3,
-  basePosition: THREE.Vector3,
-  sensitivity: number = 0.0015
+  basePosition: THREE.Vector3
 ) => {
   const mousePosition = useRef({ x: 0, y: 0 });
   const initialCameraPosition = useRef(new THREE.Vector3().copy(basePosition));
@@ -143,7 +143,7 @@ const Model: React.FC<ModelProps> = ({
         actionRef.current.clampWhenFinished = true; // Keep the final pose when finished
 
         // Add an event listener to track animation completion
-        const onFinishEvent = (e: any) => {
+        const onFinishEvent = () => {
           // After 1 complete cycle, mark initial playback as done
           if (!initialPlaybackDone) {
             setInitialPlaybackDone(true);
@@ -193,7 +193,7 @@ const Model: React.FC<ModelProps> = ({
   }, [mixer, animations, playAnimation, initialPlaybackDone]);
 
   // Update animation on each frame
-  useFrame((state, delta) => {
+  useFrame((_state, delta) => {
     // Always play during first 2 cycles, then follow playAnimation prop
     if (!initialPlaybackDone || (playAnimation && !actionRef.current?.paused)) {
       mixer.current?.update(delta);
@@ -206,10 +206,12 @@ const Model: React.FC<ModelProps> = ({
   return (
     <primitive
       object={clonedScene}
-      onClick={(event) => {
+      onClick={(event: any) => {
         event.stopPropagation();
         onAnimationToggleRequest?.();
-        onExternalClick?.(event);
+        if (onExternalClick && event.nativeEvent) {
+          onExternalClick(event.nativeEvent as React.MouseEvent);
+        }
       }}
     />
   );
@@ -221,6 +223,7 @@ interface ModelViewerFiberProps {
   playAnimation?: boolean;
   onToggleAnimation?: () => void;
   width?: number | string;
+  height?: number | string;
   fallbackBackgroundColor?: string;
   onClick?: (event: React.MouseEvent) => void;
 }
@@ -251,9 +254,9 @@ const ModelViewerFiber: React.FC<ModelViewerFiberProps> = ({
   playAnimation = false,
   onToggleAnimation,
   width = "100%",
+  height = width, // Default height is the same as width
   fallbackBackgroundColor = "transparent",
   onClick,
-  rotateFactor = 0.5, // Facteur de rotation modéré lors du clic maintenu
 }) => {
   useEffect(() => {
     useGLTF.preload(modelPath);
@@ -270,7 +273,7 @@ const ModelViewerFiber: React.FC<ModelViewerFiberProps> = ({
   );
 
   return (
-    <div style={{ width, height: width, position: "relative" }}>
+    <div style={{ width, height, position: "relative" }}>
       <div
         style={{
           width: "100%",

@@ -15,6 +15,19 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          three: ["three"],
+          "react-three-fiber": ["@react-three/fiber", "@react-three/drei"],
+          vendor: ["react", "react-dom"],
+        },
+      },
+    },
+    // Optionnel: augmenter la limite d'avertissement pour les chunks
+    chunkSizeWarningLimit: 700,
+  },
   // Ajout de l'option pour inclure les fichiers .glb comme assets
   assetsInclude: ["**/*.glb"], // Indique à Vite de traiter les .glb comme des assets
 });

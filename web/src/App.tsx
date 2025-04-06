@@ -1,17 +1,33 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import "./App.css";
-import { CatBot } from "./components/CatBot/CatBot.tsx";
-import CoderGirl from "./components/CoderGirl/CoderGirl.tsx";
+// import { CatBot } from "./components/CatBot/CatBot.tsx";
+// import CoderGirl from "./components/CoderGirl/CoderGirl.tsx";
 // import Particles from "./components/Particles";
 import wavingHand from "./assets/waving_hand.webp";
 
 import rocket from "./assets/rocket.webp";
-import { Testimonials } from "./components/Testimonials/Testimonials.tsx";
+// import { Testimonials } from "./components/Testimonials/Testimonials.tsx";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import Star from "./components/Star/Star.tsx";
 
 // import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import ContactButton from "./components/ContactButton";
+
+// Lazy load heavy components
+const CatBot = lazy(() =>
+  import("./components/CatBot/CatBot").then((module) => ({
+    default: module.CatBot,
+  }))
+);
+
+const Testimonials = lazy(() =>
+  import("./components/Testimonials/Testimonials").then((module) => ({
+    default: module.Testimonials,
+  }))
+);
+
+const CoderGirl = lazy(() => import("./components/CoderGirl/CoderGirl"));
+
 function App() {
   const [error, setError] = useState<Error | null>(null);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -120,14 +136,20 @@ function App() {
                     zIndex: 5,
                   }}
                 >
-                  <CoderGirl size="100%" />
+                  <Suspense fallback={<div>Loading illustration...</div>}>
+                    <CoderGirl size="100%" />
+                  </Suspense>
                 </div>
               </div>
             </div>
           </div>
-          <CatBot />
+          <Suspense fallback={<div>Loading chat...</div>}>
+            <CatBot />
+          </Suspense>
           <div className="flex justify-center">
-            <Testimonials />
+            <Suspense fallback={<div>Loading testimonials...</div>}>
+              <Testimonials />
+            </Suspense>
           </div>
           {/* <Particles options={particleOptions}></Particles> */}
           <p>Currently learning Portuguese and Chinese</p>

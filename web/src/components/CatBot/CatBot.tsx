@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import ModelViewer from "../ModelViewer/ModelViewer";
+import { useState, useEffect, useRef, lazy, Suspense } from "react";
+// import ModelViewer from "../ModelViewer/ModelViewer";
 import popCatModelPath from "../../assets/pop_cat2.glb";
 import { Message } from "@/components/ui/chat";
 import { Select } from "@/components/ui/select";
@@ -10,6 +10,9 @@ import angryCatData from "./angrycat.json";
 import happyCatData from "./happycat.json";
 import "./CatBot.css";
 import "@/components/ui/chat.css";
+
+// Lazy load the ModelViewer component
+const ModelViewer = lazy(() => import("../ModelViewer/ModelViewer"));
 
 // Type for personality options
 type PersonalityType = "normal" | "angry" | "happy";
@@ -398,13 +401,30 @@ export function CatBot() {
           </div>
         )}
         <div style={{ border: "1px solid red" }}>
-          <ModelViewer
-            playAnimation={isChatOpen}
-            modelPath={popCatModelPath}
-            height="150px"
-            width="150px"
-            onClick={toggleChat}
-          />
+          <Suspense
+            fallback={
+              <div
+                style={{
+                  width: "150px",
+                  height: "150px",
+                  background: "#f0f0f0",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                Loading...
+              </div>
+            }
+          >
+            <ModelViewer
+              playAnimation={isChatOpen}
+              modelPath={popCatModelPath}
+              height="150px"
+              width="150px"
+              onClick={toggleChat}
+            />
+          </Suspense>
         </div>
       </div>
     );

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-
+import ModelViewer from "../ModelViewer/ModelViewer";
+import popCatModelPath from "../../assets/pop_cat.glb";
 import { Message } from "@/components/ui/chat";
 import { Select } from "@/components/ui/select";
 import { TypingAnimation } from "@/registry/magicui/terminal";
@@ -397,12 +398,12 @@ export function CatBot() {
           </div>
         )}
 
-        <img
-          src={catImage}
-          alt="CatGPT"
-          className="catbot-image"
+        <ModelViewer
+          playAnimation={isChatOpen}
+          modelPath={popCatModelPath}
+          height="200px"
+          width="250px"
           onClick={toggleChat}
-          title="Chat with CatGPT"
         />
       </div>
     );

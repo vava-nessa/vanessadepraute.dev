@@ -9,21 +9,25 @@ import {
 type ScreenSequence = {
   id: string;
   command: string;
-  typingDuration: number; // Duration of the typing animation
+  typingDuration: number; // Duration of the typing animation (relative to screen start)
   duration: number; // Total duration of the screen
-  maxVisibleLines?: number; // Maximum visible lines before clearing
-  content: (elapsedTime: number, isTypingComplete: boolean) => React.ReactNode;
+  maxVisibleLines?: number; // Maximum visible lines before clearing (unused in current implementation)
+  content: (
+    screenElapsedTime: number,
+    isTypingComplete: boolean
+  ) => React.ReactNode;
 };
 
 export default function TerminalDemo() {
   const [currentScreenIndex, setCurrentScreenIndex] = useState(0);
-  const [startTime, setStartTime] = useState<number>(Date.now());
-  const [elapsedTime, setElapsedTime] = useState(0);
+  const [screenElapsedTime, setScreenElapsedTime] = useState(0); // Time elapsed since the current screen started
   const [showScreen, setShowScreen] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isTypingComplete, setIsTypingComplete] = useState(false);
+
+  const screenStartTimeRef = useRef<number>(0); // Timestamp when the current screen started
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const screenTransitionTimerRef = useRef<NodeJS.Timeout | null>(null);
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Define all screen sequences
@@ -32,46 +36,48 @@ export default function TerminalDemo() {
     {
       id: "init",
       command: "pnpm dlx shadcn@latest init",
-      typingDuration: 1200, // Time to complete typing the command
+      typingDuration: 1200,
       duration: 5000,
-      maxVisibleLines: 7,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation delay={800} className="block text-left">
+          {/* Command appears almost instantly */}
+          <TypingAnimation delay={100} className="block text-left">
             &gt; pnpm dlx shadcn@latest init
           </TypingAnimation>
 
-          {typingComplete && elapsed >= 1500 && (
-            <AnimatedSpan className="text-green-500 block text-left">
-              <span>✔ Preflight checks.</span>
-            </AnimatedSpan>
-          )}
+          {/* Content appears after typing animation is complete */}
+          {typingComplete &&
+            elapsed >= 1500 - 1200 && ( // Adjusted timing relative to typing end
+              <AnimatedSpan className="text-green-500 block text-left">
+                <span>✔ Preflight checks.</span>
+              </AnimatedSpan>
+            )}
 
-          {typingComplete && elapsed >= 1900 && (
+          {typingComplete && elapsed >= 1900 - 1200 && (
             <AnimatedSpan className="text-green-500 block text-left">
               <span>✔ Verifying framework. Found Next.js.</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2300 && (
+          {typingComplete && elapsed >= 2300 - 1200 && (
             <AnimatedSpan className="text-green-500 block text-left">
               <span>✔ Validating Tailwind CSS.</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2700 && (
+          {typingComplete && elapsed >= 2700 - 1200 && (
             <AnimatedSpan className="text-green-500 block text-left">
               <span>✔ Validating import alias.</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 3100 && (
+          {typingComplete && elapsed >= 3100 - 1200 && (
             <AnimatedSpan className="text-green-500 block text-left">
               <span>✔ Writing components.json.</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 3500 && (
+          {typingComplete && elapsed >= 3500 - 1200 && (
             <AnimatedSpan className="text-green-500 block text-left">
               <span>✔ Checking registry.</span>
             </AnimatedSpan>
@@ -86,50 +92,49 @@ export default function TerminalDemo() {
       command: "pnpm dlx shadcn@latest install button",
       typingDuration: 1500,
       duration: 9000,
-      maxVisibleLines: 7,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation delay={800} className="block text-left">
+          <TypingAnimation delay={100} className="block text-left">
             &gt; pnpm dlx shadcn@latest install button
           </TypingAnimation>
 
-          {typingComplete && elapsed >= 1800 && (
+          {typingComplete && elapsed >= 1800 - 1500 && (
             <AnimatedSpan className="text-green-500 block text-left">
               <span>✔ Updating tailwind.config.ts</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2600 && (
+          {typingComplete && elapsed >= 2600 - 1500 && (
             <AnimatedSpan className="text-green-500 block text-left">
               <span>✔ Updating app/globals.css</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 3400 && (
+          {typingComplete && elapsed >= 3400 - 1500 && (
             <AnimatedSpan className="text-green-500 block text-left">
               <span>✔ Installing dependencies.</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 4200 && (
+          {typingComplete && elapsed >= 4200 - 1500 && (
             <AnimatedSpan className="text-blue-500 block text-left">
               <span>ℹ Added components:</span>
               <span className="pl-2">- Button</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 5000 && (
+          {typingComplete && elapsed >= 5000 - 1500 && (
             <TypingAnimation
-              delay={1000}
+              delay={500} // Short delay after previous line
               className="text-muted-foreground block text-left"
             >
               Success! Component installation completed.
             </TypingAnimation>
           )}
 
-          {typingComplete && elapsed >= 6500 && (
+          {typingComplete && elapsed >= 6500 - 1500 && (
             <TypingAnimation
-              delay={1000}
+              delay={500} // Short delay after previous line
               className="text-muted-foreground block text-left"
             >
               You may now use the Button component.
@@ -138,39 +143,65 @@ export default function TerminalDemo() {
         </>
       ),
     },
+    // --- NEW GIF SCREEN ---
+    {
+      id: "gif-display",
+      command: "cat reaction.gif", // Example command
+      typingDuration: 800,
+      duration: 5000, // Show GIF for 5 seconds
+      content: (elapsed, typingComplete) => (
+        <>
+          <TypingAnimation delay={100} className="block text-left">
+            &gt; cat reaction.gif
+          </TypingAnimation>
 
-    // NEW SCREEN: Object Viewing/Debugging
+          {typingComplete &&
+            elapsed > 200 && ( // Show GIF shortly after typing completes
+              <AnimatedSpan className="block text-left w-full h-full flex items-center justify-center">
+                {/* Ensure the image scales reasonably within the terminal */}
+                <img
+                  src="https://i.giphy.com/rj5LtFB78DKAb0y3aR.webp"
+                  alt="Reaction GIF"
+                  className="max-w-full max-h-48 object-contain" // Adjust size as needed
+                />
+              </AnimatedSpan>
+            )}
+        </>
+      ),
+    },
+    // ---------------------
+
+    // Screen 3: Object Viewing/Debugging (Adjusted timings)
     {
       id: "data-objects",
       command: "node inspect src/utils/dataUtils.js",
       typingDuration: 1300,
       duration: 7000,
-      maxVisibleLines: 7,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation delay={800} className="block text-left">
+          <TypingAnimation delay={100} className="block text-left">
             &gt; node inspect src/utils/dataUtils.js
           </TypingAnimation>
 
-          {typingComplete && elapsed >= 1600 && (
+          {typingComplete && elapsed >= 1600 - 1300 && (
             <AnimatedSpan className="block text-left text-white text-xs">
               <span>{"< Debugger listening on ws://127.0.0.1:9229/..."}</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2100 && (
+          {typingComplete && elapsed >= 2100 - 1300 && (
             <AnimatedSpan className="block text-left text-white text-xs">
               <span>{"debug> const data = getInitialData();"}</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2600 && (
+          {typingComplete && elapsed >= 2600 - 1300 && (
             <AnimatedSpan className="block text-left text-white text-xs">
               <span>{"debug> data"}</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 3100 && (
+          {typingComplete && elapsed >= 3100 - 1300 && (
             <AnimatedSpan className="block text-left text-yellow-300 text-xs">
               <pre className="whitespace-pre-wrap">
                 {`[
@@ -191,13 +222,13 @@ export default function TerminalDemo() {
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 4200 && (
+          {typingComplete && elapsed >= 4200 - 1300 && (
             <AnimatedSpan className="block text-left text-white text-xs">
               <span>{"debug> data[0].metadata"}</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 4700 && (
+          {typingComplete && elapsed >= 4700 - 1300 && (
             <AnimatedSpan className="block text-left text-yellow-300 text-xs">
               <pre className="whitespace-pre-wrap">
                 {`{
@@ -211,20 +242,19 @@ export default function TerminalDemo() {
       ),
     },
 
-    // Screen 3: Code editor with DataProcessor (split into 2 parts to avoid too many lines)
+    // Screen 4: Code editor part 1 (Adjusted timings)
     {
       id: "code-part1",
       command: "vim src/components/DataProcessor.tsx",
       typingDuration: 1300,
       duration: 6000,
-      maxVisibleLines: 7,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation delay={800} className="block text-left">
+          <TypingAnimation delay={100} className="block text-left">
             &gt; vim src/components/DataProcessor.tsx
           </TypingAnimation>
 
-          {typingComplete && elapsed >= 1600 && (
+          {typingComplete && elapsed >= 1600 - 1300 && (
             <AnimatedSpan className="block text-left">
               <pre className="whitespace-pre-wrap text-xs">
                 <span className="text-blue-400">import</span>
@@ -239,7 +269,7 @@ export default function TerminalDemo() {
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2200 && (
+          {typingComplete && elapsed >= 2200 - 1300 && (
             <AnimatedSpan className="block text-left">
               <pre className="whitespace-pre-wrap text-xs">
                 <span className="text-blue-400">import</span>
@@ -254,7 +284,7 @@ export default function TerminalDemo() {
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2800 && (
+          {typingComplete && elapsed >= 2800 - 1300 && (
             <AnimatedSpan className="block text-left">
               <pre className="whitespace-pre-wrap text-xs">
                 <span className="text-green-400">
@@ -264,7 +294,7 @@ export default function TerminalDemo() {
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 3400 && (
+          {typingComplete && elapsed >= 3400 - 1300 && (
             <AnimatedSpan className="block text-left">
               <pre className="whitespace-pre-wrap text-xs">
                 <span className="text-blue-400">interface</span>
@@ -274,7 +304,7 @@ export default function TerminalDemo() {
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 4000 && (
+          {typingComplete && elapsed >= 4000 - 1300 && (
             <AnimatedSpan className="block text-left">
               <pre className="whitespace-pre-wrap text-xs pl-4">
                 <span className="text-blue-300">initialData</span>
@@ -285,7 +315,7 @@ export default function TerminalDemo() {
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 4600 && (
+          {typingComplete && elapsed >= 4600 - 1300 && (
             <AnimatedSpan className="block text-left">
               <pre className="whitespace-pre-wrap text-xs pl-4">
                 <span className="text-blue-300">processingOptions</span>
@@ -301,20 +331,19 @@ export default function TerminalDemo() {
       ),
     },
 
-    // Code editor part 2
+    // Screen 5: Code editor part 2 (Adjusted timings)
     {
       id: "code-part2",
       command: "vim src/components/DataProcessor.tsx",
       typingDuration: 1000,
       duration: 7000,
-      maxVisibleLines: 7,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation delay={800} className="block text-left">
+          <TypingAnimation delay={100} className="block text-left">
             &gt; vim src/components/DataProcessor.tsx (continued)
           </TypingAnimation>
 
-          {typingComplete && elapsed >= 1300 && (
+          {typingComplete && elapsed >= 1300 - 1000 && (
             <AnimatedSpan className="block text-left">
               <pre className="whitespace-pre-wrap text-xs">
                 <span className="text-blue-400">const</span>
@@ -330,7 +359,7 @@ export default function TerminalDemo() {
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2100 && (
+          {typingComplete && elapsed >= 2100 - 1000 && (
             <AnimatedSpan className="block text-left">
               <pre className="whitespace-pre-wrap text-xs pl-4">
                 <span className="text-blue-300">initialData</span>
@@ -339,7 +368,7 @@ export default function TerminalDemo() {
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2700 && (
+          {typingComplete && elapsed >= 2700 - 1000 && (
             <AnimatedSpan className="block text-left">
               <pre className="whitespace-pre-wrap text-xs pl-4">
                 <span className="text-blue-300">processingOptions</span>
@@ -351,7 +380,7 @@ export default function TerminalDemo() {
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 3500 && (
+          {typingComplete && elapsed >= 3500 - 1000 && (
             <AnimatedSpan className="block text-left">
               <pre className="whitespace-pre-wrap text-xs">
                 <span className="text-purple-300">{"}) => {"}</span>
@@ -359,7 +388,7 @@ export default function TerminalDemo() {
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 4100 && (
+          {typingComplete && elapsed >= 4100 - 1000 && (
             <AnimatedSpan className="block text-left">
               <pre className="whitespace-pre-wrap text-xs pl-4">
                 <span className="text-blue-400">const</span>
@@ -375,7 +404,7 @@ export default function TerminalDemo() {
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 5100 && (
+          {typingComplete && elapsed >= 5100 - 1000 && (
             <AnimatedSpan className="block text-left">
               <pre className="whitespace-pre-wrap text-xs pl-4">
                 <span className="text-blue-400">try</span>
@@ -393,26 +422,25 @@ export default function TerminalDemo() {
       ),
     },
 
-    // Screen 4: npm run dev
+    // Screen 6: npm run dev (Adjusted timings)
     {
       id: "dev",
       command: "npm run dev",
       typingDuration: 900,
       duration: 5500,
-      maxVisibleLines: 7,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation delay={800} className="block text-left">
+          <TypingAnimation delay={100} className="block text-left">
             &gt; npm run dev
           </TypingAnimation>
 
-          {typingComplete && elapsed >= 1200 && (
+          {typingComplete && elapsed >= 1200 - 900 && (
             <AnimatedSpan className="block text-left text-green-400">
               <span>Started development server on http://localhost:3000</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 1800 && (
+          {typingComplete && elapsed >= 1800 - 900 && (
             <AnimatedSpan className="block text-left text-blue-400">
               <span>
                 ready - started server on 0.0.0.0:3000, url:
@@ -421,25 +449,25 @@ export default function TerminalDemo() {
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2400 && (
+          {typingComplete && elapsed >= 2400 - 900 && (
             <AnimatedSpan className="block text-left text-yellow-400">
               <span>info - Loaded env from .env.local</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 3000 && (
+          {typingComplete && elapsed >= 3000 - 900 && (
             <AnimatedSpan className="block text-left text-green-400">
               <span>✓ Ready in 1.8s</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 3600 && (
+          {typingComplete && elapsed >= 3600 - 900 && (
             <AnimatedSpan className="block text-left text-gray-400">
               <span>● Compiling /_error (client and server)...</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 4200 && (
+          {typingComplete && elapsed >= 4200 - 900 && (
             <AnimatedSpan className="block text-left text-green-400">
               <span>✓ Compiled successfully</span>
             </AnimatedSpan>
@@ -448,26 +476,25 @@ export default function TerminalDemo() {
       ),
     },
 
-    // Screen 5: Error messages in red
+    // Screen 7: Error messages (Adjusted timings)
     {
       id: "error",
       command: "npm run build",
       typingDuration: 800,
       duration: 5500,
-      maxVisibleLines: 7,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation delay={800} className="block text-left">
+          <TypingAnimation delay={100} className="block text-left">
             &gt; npm run build
           </TypingAnimation>
 
-          {typingComplete && elapsed >= 1100 && (
+          {typingComplete && elapsed >= 1100 - 800 && (
             <AnimatedSpan className="block text-left text-red-500 font-bold">
               <span>ERROR in ./src/components/DataProcessor.tsx</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 1600 && (
+          {typingComplete && elapsed >= 1600 - 800 && (
             <AnimatedSpan className="block text-left text-red-500">
               <span>
                 Module build failed (from
@@ -476,7 +503,7 @@ export default function TerminalDemo() {
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2100 && (
+          {typingComplete && elapsed >= 2100 - 800 && (
             <AnimatedSpan className="block text-left text-red-500">
               <span>
                 SyntaxError: ./src/components/DataProcessor.tsx: Unexpected
@@ -485,19 +512,19 @@ export default function TerminalDemo() {
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2600 && (
+          {typingComplete && elapsed >= 2600 - 800 && (
             <AnimatedSpan className="block text-left text-red-500">
               <span>{"> 42 |       setData(result.map(item => {{"}</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 3100 && (
+          {typingComplete && elapsed >= 3100 - 800 && (
             <AnimatedSpan className="block text-left text-red-500 font-bold">
               <span>Failed to compile.</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 3600 && (
+          {typingComplete && elapsed >= 3600 - 800 && (
             <AnimatedSpan className="block text-left text-red-500">
               <span>
                 Error: TypeScript error: Property 'map' does not exist on type
@@ -509,32 +536,31 @@ export default function TerminalDemo() {
       ),
     },
 
-    // Screen 6: Bug fixed in green
+    // Screen 8: Bug fixed (Adjusted timings)
     {
       id: "fixed",
       command: "npm run build",
       typingDuration: 800,
       duration: 3500,
-      maxVisibleLines: 7,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation delay={800} className="block text-left">
+          <TypingAnimation delay={100} className="block text-left">
             &gt; npm run build
           </TypingAnimation>
 
-          {typingComplete && elapsed >= 1100 && (
+          {typingComplete && elapsed >= 1100 - 800 && (
             <AnimatedSpan className="block text-left text-green-500 font-bold">
               <span>✓ Bug fixed.</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 1800 && (
+          {typingComplete && elapsed >= 1800 - 800 && (
             <AnimatedSpan className="block text-left text-green-500">
               <span>✓ Creating an optimized production build...</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2500 && (
+          {typingComplete && elapsed >= 2500 - 800 && (
             <AnimatedSpan className="block text-left text-green-500">
               <span>✓ Compiled successfully.</span>
             </AnimatedSpan>
@@ -546,141 +572,169 @@ export default function TerminalDemo() {
 
   // Function to handle screen transitions
   const transitionToNextScreen = useCallback(() => {
-    try {
-      // First hide the current screen
-      setShowScreen(false);
-      setIsTypingComplete(false);
+    // Clear timers related to the current screen
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    if (typingTimerRef.current) {
+      clearTimeout(typingTimerRef.current);
+      typingTimerRef.current = null;
+    }
 
-      // Schedule showing the next screen
+    try {
+      // Hide the current screen first for a blank transition
+      setShowScreen(false);
+
+      // Schedule showing the next screen after a short delay
       setTimeout(() => {
         try {
           const nextIndex = (currentScreenIndex + 1) % screenSequences.length;
           setCurrentScreenIndex(nextIndex);
-          setStartTime(Date.now());
-          setElapsedTime(0);
-          setShowScreen(true);
+          // Reset state for the new screen
+          setScreenElapsedTime(0);
+          setIsTypingComplete(false);
+          screenStartTimeRef.current = Date.now(); // Record start time for the new screen
+          setShowScreen(true); // Show the new screen
         } catch (error) {
-          console.error("Error transitioning to next screen:", error);
+          console.error("Error setting up next screen:", error);
+          // Handle error, maybe try to recover or show an error state
         }
       }, 500); // 0.5 second blank screen between transitions
     } catch (error) {
-      console.error("Error hiding current screen:", error);
+      console.error("Error initiating screen transition:", error);
+      // Handle error if hiding fails
     }
-  }, [currentScreenIndex]);
+  }, [currentScreenIndex]); // screenSequences.length is constant
 
-  // Initialize the animation only once
+  // Initialize the animation only once on mount
   useEffect(() => {
     if (!isInitialized) {
       try {
-        setStartTime(Date.now());
+        screenStartTimeRef.current = Date.now(); // Set start time for the very first screen
         setIsInitialized(true);
+        // No need to call setShowScreen(true) here as it's the default state
       } catch (error) {
-        console.error("Error initializing animation:", error);
+        console.error("Error during initial setup:", error);
       }
     }
+    // Cleanup function to clear timers when the component unmounts
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (screenTransitionTimerRef.current)
+        clearTimeout(screenTransitionTimerRef.current);
+      if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+    };
   }, [isInitialized]);
 
-  // Update elapsed time at regular intervals
+  // Update screen elapsed time and handle typing/transitions for the current screen
   useEffect(() => {
-    try {
-      // Create animation interval for elapsed time updates
-      intervalRef.current = setInterval(() => {
-        try {
-          setElapsedTime(Date.now() - startTime);
-        } catch (error) {
-          console.error("Error updating elapsed time:", error);
-        }
-      }, 50); // Update elapsed time every 50ms
-
-      return () => {
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-          intervalRef.current = null;
-        }
-      };
-    } catch (error) {
-      console.error("Error setting up animation interval:", error);
-    }
-  }, [startTime]);
-
-  // Handle typing completion
-  useEffect(() => {
+    // Only run effects if initialized and the screen is visible
     if (!isInitialized || !showScreen) return;
 
+    let localIntervalRef: NodeJS.Timeout | null = null;
+    let localTypingTimerRef: NodeJS.Timeout | null = null;
+    let localScreenTransitionTimerRef: NodeJS.Timeout | null = null;
+
     try {
-      // Clear any existing typing timer
-      if (typingTimerRef.current) {
-        clearTimeout(typingTimerRef.current);
-        typingTimerRef.current = null;
+      const currentScreen = screenSequences[currentScreenIndex];
+      if (!currentScreen) {
+        console.error("Current screen data is missing.");
+        return; // Avoid further execution if screen data is invalid
       }
 
-      const currentScreen = screenSequences[currentScreenIndex];
+      // --- Screen Elapsed Time Update Interval ---
+      localIntervalRef = setInterval(() => {
+        try {
+          setScreenElapsedTime(Date.now() - screenStartTimeRef.current);
+        } catch (error) {
+          console.error("Error updating screen elapsed time:", error);
+          if (localIntervalRef) clearInterval(localIntervalRef); // Stop interval on error
+        }
+      }, 50); // Update elapsed time every 50ms
+      intervalRef.current = localIntervalRef;
 
-      // Set typing to complete after the specified typing duration
-      typingTimerRef.current = setTimeout(() => {
+      // --- Typing Completion Timer ---
+      // Clear previous timer before setting a new one
+      if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+      localTypingTimerRef = setTimeout(() => {
         try {
           setIsTypingComplete(true);
         } catch (error) {
-          console.error("Error setting typing completion:", error);
+          console.error("Error setting typing complete:", error);
         }
       }, currentScreen.typingDuration);
+      typingTimerRef.current = localTypingTimerRef;
 
-      return () => {
-        if (typingTimerRef.current) {
-          clearTimeout(typingTimerRef.current);
-          typingTimerRef.current = null;
+      // --- Screen Transition Timer ---
+      // Clear previous timer before setting a new one
+      if (screenTransitionTimerRef.current)
+        clearTimeout(screenTransitionTimerRef.current);
+      localScreenTransitionTimerRef = setTimeout(() => {
+        // Ensure transition logic is wrapped in try...catch
+        try {
+          transitionToNextScreen();
+        } catch (error) {
+          console.error("Error executing screen transition:", error);
         }
-      };
-    } catch (error) {
-      console.error("Error handling typing completion:", error);
-    }
-  }, [currentScreenIndex, isInitialized, showScreen]);
-
-  // Handle screen transitions
-  useEffect(() => {
-    if (!isInitialized) return;
-
-    try {
-      // Clear any existing timer
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-        timerRef.current = null;
-      }
-
-      // Get the current screen sequence
-      const currentScreen = screenSequences[currentScreenIndex];
-
-      // Schedule the next screen transition
-      timerRef.current = setTimeout(() => {
-        transitionToNextScreen();
       }, currentScreen.duration);
-
-      return () => {
-        if (timerRef.current) {
-          clearTimeout(timerRef.current);
-          timerRef.current = null;
-        }
-      };
+      screenTransitionTimerRef.current = localScreenTransitionTimerRef;
     } catch (error) {
-      console.error("Error handling screen transitions:", error);
+      console.error(
+        "Error setting up timers for screen:",
+        currentScreenIndex,
+        error
+      );
+      // Clear any timers that might have been set before the error
+      if (localIntervalRef) clearInterval(localIntervalRef);
+      if (localTypingTimerRef) clearTimeout(localTypingTimerRef);
+      if (localScreenTransitionTimerRef)
+        clearTimeout(localScreenTransitionTimerRef);
     }
-  }, [currentScreenIndex, isInitialized, transitionToNextScreen]);
 
+    // Cleanup function for this effect cycle
+    return () => {
+      if (localIntervalRef) clearInterval(localIntervalRef);
+      if (localTypingTimerRef) clearTimeout(localTypingTimerRef);
+      if (localScreenTransitionTimerRef)
+        clearTimeout(localScreenTransitionTimerRef);
+    };
+  }, [currentScreenIndex, isInitialized, showScreen, transitionToNextScreen]); // Add transitionToNextScreen dependency
+
+  // --- Render Logic ---
   try {
-    // Get the current screen sequence
+    // Ensure we have a valid screen to render
     const currentScreen = screenSequences[currentScreenIndex];
+    if (!currentScreen) {
+      // Handle the case where the screen data might be invalid or index out of bounds
+      console.error(
+        "Attempting to render an invalid screen index:",
+        currentScreenIndex
+      );
+      return <div>Error: Invalid screen configuration.</div>;
+    }
 
     return (
       <>
+        {/* Conditionally render the Terminal based on showScreen */}
         {showScreen && (
           <Terminal className="bg-black text-white border border-gray-700 shadow-lg">
-            {currentScreen?.content(elapsedTime, isTypingComplete)}
+            {/* Render the content of the current screen */}
+            {currentScreen.content(screenElapsedTime, isTypingComplete)}
           </Terminal>
         )}
+        {/* Render nothing during the blank transition period */}
+        {!showScreen && <div className="w-full h-full bg-black"></div>}
       </>
     );
   } catch (error) {
-    console.error("Error rendering TerminalDemo:", error);
-    return <div>Error loading terminal demo</div>;
+    console.error("Error rendering TerminalDemo component:", error);
+    // Render a fallback UI in case of a critical rendering error
+    return (
+      <div className="text-red-500 p-4">
+        An error occurred while rendering the terminal demo. Please check the
+        console.
+      </div>
+    );
   }
 }

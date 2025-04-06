@@ -4,10 +4,12 @@ import { CatBot } from "./components/CatBot/CatBot.tsx";
 import CoderGirl from "./components/CoderGirl/CoderGirl.tsx";
 import Particles from "./components/Particles";
 import wavingHand from "./assets/waving_hand.webp";
+
 import rocket from "./assets/rocket.webp";
 import { Testimonials } from "./components/Testimonials/Testimonials.tsx";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import Star from "./components/Star/Star.tsx";
+
 // import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import ContactButton from "./components/ContactButton";
 function App() {
@@ -129,6 +131,7 @@ function App() {
           </div>
           {/* <Particles options={particleOptions}></Particles> */}
           <p>Currently learning Portuguese and Chinese</p>
+
           <div className="flex justify-center items-center mb-4">
             <ContactButton />
             <div className="flex ml-4"></div>

@@ -4,9 +4,7 @@
  * A 3D model viewer component using React Three Fiber to display and animate GLTF models.
  * This component plays the animation for 1 complete cycle before adopting the provided
  * playAnimation state. When playAnimation becomes false, the animation finishes the current
- * cycle and then stops at the final pose. The component includes a global mouse tracking
- * feature that rotates the model based on the mouse position anywhere on the page.
- * The camera is positioned slightly higher to provide a better view angle.
+ * cycle and then stops at the final pose.
  */
 
 // Dependencies:
@@ -30,41 +28,35 @@ import { OrbitControls, useGLTF, Box } from "@react-three/drei";
 import * as THREE from "three";
 import ErrorBoundary from "../ErrorBoundary";
 
-// --- Hook pour la rotation suivant la souris ---
-const useGlobalMouseRotation = (
-  camera: THREE.Camera,
-  targetLookAt: THREE.Vector3,
-  basePosition: THREE.Vector3
-) => {
-  const mousePosition = useRef({ x: 0, y: 0 });
-  const initialCameraPosition = useRef(new THREE.Vector3().copy(basePosition));
+// Camera parameters - Feel free to adjust these values
+// ----------------------------------------------------
+/**
+ * CAMERA PARAMETERS GUIDE:
+ *
+ * - CAMERA_POSITION: [x, y, z] coordinates where the camera is positioned
+ *   - x: left/right position (positive = right, negative = left)
+ *   - y: up/down position (positive = up, negative = down)
+ *   - z: distance from center (larger = further away)
+ *
+ * - CAMERA_FOV: Field of View in degrees (perspective camera)
+ *   - Lower values (20-40): More zoom/telephoto effect, less distortion
+ *   - Higher values (60-90): Wider angle, more can be seen but with distortion
+ *
+ * - CAMERA_NEAR: Closest distance the camera can see (objects closer will be clipped)
+ *   - Usually set to a small positive number (0.1-1)
+ *   - Too small can cause rendering artifacts
+ *
+ * - CAMERA_FAR: Furthest distance the camera can see (objects beyond will be clipped)
+ *   - Typically large value (100-2000) depending on scene scale
+ *   - Should be large enough to see all objects in your scene
+ */
+const CAMERA_POSITION = [0, 1.5, 5] as [number, number, number];
+const CAMERA_FOV = 25;
+const CAMERA_NEAR = 0.1;
+const CAMERA_FAR = 1000;
 
-  useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      const x = (event.clientX / window.innerWidth) * 2 - 1;
-      const y = -(event.clientY / window.innerHeight) * 2 + 1;
-      mousePosition.current = { x, y };
-    };
-
-    document.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, []);
-
-  useFrame(() => {
-    const rotX = (mousePosition.current.x * Math.PI) / 6; // ±30 degrés max
-    const rotY = (mousePosition.current.y * Math.PI) / 8; // ±22.5 degrés max
-
-    const radius = initialCameraPosition.current.distanceTo(targetLookAt);
-    const newX = Math.sin(rotX) * radius;
-    const newY = basePosition.y + rotY * radius * 0.5;
-    const newZ = Math.cos(rotX) * radius;
-
-    camera.position.set(basePosition.x + newX, newY, basePosition.z + newZ);
-    camera.lookAt(targetLookAt);
-  });
-};
+// Target point the camera looks at
+const CAMERA_TARGET = [0, 0, 0] as [number, number, number];
 
 // Précharger le modèle une seule fois par URL de modèle
 const modelCache = new Map<string, boolean>();
@@ -102,48 +94,45 @@ const Model: React.FC<ModelProps> = ({
   const gltf = useGLTF(modelPath);
   const { scene, animations } = gltf;
 
-  // Clone la scène pour éviter des problèmes de référence mémoire
-  const clonedScene = useMemo(() => scene.clone(), [scene]);
-
   // Refs pour l'animation
   const mixer = useRef<THREE.AnimationMixer | null>(null);
   const actionRef = useRef<THREE.AnimationAction | null>(null);
   const [isPlaying, setIsPlaying] = useState(playAnimation);
 
-  // Centrer et mettre à l'échelle le modèle - UNE SEULE FOIS après le clone
+  // Centrer et mettre à l'échelle le modèle - UNE SEULE FOIS
   useEffect(() => {
-    if (!clonedScene) return;
+    if (!scene) return;
 
     // Centrer
-    const box = new THREE.Box3().setFromObject(clonedScene);
+    const box = new THREE.Box3().setFromObject(scene);
     const center = box.getCenter(new THREE.Vector3());
-    clonedScene.position.sub(center);
+    scene.position.sub(center);
 
     // Mise à l'échelle
     const size = box.getSize(new THREE.Vector3());
     const maxDim = Math.max(size.x, size.y, size.z);
     const scale = 1.6 / maxDim;
-    clonedScene.scale.multiplyScalar(scale);
+    scene.scale.multiplyScalar(scale);
 
     console.log("[ModelViewer] Modèle centré et mis à l'échelle:", {
       center: center.toArray(),
       size: size.toArray(),
       scale,
     });
-  }, [clonedScene]);
+  }, [scene]);
 
   // Initialiser le mixer d'animation UNE SEULE FOIS
   useEffect(() => {
-    if (!clonedScene) return;
+    if (!scene) return;
 
-    mixer.current = new THREE.AnimationMixer(clonedScene);
+    mixer.current = new THREE.AnimationMixer(scene);
 
     // Nettoyage
     return () => {
       mixer.current = null;
       actionRef.current = null;
     };
-  }, [clonedScene]);
+  }, [scene]);
 
   // Gestion des animations
   useEffect(() => {
@@ -180,12 +169,13 @@ const Model: React.FC<ModelProps> = ({
 
   return (
     <primitive
-      object={clonedScene}
+      object={scene}
       onClick={(event: any) => {
-        event.stopPropagation();
-        onAnimationToggleRequest?.();
-        if (onExternalClick && event.nativeEvent) {
-          onExternalClick(event.nativeEvent as React.MouseEvent);
+        if (event) {
+          event.stopPropagation();
+          if (onAnimationToggleRequest) {
+            onAnimationToggleRequest();
+          }
         }
       }}
     />
@@ -195,16 +185,6 @@ const Model: React.FC<ModelProps> = ({
 // --- Fallback simple ---
 const FallbackMesh: React.FC = () => {
   return <Box args={[1, 1, 1]} position={[0, 0, 0]} />;
-};
-
-// --- Hook pour la rotation
-const RotationController: React.FC<{
-  basePosition: THREE.Vector3;
-  targetPosition: THREE.Vector3;
-}> = ({ basePosition, targetPosition }) => {
-  const { camera } = useThree();
-  useGlobalMouseRotation(camera, targetPosition, basePosition);
-  return null;
 };
 
 // --- Props du composant principal ---
@@ -233,16 +213,18 @@ const ModelViewer: React.FC<ModelViewerProps> = ({
     preloadModel(modelPath);
   }, [modelPath]); // Dépendance uniquement sur le chemin du modèle
 
-  // Positions de caméra fixes
-  const baseCameraPosition = useMemo(() => new THREE.Vector3(0, 1.5, 5), []);
-  const targetLookAt = useMemo(() => new THREE.Vector3(0, 0, 0), []);
-
   // Gestion des erreurs
   const [hasError, setHasError] = useState(false);
 
   const handleError = (error: Error) => {
     console.error("[ModelViewer] Erreur capturée:", modelPath, error);
     setHasError(true);
+  };
+
+  const handleContainerClick = (e: React.MouseEvent) => {
+    if (onClick) {
+      onClick(e);
+    }
   };
 
   // Style du conteneur
@@ -270,31 +252,21 @@ const ModelViewer: React.FC<ModelViewerProps> = ({
 
   return (
     <div style={containerStyle}>
-      <div style={innerStyle}>
+      <div style={innerStyle} onClick={handleContainerClick}>
         <ErrorBoundary onError={handleError}>
           <Canvas
             gl={{ antialias: true, alpha: true }}
             camera={{
-              position: baseCameraPosition.toArray() as [
-                number,
-                number,
-                number
-              ],
-              fov: 25,
-              near: 0.1,
-              far: 1000,
+              position: CAMERA_POSITION,
+              fov: CAMERA_FOV,
+              near: CAMERA_NEAR,
+              far: CAMERA_FAR,
             }}
             style={{ background: "#f0f0f0" }} // Couleur de fond temporaire pour debug
           >
             {/* Éclairage simplifié */}
             <ambientLight intensity={1.0} />
             <directionalLight position={[0, 5, 5]} intensity={2.0} />
-
-            {/* Rotation avec la souris */}
-            <RotationController
-              basePosition={baseCameraPosition}
-              targetPosition={targetLookAt}
-            />
 
             {/* Modèle 3D */}
             <Suspense fallback={<FallbackMesh />}>
@@ -309,12 +281,11 @@ const ModelViewer: React.FC<ModelViewerProps> = ({
               {hasError && <FallbackMesh />}
             </Suspense>
 
-            {/* Contrôles désactivés (on utilise notre propre système) */}
+            {/* Orbit controls with default settings */}
             <OrbitControls
-              enabled={false}
-              enableZoom={false}
-              enablePan={false}
-              target={targetLookAt.toArray() as [number, number, number]}
+              enableZoom={true}
+              enablePan={true}
+              target={CAMERA_TARGET}
             />
           </Canvas>
         </ErrorBoundary>

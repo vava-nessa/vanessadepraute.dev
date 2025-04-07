@@ -30,7 +30,7 @@ import { OrbitControls, useGLTF, Box } from "@react-three/drei";
 import * as THREE from "three";
 import ErrorBoundary from "../ErrorBoundary";
 
-// --- Hook personnalisé pour la rotation suivant la souris ---
+// --- Hook pour la rotation suivant la souris ---
 const useGlobalMouseRotation = (
   camera: THREE.Camera,
   targetLookAt: THREE.Vector3,
@@ -40,43 +40,50 @@ const useGlobalMouseRotation = (
   const initialCameraPosition = useRef(new THREE.Vector3().copy(basePosition));
 
   useEffect(() => {
-    // Fonction pour suivre la position de la souris n'importe où sur la page
     const handleMouseMove = (event: MouseEvent) => {
-      // Convertir les coordonnées de la souris en valeurs normalisées (-1 à 1)
       const x = (event.clientX / window.innerWidth) * 2 - 1;
       const y = -(event.clientY / window.innerHeight) * 2 + 1;
-
       mousePosition.current = { x, y };
     };
 
-    // Ajouter l'écouteur d'événement au document entier
     document.addEventListener("mousemove", handleMouseMove);
-
     return () => {
       document.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
 
   useFrame(() => {
-    // Calculer les angles de rotation basés sur la position de la souris
-    const rotX = (mousePosition.current.x * Math.PI) / 6; // ±30 degrés max en horizontal
-    const rotY = (mousePosition.current.y * Math.PI) / 8; // ±22.5 degrés max en vertical
+    const rotX = (mousePosition.current.x * Math.PI) / 6; // ±30 degrés max
+    const rotY = (mousePosition.current.y * Math.PI) / 8; // ±22.5 degrés max
 
-    // Position de la caméra basée sur les angles
     const radius = initialCameraPosition.current.distanceTo(targetLookAt);
     const newX = Math.sin(rotX) * radius;
     const newY = basePosition.y + rotY * radius * 0.5;
     const newZ = Math.cos(rotX) * radius;
 
-    // Appliquer la nouvelle position à la caméra
     camera.position.set(basePosition.x + newX, newY, basePosition.z + newZ);
-
-    // S'assurer que la caméra regarde toujours vers le centre
     camera.lookAt(targetLookAt);
   });
 };
 
-// --- Composant Modèle ---
+// Précharger le modèle une seule fois par URL de modèle
+const modelCache = new Map<string, boolean>();
+
+const preloadModel = async (modelPath: string) => {
+  if (!modelCache.has(modelPath)) {
+    console.log("[ModelLoader] Préchargement du modèle:", modelPath);
+    try {
+      await useGLTF.preload(modelPath);
+      modelCache.set(modelPath, true);
+      console.log("[ModelLoader] Préchargement réussi:", modelPath);
+    } catch (error) {
+      console.error("[ModelLoader] Erreur de préchargement:", modelPath, error);
+      modelCache.set(modelPath, false);
+    }
+  }
+};
+
+// --- Composant Modèle simplifié ---
 interface ModelProps {
   modelPath: string;
   playAnimation: boolean;
@@ -90,131 +97,84 @@ const Model: React.FC<ModelProps> = ({
   onAnimationToggleRequest,
   onExternalClick,
 }) => {
-  // Ajouter des logs pour déboguer le chargement du modèle
-  console.log("ModelViewer - Tentative de chargement du modèle:", modelPath);
+  // On utilise le hook useGLTF qui gère le cache et la mémoire interne
+  // Pas besoin de recharger à chaque render
+  const gltf = useGLTF(modelPath);
+  const { scene, animations } = gltf;
 
-  // Charger le modèle en utilisant useGLTF (qui utilise Suspense en interne)
-  // useGLTF retourne directement le résultat, pas une Promise
-  const result = useGLTF(modelPath);
-
-  // Si le modèle est chargé avec succès, loguer l'information
-  console.log("ModelViewer - Modèle chargé avec succès:", {
-    modelPath,
-    hasScene: !!result.scene,
-    animationsCount: result.animations?.length,
-  });
-
-  const { scene, animations } = result;
+  // Clone la scène pour éviter des problèmes de référence mémoire
   const clonedScene = useMemo(() => scene.clone(), [scene]);
+
+  // Refs pour l'animation
   const mixer = useRef<THREE.AnimationMixer | null>(null);
   const actionRef = useRef<THREE.AnimationAction | null>(null);
-  const [initialPlaybackDone, setInitialPlaybackDone] = useState(false);
-  const animationDurationRef = useRef(0);
+  const [isPlaying, setIsPlaying] = useState(playAnimation);
 
-  // Center and scale the model properly
+  // Centrer et mettre à l'échelle le modèle - UNE SEULE FOIS après le clone
   useEffect(() => {
-    if (clonedScene) {
-      // Center the model
-      const box = new THREE.Box3().setFromObject(clonedScene);
-      const center = box.getCenter(new THREE.Vector3());
-      clonedScene.position.sub(center);
+    if (!clonedScene) return;
 
-      // Scale to fit with margin (80% zoom)
-      const size = box.getSize(new THREE.Vector3());
-      const maxDim = Math.max(size.x, size.y, size.z);
-      const scale = 1.6 / maxDim; // Scale to make it 80% of view (1/0.8 = 1.25, with a bit more margin = 1.6)
-      clonedScene.scale.multiplyScalar(scale);
-    }
+    // Centrer
+    const box = new THREE.Box3().setFromObject(clonedScene);
+    const center = box.getCenter(new THREE.Vector3());
+    clonedScene.position.sub(center);
+
+    // Mise à l'échelle
+    const size = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const scale = 1.6 / maxDim;
+    clonedScene.scale.multiplyScalar(scale);
+
+    console.log("[ModelViewer] Modèle centré et mis à l'échelle:", {
+      center: center.toArray(),
+      size: size.toArray(),
+      scale,
+    });
   }, [clonedScene]);
 
-  // Initialize animation mixer
+  // Initialiser le mixer d'animation UNE SEULE FOIS
   useEffect(() => {
-    if (clonedScene) {
-      mixer.current = new THREE.AnimationMixer(clonedScene);
-    }
+    if (!clonedScene) return;
 
-    // No need for setTimeout anymore, we'll track animation cycles instead
+    mixer.current = new THREE.AnimationMixer(clonedScene);
 
-    // Cleanup
+    // Nettoyage
     return () => {
       mixer.current = null;
       actionRef.current = null;
     };
   }, [clonedScene]);
 
-  // Handle animation setup and state changes
+  // Gestion des animations
   useEffect(() => {
-    if (mixer.current && animations && animations.length > 0) {
-      // Initialize action if not already done
-      if (!actionRef.current) {
-        const clip = animations[0];
-        actionRef.current = mixer.current.clipAction(clip);
+    if (!mixer.current || !animations || animations.length === 0) return;
 
-        // Store the duration of the animation for cycle tracking
-        animationDurationRef.current = clip.duration;
+    // Si l'animation n'est pas déjà configurée
+    if (!actionRef.current) {
+      const clip = animations[0];
+      actionRef.current = mixer.current.clipAction(clip);
 
-        // Set up the animation to loop only once initially
-        actionRef.current.setLoop(THREE.LoopOnce, 1);
-        actionRef.current.clampWhenFinished = true; // Keep the final pose when finished
+      // Configurer l'animation
+      actionRef.current.setLoop(THREE.LoopRepeat, Infinity);
+      actionRef.current.play();
 
-        // Add an event listener to track animation completion
-        const onFinishEvent = () => {
-          // After 1 complete cycle, mark initial playback as done
-          if (!initialPlaybackDone) {
-            setInitialPlaybackDone(true);
-
-            // If playAnimation is true, configure for continuous play
-            if (playAnimation) {
-              actionRef.current?.setLoop(THREE.LoopRepeat, Infinity);
-              actionRef.current?.reset().play();
-            }
-          }
-        };
-
-        mixer.current.addEventListener("finished", onFinishEvent);
-
-        // Start the animation
-        actionRef.current.reset().play();
-
-        return () => {
-          mixer.current?.removeEventListener("finished", onFinishEvent);
-        };
-      }
-
-      // After initial cycle playback, respond to playAnimation prop changes
-      if (initialPlaybackDone) {
-        const action = actionRef.current;
-
-        if (playAnimation) {
-          // If it was paused or clamped at the end, reset and play again
-          if (action.paused || action.loop === THREE.LoopOnce) {
-            action.setLoop(THREE.LoopRepeat, Infinity);
-            action.reset().play();
-          }
-        } else {
-          // When playAnimation becomes false, let the current cycle finish and then stop
-          if (action.loop !== THREE.LoopOnce) {
-            action.setLoop(THREE.LoopOnce, 1);
-            action.clampWhenFinished = true;
-
-            // Ensure it keeps playing until the end of the current cycle
-            if (action.paused) {
-              action.paused = false;
-            }
-          }
-        }
-      }
+      console.log("[ModelViewer] Animation initialisée");
     }
-  }, [mixer, animations, playAnimation, initialPlaybackDone]);
 
-  // Update animation on each frame
-  useFrame((_state, delta) => {
-    // Always play during first 2 cycles, then follow playAnimation prop
-    if (!initialPlaybackDone || (playAnimation && !actionRef.current?.paused)) {
-      mixer.current?.update(delta);
-    } else if (!playAnimation && !initialPlaybackDone) {
-      // Still update during transition to paused state
-      mixer.current?.update(delta);
+    // Mettre à jour l'état de lecture selon la prop
+    if (playAnimation && !isPlaying) {
+      actionRef.current.paused = false;
+      setIsPlaying(true);
+    } else if (!playAnimation && isPlaying) {
+      actionRef.current.paused = true;
+      setIsPlaying(false);
+    }
+  }, [animations, mixer, playAnimation, isPlaying]);
+
+  // Mise à jour de l'animation à chaque frame
+  useFrame((_, delta) => {
+    if (mixer.current && isPlaying) {
+      mixer.current.update(delta);
     }
   });
 
@@ -232,8 +192,23 @@ const Model: React.FC<ModelProps> = ({
   );
 };
 
-// --- Props principales ---
-interface ModelViewerFiberProps {
+// --- Fallback simple ---
+const FallbackMesh: React.FC = () => {
+  return <Box args={[1, 1, 1]} position={[0, 0, 0]} />;
+};
+
+// --- Hook pour la rotation
+const RotationController: React.FC<{
+  basePosition: THREE.Vector3;
+  targetPosition: THREE.Vector3;
+}> = ({ basePosition, targetPosition }) => {
+  const { camera } = useThree();
+  useGlobalMouseRotation(camera, targetPosition, basePosition);
+  return null;
+};
+
+// --- Props du composant principal ---
+interface ModelViewerProps {
   modelPath: string;
   playAnimation?: boolean;
   onToggleAnimation?: () => void;
@@ -243,115 +218,60 @@ interface ModelViewerFiberProps {
   onClick?: (event: React.MouseEvent) => void;
 }
 
-// --- Fallback component when model is loading ---
-const FallbackMesh: React.FC = () => {
-  return <Box args={[1, 1, 1]} position={[0, 0, 0]} />;
-};
-
-// --- Hook for global mouse rotation effect ---
-interface GlobalMouseRotationHookProps {
-  targetPosition: THREE.Vector3;
-  basePosition: THREE.Vector3;
-}
-
-const GlobalMouseRotationHook: React.FC<GlobalMouseRotationHookProps> = ({
-  targetPosition,
-  basePosition,
-}) => {
-  const { camera } = useThree();
-  useGlobalMouseRotation(camera, targetPosition, basePosition);
-  return null;
-};
-
-// --- Composant principal ---
-const ModelViewerFiber: React.FC<ModelViewerFiberProps> = ({
+// --- Composant principal simplifié ---
+const ModelViewer: React.FC<ModelViewerProps> = ({
   modelPath,
   playAnimation = false,
   onToggleAnimation,
   width = "100%",
-  height = width, // Default height is the same as width
+  height = width,
   fallbackBackgroundColor = "transparent",
   onClick,
 }) => {
-  // Préchargement du modèle
+  // Précharger le modèle au montage du composant - UNE SEULE FOIS
   useEffect(() => {
-    console.log(
-      "ModelViewerFiber - Tentative de préchargement du modèle:",
-      modelPath
-    );
+    preloadModel(modelPath);
+  }, [modelPath]); // Dépendance uniquement sur le chemin du modèle
 
-    // On utilise ici un IIFE async pour pouvoir utiliser try/catch avec await
-    (async () => {
-      try {
-        // Précharger le modèle
-        await useGLTF.preload(modelPath);
-        console.log(
-          "ModelViewerFiber - Préchargement du modèle réussi:",
-          modelPath
-        );
-      } catch (error) {
-        console.error(
-          "ModelViewerFiber - Erreur lors du préchargement du modèle:",
-          {
-            modelPath,
-            error,
-          }
-        );
-      }
-    })();
-  }, [modelPath]);
+  // Positions de caméra fixes
+  const baseCameraPosition = useMemo(() => new THREE.Vector3(0, 1.5, 5), []);
+  const targetLookAt = useMemo(() => new THREE.Vector3(0, 0, 0), []);
 
-  // Position de caméra pour une vue de face légèrement relevée avec un zoom à 80% (pour avoir une marge autour du modèle)
-  const baseCameraPosition = useMemo(
-    () => new THREE.Vector3(0, 1.5, 5), // Position frontale légèrement relevée
-    []
-  );
-  const targetLookAt = useMemo(
-    () => new THREE.Vector3(0, 0, 0), // Centre du modèle
-    []
-  );
-
-  // État pour gérer les erreurs de chargement
+  // Gestion des erreurs
   const [hasError, setHasError] = useState(false);
 
-  // Handler pour les erreurs
   const handleError = (error: Error) => {
-    console.error("ModelViewerFiber - Erreur capturée par ErrorBoundary:", {
-      error,
-      modelPath,
-    });
+    console.error("[ModelViewer] Erreur capturée:", modelPath, error);
     setHasError(true);
   };
 
+  // Style du conteneur
+  const containerStyle = useMemo(
+    () => ({
+      width,
+      height,
+      position: "relative" as const,
+      background: fallbackBackgroundColor,
+    }),
+    [width, height, fallbackBackgroundColor]
+  );
+
+  // Style interne
+  const innerStyle = useMemo(
+    () => ({
+      width: "100%",
+      height: "100%",
+      position: "relative" as const,
+      overflow: "hidden",
+      cursor: "pointer",
+    }),
+    []
+  );
+
   return (
-    <div style={{ width, height, position: "relative" }}>
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          position: "relative",
-          overflow: "hidden",
-          background: fallbackBackgroundColor,
-          cursor: "pointer",
-        }}
-      >
-        <ErrorBoundary
-          onError={handleError}
-          fallback={
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: fallbackBackgroundColor,
-              }}
-            >
-              <Box args={[1, 1, 1]} />
-            </div>
-          }
-        >
+    <div style={containerStyle}>
+      <div style={innerStyle}>
+        <ErrorBoundary onError={handleError}>
           <Canvas
             gl={{ antialias: true, alpha: true }}
             camera={{
@@ -360,27 +280,23 @@ const ModelViewerFiber: React.FC<ModelViewerFiberProps> = ({
                 number,
                 number
               ],
-              fov: 12,
-              near: 0.3,
-              far: 500,
+              fov: 25,
+              near: 0.1,
+              far: 1000,
             }}
-            style={{ background: "transparent", touchAction: "none" }}
+            style={{ background: "#f0f0f0" }} // Couleur de fond temporaire pour debug
           >
-            {/* Effet de rotation globale suivant la souris */}
-            <GlobalMouseRotationHook
+            {/* Éclairage simplifié */}
+            <ambientLight intensity={1.0} />
+            <directionalLight position={[0, 5, 5]} intensity={2.0} />
+
+            {/* Rotation avec la souris */}
+            <RotationController
               basePosition={baseCameraPosition}
               targetPosition={targetLookAt}
             />
 
-            <ambientLight intensity={1.0} />
-            <directionalLight
-              position={[5, 10, 7.5]}
-              intensity={1.5}
-              castShadow
-            />
-            <directionalLight position={[-5, -5, -5]} intensity={0.5} />
-            <hemisphereLight intensity={0.5} groundColor="black" />
-
+            {/* Modèle 3D */}
             <Suspense fallback={<FallbackMesh />}>
               {!hasError && (
                 <Model
@@ -393,8 +309,9 @@ const ModelViewerFiber: React.FC<ModelViewerFiberProps> = ({
               {hasError && <FallbackMesh />}
             </Suspense>
 
+            {/* Contrôles désactivés (on utilise notre propre système) */}
             <OrbitControls
-              enabled={false} // Désactivé car nous utilisons notre propre système de rotation
+              enabled={false}
               enableZoom={false}
               enablePan={false}
               target={targetLookAt.toArray() as [number, number, number]}
@@ -406,4 +323,4 @@ const ModelViewerFiber: React.FC<ModelViewerFiberProps> = ({
   );
 };
 
-export default ModelViewerFiber;
+export default ModelViewer;

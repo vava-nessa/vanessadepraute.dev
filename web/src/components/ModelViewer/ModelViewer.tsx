@@ -1,294 +1,445 @@
-/**
- * ModelViewerFiber Component
- *
- * A 3D model viewer component using React Three Fiber to display and animate GLTF models.
- * This component plays the animation for 1 complete cycle before adopting the provided
- * playAnimation state. When playAnimation becomes false, the animation finishes the current
- * cycle and then stops at the final pose.
- */
-
-// Dependencies:
-// - React (useState, useRef, useEffect, useMemo)
-// - @react-three/fiber (Canvas, useFrame)
-// - @react-three/drei (OrbitControls, useGLTF, Box)
-// - three (THREE)
-//
-// Props:
-// - modelPath: string - Path to the GLTF model file
-// - playAnimation?: boolean - Whether to play the animation (after initial cycle)
-// - onToggleAnimation?: () => void - Callback when animation is toggled
-// - width?: number | string - Width of the viewer container
-// - height?: number | string - Height of the viewer container
-// - fallbackBackgroundColor?: string - Background color to show while loading
-// - onClick?: (event: React.MouseEvent) => void - Click callback
-
-import React, { Suspense, useRef, useEffect, useMemo, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, useGLTF, Box } from "@react-three/drei";
+import { useRef, useEffect } from "react";
+import { Canvas, useFrame, useThree, useLoader } from "@react-three/fiber";
+import { GLTFLoader } from "three-stdlib";
+import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import * as THREE from "three";
-import ErrorBoundary from "../ErrorBoundary";
 
-// Camera parameters - Feel free to adjust these values
-// ----------------------------------------------------
-/**
- * CAMERA PARAMETERS GUIDE:
- *
- * - CAMERA_POSITION: [x, y, z] coordinates where the camera is positioned
- *   - x: left/right position (positive = right, negative = left)
- *   - y: up/down position (positive = up, negative = down)
- *   - z: distance from center (larger = further away)
- *
- * - CAMERA_FOV: Field of View in degrees (perspective camera)
- *   - Lower values (20-40): More zoom/telephoto effect, less distortion
- *   - Higher values (60-90): Wider angle, more can be seen but with distortion
- *
- * - CAMERA_NEAR: Closest distance the camera can see (objects closer will be clipped)
- *   - Usually set to a small positive number (0.1-1)
- *   - Too small can cause rendering artifacts
- *
- * - CAMERA_FAR: Furthest distance the camera can see (objects beyond will be clipped)
- *   - Typically large value (100-2000) depending on scene scale
- *   - Should be large enough to see all objects in your scene
- */
-const CAMERA_POSITION = [0, 1.5, 5] as [number, number, number];
-const CAMERA_FOV = 25;
-const CAMERA_NEAR = 0.1;
-const CAMERA_FAR = 1000;
+// Camera configuration
+const CAMERA_CONFIG = {
+  // Basic properties
+  position: [5, 40, 80] as [number, number, number],
+  rotation: [100, 100, 100] as [number, number, number],
+  fov: 18,
+  near: 0.1,
+  far: 500,
+  lookAt: [5, 0, 0] as [number, number, number],
 
-// Target point the camera looks at
-const CAMERA_TARGET = [0, 0, 0] as [number, number, number];
+  // Additional properties
+  zoom: 1,
+  quaternion: new THREE.Quaternion(),
 
-// Précharger le modèle une seule fois par URL de modèle
-const modelCache = new Map<string, boolean>();
+  // Camera control
+  autoRotate: true,
+  autoRotateSpeed: 10,
+  enableDamping: true,
+  dampingFactor: 0.55,
 
-const preloadModel = async (modelPath: string) => {
-  if (!modelCache.has(modelPath)) {
-    console.log("[ModelLoader] Préchargement du modèle:", modelPath);
-    try {
-      await useGLTF.preload(modelPath);
-      modelCache.set(modelPath, true);
-      console.log("[ModelLoader] Préchargement réussi:", modelPath);
-    } catch (error) {
-      console.error("[ModelLoader] Erreur de préchargement:", modelPath, error);
-      modelCache.set(modelPath, false);
-    }
-  }
+  // Oscillation settings (new)
+  oscillation: {
+    enabled: true,
+    amplitude: Math.PI / 4, // 45 degrees (quarter circle)
+    period: 5000, // 5 seconds for a complete oscillation
+    axis: "y", // oscillate around y-axis
+  },
+
+  // Camera animation
+  enableAnimation: false,
+  animationPath: {
+    points: [
+      [10, 50, 50],
+      [50, 30, 20],
+      [0, 20, 80],
+      [-50, 40, 30],
+    ] as [number, number, number][],
+    duration: 10000, // milliseconds
+    loop: true,
+  },
+
+  // Motion limits
+  minPolarAngle: 0,
+  maxPolarAngle: Math.PI,
+  minAzimuthAngle: -Infinity,
+  maxAzimuthAngle: Infinity,
+
+  // Distance limits
+  minDistance: 5,
+  maxDistance: 100,
 };
 
-// --- Composant Modèle simplifié ---
-interface ModelProps {
+// Lighting configuration
+const LIGHT_CONFIG = {
+  ambient: {
+    intensity: 0.8,
+  },
+  spot: {
+    position: [10, 10, 10] as [number, number, number],
+    angle: 0.35,
+    penumbra: 1,
+    intensity: 1,
+    castShadow: true,
+  },
+  directional: {
+    position: [-5, 5, 5] as [number, number, number],
+    intensity: 0.5,
+    castShadow: true,
+  },
+  hemispheric: {
+    color: 0xffffff,
+    groundColor: 0x444444,
+    intensity: 0.5,
+  },
+  point: {
+    position: [0, 10, 0] as [number, number, number],
+    intensity: 0.5,
+    distance: 100,
+    decay: 2,
+  },
+};
+
+interface ModelViewerProps {
   modelPath: string;
   playAnimation: boolean;
-  onAnimationToggleRequest?: () => void;
+  width?: string;
+  height?: string;
+  onClick?: () => void;
+  cameraConfig?: Partial<typeof CAMERA_CONFIG>;
+  lightConfig?: Partial<typeof LIGHT_CONFIG>;
+  enableOrbitControls?: boolean;
 }
 
-const Model: React.FC<ModelProps> = ({
+// Camera animation system
+function AnimatedCamera({
+  cameraConfig,
+}: {
+  cameraConfig: Partial<typeof CAMERA_CONFIG>;
+}) {
+  const { camera } = useThree();
+  const mergedConfig = { ...CAMERA_CONFIG, ...cameraConfig };
+  const animationRef = useRef({
+    startTime: Date.now(),
+    enabled: mergedConfig.enableAnimation,
+    oscillationStartTime: Date.now(),
+    basePosition: [...mergedConfig.position] as [number, number, number],
+    oscillating: mergedConfig.oscillation?.enabled ?? false,
+  });
+
+  useFrame(() => {
+    // Handle path animation if enabled
+    if (mergedConfig.enableAnimation) {
+      const { points, duration, loop } = mergedConfig.animationPath;
+      const elapsedTime = Date.now() - animationRef.current.startTime;
+
+      // Reset time if looping
+      const normalizedTime = loop
+        ? (elapsedTime % duration) / duration
+        : Math.min(elapsedTime / duration, 1);
+
+      // Calculate position along path
+      const segmentCount = points.length - 1;
+      const segmentIndex = Math.min(
+        Math.floor(normalizedTime * segmentCount),
+        segmentCount - 1
+      );
+      const segmentProgress = (normalizedTime * segmentCount) % 1;
+
+      const start = points[segmentIndex];
+      const end = points[segmentIndex + 1];
+
+      // Interpolate position
+      camera.position.set(
+        start[0] + (end[0] - start[0]) * segmentProgress,
+        start[1] + (end[1] - start[1]) * segmentProgress,
+        start[2] + (end[2] - start[2]) * segmentProgress
+      );
+
+      // Look at target
+      camera.lookAt(new THREE.Vector3(...mergedConfig.lookAt));
+
+      // Store as base position for oscillation
+      animationRef.current.basePosition = [
+        camera.position.x,
+        camera.position.y,
+        camera.position.z,
+      ];
+    }
+
+    // Handle oscillation if enabled
+    if (mergedConfig.oscillation?.enabled) {
+      const { amplitude, period, axis } = mergedConfig.oscillation;
+      const elapsedTime =
+        Date.now() - animationRef.current.oscillationStartTime;
+
+      // Calculate oscillation using sine wave (0 to 1 to 0 to -1 to 0)
+      // This will move right, then left, in a smooth motion
+      const oscillationFactor = Math.sin(
+        ((elapsedTime % period) / period) * Math.PI * 2
+      );
+
+      // If not doing path animation, use the initial position as base
+      const basePosition = animationRef.current.basePosition;
+
+      // Create a radius vector from the lookAt point to the camera base position
+      const lookAtPoint = new THREE.Vector3(...mergedConfig.lookAt);
+      const baseVector = new THREE.Vector3(
+        basePosition[0],
+        basePosition[1],
+        basePosition[2]
+      );
+
+      // Create orbit position by rotating around the lookAt point
+      const orbitPosition = baseVector.clone();
+
+      // Calculate rotation angle based on oscillation
+      const rotationAngle = amplitude * oscillationFactor;
+
+      // Apply rotation based on the selected axis
+      if (axis === "y") {
+        // Rotate around Y axis (horizontal movement)
+        orbitPosition.sub(lookAtPoint); // Move to origin
+
+        // Apply rotation matrix
+        const rotMatrix = new THREE.Matrix4().makeRotationY(rotationAngle);
+        orbitPosition.applyMatrix4(rotMatrix);
+
+        orbitPosition.add(lookAtPoint); // Move back
+      } else if (axis === "x") {
+        // Rotate around X axis (vertical movement)
+        orbitPosition.sub(lookAtPoint);
+        const rotMatrix = new THREE.Matrix4().makeRotationX(rotationAngle);
+        orbitPosition.applyMatrix4(rotMatrix);
+        orbitPosition.add(lookAtPoint);
+      }
+
+      // Update camera position
+      camera.position.copy(orbitPosition);
+
+      // Always look at the target
+      camera.lookAt(lookAtPoint);
+    }
+  });
+
+  // Set up initial values
+  useEffect(() => {
+    if (mergedConfig.oscillation?.enabled) {
+      animationRef.current.oscillationStartTime = Date.now();
+      animationRef.current.basePosition = [...mergedConfig.position];
+      animationRef.current.oscillating = true;
+    }
+  }, [mergedConfig.oscillation?.enabled, mergedConfig.position]);
+
+  return null;
+}
+
+function CameraController({
+  cameraConfig = CAMERA_CONFIG,
+}: {
+  cameraConfig?: Partial<typeof CAMERA_CONFIG>;
+}) {
+  const controlsRef = useRef<any>(null);
+  const mergedConfig = { ...CAMERA_CONFIG, ...cameraConfig };
+
+  useEffect(() => {
+    if (controlsRef.current) {
+      // Apply orbit controls configuration
+      const controls = controlsRef.current;
+
+      // If using oscillation, disable standard autoRotate
+      if (mergedConfig.oscillation?.enabled) {
+        controls.autoRotate = false;
+      } else {
+        controls.autoRotate = mergedConfig.autoRotate;
+        controls.autoRotateSpeed = mergedConfig.autoRotateSpeed;
+      }
+
+      // Damping settings
+      controls.enableDamping = mergedConfig.enableDamping;
+      controls.dampingFactor = mergedConfig.dampingFactor;
+
+      // Motion limits
+      controls.minPolarAngle = mergedConfig.minPolarAngle;
+      controls.maxPolarAngle = mergedConfig.maxPolarAngle;
+      controls.minAzimuthAngle = mergedConfig.minAzimuthAngle;
+      controls.maxAzimuthAngle = mergedConfig.maxAzimuthAngle;
+
+      // Distance limits
+      controls.minDistance = mergedConfig.minDistance;
+      controls.maxDistance = mergedConfig.maxDistance;
+
+      // Set target (lookAt)
+      controls.target.set(...mergedConfig.lookAt);
+
+      // Update controls
+      controls.update();
+    }
+  }, [cameraConfig, mergedConfig]);
+
+  return (
+    <OrbitControls
+      ref={controlsRef}
+      enableZoom={false}
+      enablePan={false}
+      enableRotate={false}
+    />
+  );
+}
+
+function Model({
   modelPath,
   playAnimation,
-  onAnimationToggleRequest,
-}) => {
-  // On utilise le hook useGLTF qui gère le cache et la mémoire interne
-  // Pas besoin de recharger à chaque render
-  const gltf = useGLTF(modelPath);
-  const { scene, animations } = gltf;
-
-  // Refs pour l'animation
+}: {
+  modelPath: string;
+  playAnimation: boolean;
+  cameraConfig?: Partial<typeof CAMERA_CONFIG>;
+}) {
+  const gltf = useLoader(GLTFLoader, modelPath);
+  const modelRef = useRef<THREE.Group>(null);
   const mixer = useRef<THREE.AnimationMixer | null>(null);
-  const actionRef = useRef<THREE.AnimationAction | null>(null);
-  const [isPlaying, setIsPlaying] = useState(playAnimation);
 
-  // Centrer et mettre à l'échelle le modèle - UNE SEULE FOIS
   useEffect(() => {
-    if (!scene) return;
+    if (gltf.scene) {
+      // Create a new animation mixer
+      mixer.current = new THREE.AnimationMixer(gltf.scene);
 
-    // Centrer
-    const box = new THREE.Box3().setFromObject(scene);
-    const center = box.getCenter(new THREE.Vector3());
-    scene.position.sub(center);
+      // Check if the model has animations
+      if (gltf.animations && gltf.animations.length > 0) {
+        // Create an action from the first animation
+        const action = mixer.current.clipAction(gltf.animations[0]);
 
-    // Mise à l'échelle
-    const size = box.getSize(new THREE.Vector3());
-    const maxDim = Math.max(size.x, size.y, size.z);
-    const scale = 1.6 / maxDim;
-    scene.scale.multiplyScalar(scale);
-
-    console.log("[ModelViewer] Modèle centré et mis à l'échelle:", {
-      center: center.toArray(),
-      size: size.toArray(),
-      scale,
-    });
-  }, [scene]);
-
-  // Initialiser le mixer d'animation UNE SEULE FOIS
-  useEffect(() => {
-    if (!scene) return;
-
-    mixer.current = new THREE.AnimationMixer(scene);
-
-    // Nettoyage
-    return () => {
-      mixer.current = null;
-      actionRef.current = null;
-    };
-  }, [scene]);
-
-  // Gestion des animations
-  useEffect(() => {
-    if (!mixer.current || !animations || animations.length === 0) return;
-
-    // Si l'animation n'est pas déjà configurée
-    if (!actionRef.current) {
-      const clip = animations[0];
-      actionRef.current = mixer.current.clipAction(clip);
-
-      // Configurer l'animation
-      actionRef.current.setLoop(THREE.LoopRepeat, Infinity);
-      actionRef.current.play();
-
-      console.log("[ModelViewer] Animation initialisée");
+        if (playAnimation) {
+          action.play();
+        } else {
+          action.stop();
+        }
+      }
     }
+  }, [gltf, playAnimation]);
 
-    // Mettre à jour l'état de lecture selon la prop
-    if (playAnimation && !isPlaying) {
-      actionRef.current.paused = false;
-      setIsPlaying(true);
-    } else if (!playAnimation && isPlaying) {
-      actionRef.current.paused = true;
-      setIsPlaying(false);
-    }
-  }, [animations, mixer, playAnimation, isPlaying]);
-
-  // Mise à jour de l'animation à chaque frame
+  // Update animations
   useFrame((_, delta) => {
-    if (mixer.current && isPlaying) {
+    if (mixer.current) {
       mixer.current.update(delta);
     }
   });
 
+  useEffect(() => {
+    if (mixer.current && gltf.animations && gltf.animations.length > 0) {
+      const action = mixer.current.clipAction(gltf.animations[0]);
+
+      if (playAnimation) {
+        action.play();
+      } else {
+        action.stop();
+      }
+    }
+  }, [playAnimation, gltf.animations]);
+
   return (
-    <primitive
-      object={scene}
-      onClick={(event: any) => {
-        if (event) {
-          event.stopPropagation();
-          if (onAnimationToggleRequest) {
-            onAnimationToggleRequest();
-          }
-        }
-      }}
-    />
+    <>
+      <primitive ref={modelRef} object={gltf.scene} position={[0, 0, 0]} />
+    </>
   );
-};
-
-// --- Fallback simple ---
-const FallbackMesh: React.FC = () => {
-  return <Box args={[1, 1, 1]} position={[0, 0, 0]} />;
-};
-
-// --- Props du composant principal ---
-interface ModelViewerProps {
-  modelPath: string;
-  playAnimation?: boolean;
-  onToggleAnimation?: () => void;
-  width?: number | string;
-  height?: number | string;
-  fallbackBackgroundColor?: string;
-  onClick?: (event: React.MouseEvent) => void;
 }
 
-// --- Composant principal simplifié ---
-const ModelViewer: React.FC<ModelViewerProps> = ({
+export default function ModelViewer({
   modelPath,
-  playAnimation = false,
-  onToggleAnimation,
+  playAnimation,
   width = "100%",
-  height = width,
-  fallbackBackgroundColor = "transparent",
+  height = "100%",
   onClick,
-}) => {
-  // Précharger le modèle au montage du composant - UNE SEULE FOIS
-  useEffect(() => {
-    preloadModel(modelPath);
-  }, [modelPath]); // Dépendance uniquement sur le chemin du modèle
+  cameraConfig,
+  lightConfig = LIGHT_CONFIG,
+  enableOrbitControls = false,
+}: ModelViewerProps) {
+  const mergedLightConfig = { ...LIGHT_CONFIG, ...lightConfig };
+  const mergedCameraConfig = { ...CAMERA_CONFIG, ...cameraConfig };
+  const canvasRef = useRef<HTMLDivElement>(null);
 
-  // Gestion des erreurs
-  const [hasError, setHasError] = useState(false);
+  // Handle click event separately from the canvas
+  const handleClick = (e: React.MouseEvent) => {
+    // Prevent event from affecting Three.js camera controls
+    e.stopPropagation();
 
-  const handleError = (error: Error) => {
-    console.error("[ModelViewer] Erreur capturée:", modelPath, error);
-    setHasError(true);
-  };
-
-  const handleContainerClick = (e: React.MouseEvent) => {
+    // Call the provided onClick function if it exists
     if (onClick) {
-      onClick(e);
+      onClick();
     }
   };
 
-  // Style du conteneur
-  const containerStyle = useMemo(
-    () => ({
-      width,
-      height,
-      position: "relative" as const,
-      background: fallbackBackgroundColor,
-    }),
-    [width, height, fallbackBackgroundColor]
-  );
-
-  // Style interne
-  const innerStyle = useMemo(
-    () => ({
-      width: "100%",
-      height: "100%",
-      position: "relative" as const,
-      overflow: "hidden",
-      cursor: "pointer",
-    }),
-    []
-  );
-
   return (
-    <div style={containerStyle}>
-      <div style={innerStyle} onClick={handleContainerClick}>
-        <ErrorBoundary onError={handleError}>
-          <Canvas
-            gl={{ antialias: true, alpha: true }}
-            camera={{
-              position: CAMERA_POSITION,
-              fov: CAMERA_FOV,
-              near: CAMERA_NEAR,
-              far: CAMERA_FAR,
-            }}
-            style={{ background: "transparent" }}
-          >
-            {/* Éclairage simplifié */}
-            <ambientLight intensity={1.0} />
-            <directionalLight position={[0, 5, 5]} intensity={2.0} />
+    <div
+      ref={canvasRef}
+      style={{ width, height, cursor: onClick ? "pointer" : "default" }}
+      onClick={handleClick}
+    >
+      <Canvas
+        // Canvas configuration
+        gl={{
+          antialias: true,
+          pixelRatio: window.devicePixelRatio,
+          alpha: true,
+        }}
+        onCreated={({ gl }) => {
+          gl.setClearColor(0x000000, 0); // Transparent background
+        }}
+      >
+        {/* Camera setup using drei's PerspectiveCamera for more control */}
+        <PerspectiveCamera
+          makeDefault
+          position={mergedCameraConfig.position}
+          rotation={mergedCameraConfig.rotation}
+          fov={mergedCameraConfig.fov}
+          near={mergedCameraConfig.near}
+          far={mergedCameraConfig.far}
+          zoom={mergedCameraConfig.zoom}
+          quaternion={mergedCameraConfig.quaternion}
+        />
 
-            {/* Modèle 3D */}
-            <Suspense fallback={<FallbackMesh />}>
-              {!hasError && (
-                <Model
-                  modelPath={modelPath}
-                  playAnimation={playAnimation}
-                  onAnimationToggleRequest={onToggleAnimation}
-                />
-              )}
-              {hasError && <FallbackMesh />}
-            </Suspense>
+        {/* Camera controllers - always apply oscillation */}
+        <CameraController cameraConfig={mergedCameraConfig} />
+        {(mergedCameraConfig.enableAnimation ||
+          mergedCameraConfig.oscillation?.enabled) && (
+          <AnimatedCamera cameraConfig={mergedCameraConfig} />
+        )}
 
-            {/* Orbit controls with default settings */}
-            <OrbitControls
-              enableZoom={true}
-              enablePan={true}
-              target={CAMERA_TARGET}
-            />
-          </Canvas>
-        </ErrorBoundary>
-      </div>
+        {/* Lighting */}
+        <ambientLight intensity={mergedLightConfig.ambient.intensity} />
+        <spotLight
+          position={mergedLightConfig.spot.position}
+          angle={mergedLightConfig.spot.angle}
+          penumbra={mergedLightConfig.spot.penumbra}
+          intensity={mergedLightConfig.spot.intensity}
+          castShadow={mergedLightConfig.spot.castShadow}
+        />
+        <directionalLight
+          position={mergedLightConfig.directional.position}
+          intensity={mergedLightConfig.directional.intensity}
+          castShadow={mergedLightConfig.directional.castShadow}
+        />
+        <hemisphereLight
+          color={mergedLightConfig.hemispheric.color}
+          groundColor={mergedLightConfig.hemispheric.groundColor}
+          intensity={mergedLightConfig.hemispheric.intensity}
+        />
+        <pointLight
+          position={mergedLightConfig.point.position}
+          intensity={mergedLightConfig.point.intensity}
+          distance={mergedLightConfig.point.distance}
+          decay={mergedLightConfig.point.decay}
+        />
+
+        {/* Model */}
+        <Model modelPath={modelPath} playAnimation={playAnimation} />
+
+        {/* Optional orbit controls if explicitly enabled */}
+        {enableOrbitControls && (
+          <OrbitControls
+            enableZoom={true}
+            enablePan={true}
+            enableRotate={true}
+            target={mergedCameraConfig.lookAt}
+            minDistance={mergedCameraConfig.minDistance}
+            maxDistance={mergedCameraConfig.maxDistance}
+            minPolarAngle={mergedCameraConfig.minPolarAngle}
+            maxPolarAngle={mergedCameraConfig.maxPolarAngle}
+            minAzimuthAngle={mergedCameraConfig.minAzimuthAngle}
+            maxAzimuthAngle={mergedCameraConfig.maxAzimuthAngle}
+            autoRotate={mergedCameraConfig.autoRotate}
+            autoRotateSpeed={mergedCameraConfig.autoRotateSpeed}
+            enableDamping={mergedCameraConfig.enableDamping}
+            dampingFactor={mergedCameraConfig.dampingFactor}
+          />
+        )}
+      </Canvas>
     </div>
   );
-};
-
-export default ModelViewer;
+}

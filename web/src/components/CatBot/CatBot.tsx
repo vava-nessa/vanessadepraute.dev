@@ -17,6 +17,7 @@ type PersonalityType = "catgpt" | "claudecat" | "deepcat";
 // Type for message with animation state
 type CatMessage = Message & {
   animationShown?: boolean;
+  showGif?: boolean;
 };
 
 export function CatBot() {
@@ -176,11 +177,15 @@ export function CatBot() {
               botResponseContent = "Meow? (An error occurred)";
             }
 
+            // Determine if this response should show a GIF (50% chance)
+            const showGif = Math.random() < 0.5;
+
             const botResponse: CatMessage = {
               id: generateId(),
               content: botResponseContent,
               role: "assistant",
               animationShown: false,
+              showGif: showGif,
             };
 
             setMessages((prev) => [...prev, botResponse]);
@@ -269,36 +274,104 @@ export function CatBot() {
             return (
               <div
                 key={message.id}
-                className="chat-message self-end bg-blue-500 text-white max-w-xs rounded-lg px-3 py-1.5 text-sm"
+                style={{
+                  display: "block",
+                  textAlign: "right",
+                  marginBottom: "8px",
+                  width: "100%",
+                }}
               >
-                {message.content}
+                <span
+                  style={{
+                    display: "inline-block",
+                    backgroundColor: "#3b82f6",
+                    color: "white",
+                    borderRadius: "8px",
+                    padding: "6px 12px",
+                    fontSize: "14px",
+                    maxWidth: "80%",
+                    textAlign: "left",
+                  }}
+                >
+                  {message.content}
+                </span>
               </div>
             );
           }
 
           // For assistant messages
           const currentMessage = message;
+
+          // Common styles for all assistant messages
+          const assistantMessageStyle = {
+            display: "block",
+            textAlign: "left" as const,
+            marginBottom: "8px",
+            width: "100%",
+          };
+
+          const assistantBubbleStyle = {
+            display: "inline-block",
+            backgroundColor: "#71717a",
+            color: "white",
+            borderRadius: "8px",
+            padding: "6px 12px",
+            fontSize: "14px",
+            maxWidth: "80%",
+            minHeight: "28px",
+            textAlign: "left" as const,
+          };
+
+          const gifContainerStyle = {
+            display: "block",
+            marginTop: "8px",
+            width: "100%",
+          };
+
+          const gifStyle = {
+            display: "block",
+            maxWidth: "100%",
+            maxHeight: "150px",
+            borderRadius: "6px",
+            boxShadow:
+              "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+          };
+
           if (currentMessage.animationShown === false) {
             // Update the animation state so it's only shown once
             currentMessage.animationShown = true;
 
             return (
-              <div
-                key={message.id}
-                className="chat-message self-start bg-zinc-500 text-white max-w-xs rounded-lg px-3 py-1.5 text-sm min-h-[28px]"
-              >
-                <TypingAnimation delay={0}>{message.content}</TypingAnimation>
+              <div key={message.id} style={assistantMessageStyle}>
+                <div style={assistantBubbleStyle}>
+                  <TypingAnimation delay={0}>{message.content}</TypingAnimation>
+                </div>
+                {currentMessage.showGif && (
+                  <div style={gifContainerStyle}>
+                    <img
+                      src="https://cataas.com/cat/gif"
+                      alt="Random cat gif"
+                      style={gifStyle}
+                    />
+                  </div>
+                )}
               </div>
             );
           }
 
           // For messages that have already shown animation
           return (
-            <div
-              key={message.id}
-              className="chat-message self-start bg-zinc-500 text-white max-w-xs rounded-lg px-3 py-1.5 text-sm min-h-[28px]"
-            >
-              {message.content}
+            <div key={message.id} style={assistantMessageStyle}>
+              <div style={assistantBubbleStyle}>{message.content}</div>
+              {currentMessage.showGif && (
+                <div style={gifContainerStyle}>
+                  <img
+                    src="https://cataas.com/cat/gif"
+                    alt="Random cat gif"
+                    style={gifStyle}
+                  />
+                </div>
+              )}
             </div>
           );
         });
@@ -309,19 +382,69 @@ export function CatBot() {
     };
 
     return (
-      <div className="catbot-container">
+      <div className="catbot_main">
         {isChatOpen && (
-          <div className="max-w-md mx-auto bg-white dark:bg-zinc-800 shadow-md rounded-lg overflow-hidden">
-            <div className="flex flex-col h-[400px]">
-              <div className="px-4 py-3 border-b dark:border-zinc-700">
-                <div className="flex justify-between items-center">
-                  <h2 className="text-lg font-semibold text-zinc-800 dark:text-white">
+          <div
+            style={{
+              position: "fixed",
+              bottom: "110px",
+              right: "10px",
+              width: "320px",
+              margin: "0 auto",
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+              backdropFilter: "blur(10px)",
+              boxShadow:
+                "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+              borderRadius: "8px",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                display: "block",
+                height: "400px",
+              }}
+            >
+              {/* Header */}
+              <div
+                style={{
+                  padding: "12px 16px",
+                  borderBottom: "1px solid #3f3f46",
+                  backgroundColor: "#27272a",
+                }}
+              >
+                <div style={{ display: "block", position: "relative" }}>
+                  <h2
+                    style={{
+                      fontSize: "18px",
+                      fontWeight: "600",
+                      color: "white",
+                      display: "inline-block",
+                    }}
+                  >
                     CatGPT
                   </h2>
-                  <div className="flex items-center gap-2">
-                    <div className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                  <div
+                    style={{
+                      position: "absolute",
+                      right: "0",
+                      top: "0",
+                      display: "inline-block",
+                    }}
+                  >
+                    <span
+                      style={{
+                        backgroundColor: "#22c55e",
+                        color: "white",
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        borderRadius: "9999px",
+                        marginRight: "8px",
+                        display: "inline-block",
+                      }}
+                    >
                       Online
-                    </div>
+                    </span>
                     <Select
                       className="catbot-select text-sm"
                       value={personality}
@@ -333,7 +456,14 @@ export function CatBot() {
                       ]}
                     />
                     <button
-                      className="text-zinc-400 hover:text-zinc-600 dark:text-zinc-400 dark:hover:text-white"
+                      style={{
+                        color: "#a1a1aa",
+                        marginLeft: "8px",
+                        cursor: "pointer",
+                        background: "none",
+                        border: "none",
+                        fontSize: "20px",
+                      }}
                       onClick={closeChat}
                     >
                       ×
@@ -342,51 +472,140 @@ export function CatBot() {
                 </div>
               </div>
 
-              <div className="flex-1 p-3 overflow-y-auto flex flex-col space-y-2">
+              {/* Messages container */}
+              <div
+                style={{
+                  padding: "12px",
+                  height: "calc(100% - 110px)",
+                  overflowY: "auto",
+                  backgroundColor: "#27272a",
+                }}
+              >
                 {messages.length === 0 ? (
-                  <>
-                    <div className="chat-message self-start bg-zinc-500 text-white max-w-xs rounded-lg px-3 py-1.5 text-sm min-h-[28px]">
+                  <div
+                    style={{
+                      display: "block",
+                      textAlign: "left",
+                      marginBottom: "8px",
+                      width: "100%",
+                    }}
+                  >
+                    <span
+                      style={{
+                        display: "inline-block",
+                        backgroundColor: "#71717a",
+                        color: "white",
+                        borderRadius: "8px",
+                        padding: "6px 12px",
+                        fontSize: "14px",
+                        maxWidth: "80%",
+                      }}
+                    >
                       Hello! How can I assist you today?
-                    </div>
-                  </>
+                    </span>
+                  </div>
                 ) : (
                   renderMessages()
                 )}
                 {isGenerating && (
-                  <div className="chat-message self-start bg-zinc-500 text-white max-w-xs rounded-lg px-3 py-1.5 text-sm min-h-[28px]">
-                    <div className="typing-indicator">
-                      <span></span>
-                      <span></span>
-                      <span></span>
-                    </div>
+                  <div
+                    style={{
+                      display: "block",
+                      textAlign: "left",
+                      marginBottom: "8px",
+                      width: "100%",
+                    }}
+                  >
+                    <span
+                      style={{
+                        display: "inline-block",
+                        backgroundColor: "#71717a",
+                        color: "white",
+                        borderRadius: "8px",
+                        padding: "6px 12px",
+                        fontSize: "14px",
+                        maxWidth: "80%",
+                        minHeight: "28px",
+                      }}
+                    >
+                      <div className="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </div>
+                    </span>
                   </div>
                 )}
                 <div ref={messagesEndRef} />
               </div>
 
-              <div className="px-3 py-2 border-t dark:border-zinc-700">
-                <form onSubmit={handleSubmit} className="flex gap-2">
+              {/* Input area */}
+              <div
+                style={{
+                  padding: "8px 12px",
+                  borderTop: "1px solid #3f3f46",
+                  backgroundColor: "#27272a",
+                }}
+              >
+                <form
+                  onSubmit={handleSubmit}
+                  style={{ display: "block", position: "relative" }}
+                >
                   <input
                     ref={inputRef}
                     type="text"
                     value={input}
                     onChange={handleInputChange}
                     placeholder="Type your message..."
-                    className="flex-1 p-2 border rounded-lg dark:bg-zinc-700 dark:text-white dark:border-zinc-600 text-sm"
+                    style={{
+                      display: "block",
+                      width: "calc(100% - 70px)",
+                      padding: "8px",
+                      border: "1px solid #3f3f46",
+                      borderRadius: "8px",
+                      backgroundColor: "#404040",
+                      color: "white",
+                      fontSize: "14px",
+                    }}
                     disabled={isGenerating}
                   />
                   {isGenerating ? (
                     <button
                       type="button"
                       onClick={stopGeneration}
-                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-1.5 px-3 rounded-lg transition duration-300 ease-in-out text-sm"
+                      style={{
+                        position: "absolute",
+                        right: "0",
+                        top: "0",
+                        backgroundColor: "#ef4444",
+                        color: "white",
+                        fontWeight: "bold",
+                        padding: "6px 12px",
+                        borderRadius: "8px",
+                        fontSize: "14px",
+                        cursor: "pointer",
+                        border: "none",
+                      }}
                     >
                       Stop
                     </button>
                   ) : (
                     <button
                       type="submit"
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1.5 px-3 rounded-lg transition duration-300 ease-in-out text-sm"
+                      style={{
+                        position: "absolute",
+                        right: "0",
+                        top: "0",
+                        backgroundColor: "#3b82f6",
+                        color: "white",
+                        fontWeight: "bold",
+                        padding: "6px 12px",
+                        borderRadius: "8px",
+                        fontSize: "14px",
+                        cursor: input.trim() ? "pointer" : "not-allowed",
+                        opacity: input.trim() ? "1" : "0.5",
+                        border: "none",
+                      }}
                       disabled={!input.trim() || isGenerating}
                     >
                       Send
@@ -397,7 +616,7 @@ export function CatBot() {
             </div>
           </div>
         )}
-        <div style={{ border: "1px solid transparent" }}>
+        <div className="modelviewer_container">
           <ModelViewer
             playAnimation={isChatOpen}
             modelPath={popCatModelPath}

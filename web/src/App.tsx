@@ -59,93 +59,96 @@ function App() {
 
   try {
     return (
-      <div className="absolute top-0 z-[-2] h-screen w-screen transform ">
-        {/* <BackgroundGradientAnimation> */}
-        <div className="z-0 ">
-          <div
-            className="wrapper"
-            style={{
-              display: "flex",
-              flexDirection: windowWidth <= 1000 ? "column" : "row",
-              width: "100%",
-              gap: "20px",
-              padding: "20px",
-            }}
-          >
+      <>
+        <CatBot />
+        <div className="absolute top-0 z-[-2] h-screen w-screen transform ">
+          {/* <BackgroundGradientAnimation> */}
+          <div className="z-0 ">
             <div
-              className="column"
+              className="wrapper"
               style={{
-                flex: 1,
-                padding: "20px",
-                textAlign: "left",
-                width: windowWidth <= 1000 ? "100%" : "auto",
-              }}
-            >
-              <h1>
-                Hi there!{" "}
-                <img
-                  src={wavingHand}
-                  alt="Waving Hand"
-                  style={{
-                    width: "54px",
-                    height: "54px",
-                    display: "inline",
-                  }}
-                />
-              </h1>
-              <h2>I'm Vanessa.</h2>
-              <TextGenerateEffect words={words} />
-              <div className="flex mt-4 mb-2"></div>
-              <img src={rocket} width="80px" height="80px" />
-            </div>
-            <div
-              className="column"
-              style={{
-                flex: 1,
                 display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                minHeight: windowWidth <= 1000 ? "300px" : "auto",
+                flexDirection: windowWidth <= 1000 ? "column" : "row",
+                width: "100%",
+                gap: "20px",
+                padding: "20px",
               }}
             >
-              <div className="cover">
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    width: "100%",
-                    height: "100%",
-                    zIndex: 5,
-                  }}
-                >
-                  <CoderGirl size="100%" />
+              <div
+                className="column"
+                style={{
+                  flex: 1,
+                  padding: "20px",
+                  textAlign: "left",
+                  width: windowWidth <= 1000 ? "100%" : "auto",
+                }}
+              >
+                <h1>
+                  Hi there!{" "}
+                  <img
+                    src={wavingHand}
+                    alt="Waving Hand"
+                    style={{
+                      width: "54px",
+                      height: "54px",
+                      display: "inline",
+                    }}
+                  />
+                </h1>
+                <h2>I'm Vanessa.</h2>
+                <TextGenerateEffect words={words} />
+                <div className="flex mt-4 mb-2"></div>
+                <img src={rocket} width="80px" height="80px" />
+              </div>
+              <div
+                className="column"
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minHeight: windowWidth <= 1000 ? "300px" : "auto",
+                }}
+              >
+                <div className="cover">
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      width: "100%",
+                      height: "100%",
+                      zIndex: 5,
+                    }}
+                  >
+                    <CoderGirl size="100%" />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <CatBot />
-          <div className="flex justify-center">
-            <Testimonials />
-          </div>
-          {/* <Particles options={particleOptions}></Particles> */}
-          <p>Currently learning Portuguese and Chinese</p>
 
-          <div className="flex justify-center items-center mb-4">
-            <ContactButton />
-            <div className="flex ml-4"></div>
+            <div className="flex justify-center">
+              <Testimonials />
+            </div>
+            {/* <Particles options={particleOptions}></Particles> */}
+            <p>Currently learning Portuguese and Chinese</p>
+
+            <div className="flex justify-center items-center mb-4">
+              <ContactButton />
+              <div className="flex ml-4"></div>
+            </div>
+            <div className="flex justify-center items-center mb-4">
+              <Star delay={1800} color="rgb(235, 190, 68)" />
+              <Star delay={2100} color="rgb(245, 180, 105)" />
+              <Star delay={2400} color="rgb(238, 175, 92)" />
+              <Star delay={2700} color="rgb(201, 126, 64)" />
+              <Star delay={3000} color="rgb(180, 79, 39)" />
+            </div>
           </div>
-          <div className="flex justify-center items-center mb-4">
-            <Star delay={1800} color="rgb(235, 190, 68)" />
-            <Star delay={2100} color="rgb(245, 180, 105)" />
-            <Star delay={2400} color="rgb(238, 175, 92)" />
-            <Star delay={2700} color="rgb(201, 126, 64)" />
-            <Star delay={3000} color="rgb(180, 79, 39)" />
-          </div>
+          {/* </BackgroundGradientAnimation> */}
         </div>
-        {/* </BackgroundGradientAnimation> */}
-      </div>
+      </>
     );
   } catch (error) {
     console.error("Error rendering App:", error);

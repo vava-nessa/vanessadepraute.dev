@@ -5,14 +5,14 @@ import { Message } from "@/components/ui/chat";
 import { Select } from "@/components/ui/select";
 import { TypingAnimation } from "@/registry/magicui/terminal";
 
-import catBotData from "./catbotdata.json";
-import angryCatData from "./angrycat.json";
-import happyCatData from "./happycat.json";
+import catgpt from "./catgpt.json";
+import deepcat from "./deepcat.json";
+import claudecat from "./claudecat.json";
 import "./CatBot.css";
 import "@/components/ui/chat.css";
 
 // Type for personality options
-type PersonalityType = "normal" | "angry" | "happy";
+type PersonalityType = "catgpt" | "claudecat" | "deepcat";
 
 // Type for message with animation state
 type CatMessage = Message & {
@@ -25,7 +25,7 @@ export function CatBot() {
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState<CatMessage[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
-    const [personality, setPersonality] = useState<PersonalityType>("normal");
+    const [personality, setPersonality] = useState<PersonalityType>("catgpt");
     const timeoutRef = useRef<number | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -91,17 +91,17 @@ export function CatBot() {
     const getDataSource = () => {
       try {
         switch (personality) {
-          case "angry":
-            return angryCatData.responses;
-          case "happy":
-            return happyCatData.responses;
-          case "normal":
+          case "claudecat":
+            return claudecat.responses;
+          case "deepcat":
+            return deepcat.responses;
+          case "catgpt":
           default:
-            return catBotData.responses;
+            return catgpt.responses;
         }
       } catch (error) {
         console.error("Error getting data source:", error);
-        return catBotData.responses; // Fallback to default
+        return catgpt.responses; // Fallback to default
       }
     };
 
@@ -327,9 +327,9 @@ export function CatBot() {
                       value={personality}
                       onChange={handlePersonalityChange}
                       options={[
-                        { value: "normal", label: "CatGPT" },
-                        { value: "angry", label: "CatGPT" },
-                        { value: "happy", label: "CatGPT" },
+                        { value: "catgpt", label: "CatGPT 4.5" },
+                        { value: "claudecat", label: "CatClaude Sonnet 3.7" },
+                        { value: "deepcat", label: "DeepCat R3" },
                       ]}
                     />
                     <button
@@ -397,7 +397,7 @@ export function CatBot() {
             </div>
           </div>
         )}
-        <div style={{ border: "1px solid red" }}>
+        <div style={{ border: "1px solid transparent" }}>
           <ModelViewer
             playAnimation={isChatOpen}
             modelPath={popCatModelPath}

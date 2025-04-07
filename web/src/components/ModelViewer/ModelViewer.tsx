@@ -9,7 +9,7 @@
 
 // Dependencies:
 // - React (useState, useRef, useEffect, useMemo)
-// - @react-three/fiber (Canvas, useFrame, useThree)
+// - @react-three/fiber (Canvas, useFrame)
 // - @react-three/drei (OrbitControls, useGLTF, Box)
 // - three (THREE)
 //
@@ -23,7 +23,7 @@
 // - onClick?: (event: React.MouseEvent) => void - Click callback
 
 import React, { Suspense, useRef, useEffect, useMemo, useState } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useGLTF, Box } from "@react-three/drei";
 import * as THREE from "three";
 import ErrorBoundary from "../ErrorBoundary";
@@ -80,14 +80,12 @@ interface ModelProps {
   modelPath: string;
   playAnimation: boolean;
   onAnimationToggleRequest?: () => void;
-  onExternalClick?: (event: React.MouseEvent) => void;
 }
 
 const Model: React.FC<ModelProps> = ({
   modelPath,
   playAnimation,
   onAnimationToggleRequest,
-  onExternalClick,
 }) => {
   // On utilise le hook useGLTF qui gère le cache et la mémoire interne
   // Pas besoin de recharger à chaque render
@@ -262,7 +260,7 @@ const ModelViewer: React.FC<ModelViewerProps> = ({
               near: CAMERA_NEAR,
               far: CAMERA_FAR,
             }}
-            style={{ background: "#f0f0f0" }} // Couleur de fond temporaire pour debug
+            style={{ background: "transparent" }}
           >
             {/* Éclairage simplifié */}
             <ambientLight intensity={1.0} />
@@ -275,7 +273,6 @@ const ModelViewer: React.FC<ModelViewerProps> = ({
                   modelPath={modelPath}
                   playAnimation={playAnimation}
                   onAnimationToggleRequest={onToggleAnimation}
-                  onExternalClick={onClick}
                 />
               )}
               {hasError && <FallbackMesh />}

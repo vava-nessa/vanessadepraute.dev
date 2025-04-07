@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import ModelViewer from "../ModelViewer/ModelViewer";
-import popCatModelPath from "../../assets/pop_cat2.glb";
+import popCatModelPath from "/pop_cat2.glb";
 import { Message } from "@/components/ui/chat";
 import { Select } from "@/components/ui/select";
 import { TypingAnimation } from "@/registry/magicui/terminal";

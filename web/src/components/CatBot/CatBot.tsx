@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import ModelViewer from "../ModelViewer/ModelViewer";
 import popCatModelPath from "../../assets/pop_cat2.glb";
 import { Message } from "@/components/ui/chat";
@@ -10,6 +10,56 @@ import angryCatData from "./angrycat.json";
 import happyCatData from "./happycat.json";
 import "./CatBot.css";
 import "@/components/ui/chat.css";
+
+// Log le chemin du modèle pour débogage
+console.log("CatBot - Chemin du modèle importé:", popCatModelPath);
+
+// Fonction helper pour résoudre les problèmes de chemin du modèle
+const resolveModelPath = (path: string) => {
+  console.log("Résolution du chemin du modèle:", path);
+
+  // Si le chemin est déjà une URL complète, le renvoyer tel quel
+  if (path.startsWith("http")) {
+    return path;
+  }
+
+  // Extraire le nom de base du fichier sans chemin
+  let fileName = path.split("/").pop();
+
+  // Supprimer les paramètres d'URL ou de hash s'ils existent
+  if (fileName && fileName.includes("?")) {
+    fileName = fileName.split("?")[0];
+  }
+
+  // En mode développement, vérifier si le chemin direct fonctionne
+  if (import.meta.env.DEV) {
+    // En développement, essayer différentes options
+    try {
+      // Essayer de charger directement
+      console.log("Mode DEV - Tentative avec chemin direct:", path);
+      // Si le fichier existe, retourner le chemin complet
+      return path;
+    } catch (e) {
+      console.warn(
+        "Impossible de charger directement, tentative avec basename:",
+        fileName
+      );
+    }
+  }
+
+  // En production ou si le chemin direct ne fonctionne pas
+  try {
+    // Construction d'un chemin absolu basé sur le nom du fichier
+    const basePath = "/assets/";
+    const fullPath = `${basePath}${fileName}`;
+    console.log("Chemin résolu:", fullPath);
+    return fullPath;
+  } catch (error) {
+    console.error("Erreur lors de la résolution du chemin:", error);
+    // En dernier recours, essayer avec le nom de fichier dans le dossier assets
+    return `/assets/${fileName}`;
+  }
+};
 
 // Type for personality options
 type PersonalityType = "normal" | "angry" | "happy";
@@ -26,9 +76,26 @@ export function CatBot() {
     const [messages, setMessages] = useState<CatMessage[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
     const [personality, setPersonality] = useState<PersonalityType>("normal");
+    const [modelLoadError, setModelLoadError] = useState(false);
     const timeoutRef = useRef<number | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    // Préparer le chemin du modèle
+    const resolvedModelPath = useMemo(() => {
+      try {
+        const path = resolveModelPath(popCatModelPath);
+        console.log("CatBot - Chemin du modèle résolu:", path);
+        return path;
+      } catch (error) {
+        console.error(
+          "CatBot - Erreur lors de la résolution du chemin du modèle:",
+          error
+        );
+        setModelLoadError(true);
+        return popCatModelPath; // Fallback au chemin d'origine
+      }
+    }, [popCatModelPath]);
 
     // Clean up any pending timeouts on unmount
     useEffect(() => {
@@ -397,14 +464,33 @@ export function CatBot() {
             </div>
           </div>
         )}
-        <div style={{ border: "1px solid red" }}>
-          <ModelViewer
-            playAnimation={isChatOpen}
-            modelPath={popCatModelPath}
-            height="150px"
-            width="150px"
-            onClick={toggleChat}
-          />
+        <div style={{ border: "1px solid transparent" }}>
+          {!modelLoadError ? (
+            <ModelViewer
+              playAnimation={isChatOpen}
+              modelPath={resolvedModelPath}
+              height="150px"
+              width="150px"
+              onClick={toggleChat}
+            />
+          ) : (
+            // Fallback UI when model fails to load
+            <div
+              style={{
+                width: "150px",
+                height: "150px",
+                background: "#f0f0f0",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: "8px",
+                cursor: "pointer",
+              }}
+              onClick={toggleChat}
+            >
+              <span>😺</span>
+            </div>
+          )}
         </div>
       </div>
     );

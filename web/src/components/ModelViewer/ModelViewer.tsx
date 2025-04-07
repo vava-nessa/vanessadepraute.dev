@@ -28,6 +28,7 @@ import React, { Suspense, useRef, useEffect, useMemo, useState } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, useGLTF, Box } from "@react-three/drei";
 import * as THREE from "three";
+import ErrorBoundary from "../ErrorBoundary";
 
 // --- Hook personnalisé pour la rotation suivant la souris ---
 const useGlobalMouseRotation = (
@@ -89,7 +90,21 @@ const Model: React.FC<ModelProps> = ({
   onAnimationToggleRequest,
   onExternalClick,
 }) => {
-  const { scene, animations } = useGLTF(modelPath);
+  // Ajouter des logs pour déboguer le chargement du modèle
+  console.log("ModelViewer - Tentative de chargement du modèle:", modelPath);
+
+  // Charger le modèle en utilisant useGLTF (qui utilise Suspense en interne)
+  // useGLTF retourne directement le résultat, pas une Promise
+  const result = useGLTF(modelPath);
+
+  // Si le modèle est chargé avec succès, loguer l'information
+  console.log("ModelViewer - Modèle chargé avec succès:", {
+    modelPath,
+    hasScene: !!result.scene,
+    animationsCount: result.animations?.length,
+  });
+
+  const { scene, animations } = result;
   const clonedScene = useMemo(() => scene.clone(), [scene]);
   const mixer = useRef<THREE.AnimationMixer | null>(null);
   const actionRef = useRef<THREE.AnimationAction | null>(null);
@@ -258,8 +273,32 @@ const ModelViewerFiber: React.FC<ModelViewerFiberProps> = ({
   fallbackBackgroundColor = "transparent",
   onClick,
 }) => {
+  // Préchargement du modèle
   useEffect(() => {
-    useGLTF.preload(modelPath);
+    console.log(
+      "ModelViewerFiber - Tentative de préchargement du modèle:",
+      modelPath
+    );
+
+    // On utilise ici un IIFE async pour pouvoir utiliser try/catch avec await
+    (async () => {
+      try {
+        // Précharger le modèle
+        await useGLTF.preload(modelPath);
+        console.log(
+          "ModelViewerFiber - Préchargement du modèle réussi:",
+          modelPath
+        );
+      } catch (error) {
+        console.error(
+          "ModelViewerFiber - Erreur lors du préchargement du modèle:",
+          {
+            modelPath,
+            error,
+          }
+        );
+      }
+    })();
   }, [modelPath]);
 
   // Position de caméra pour une vue de face légèrement relevée avec un zoom à 80% (pour avoir une marge autour du modèle)
@@ -271,6 +310,18 @@ const ModelViewerFiber: React.FC<ModelViewerFiberProps> = ({
     () => new THREE.Vector3(0, 0, 0), // Centre du modèle
     []
   );
+
+  // État pour gérer les erreurs de chargement
+  const [hasError, setHasError] = useState(false);
+
+  // Handler pour les erreurs
+  const handleError = (error: Error) => {
+    console.error("ModelViewerFiber - Erreur capturée par ErrorBoundary:", {
+      error,
+      modelPath,
+    });
+    setHasError(true);
+  };
 
   return (
     <div style={{ width, height, position: "relative" }}>
@@ -284,47 +335,72 @@ const ModelViewerFiber: React.FC<ModelViewerFiberProps> = ({
           cursor: "pointer",
         }}
       >
-        <Canvas
-          gl={{ antialias: true, alpha: true }}
-          camera={{
-            position: baseCameraPosition.toArray() as [number, number, number],
-            fov: 12,
-            near: 0.3,
-            far: 500,
-          }}
-          style={{ background: "transparent", touchAction: "none" }}
+        <ErrorBoundary
+          onError={handleError}
+          fallback={
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: fallbackBackgroundColor,
+              }}
+            >
+              <Box args={[1, 1, 1]} />
+            </div>
+          }
         >
-          {/* Effet de rotation globale suivant la souris */}
-          <GlobalMouseRotationHook
-            basePosition={baseCameraPosition}
-            targetPosition={targetLookAt}
-          />
-
-          <ambientLight intensity={1.0} />
-          <directionalLight
-            position={[5, 10, 7.5]}
-            intensity={1.5}
-            castShadow
-          />
-          <directionalLight position={[-5, -5, -5]} intensity={0.5} />
-          <hemisphereLight intensity={0.5} groundColor="black" />
-
-          <Suspense fallback={<FallbackMesh />}>
-            <Model
-              modelPath={modelPath}
-              playAnimation={playAnimation}
-              onAnimationToggleRequest={onToggleAnimation}
-              onExternalClick={onClick}
+          <Canvas
+            gl={{ antialias: true, alpha: true }}
+            camera={{
+              position: baseCameraPosition.toArray() as [
+                number,
+                number,
+                number
+              ],
+              fov: 12,
+              near: 0.3,
+              far: 500,
+            }}
+            style={{ background: "transparent", touchAction: "none" }}
+          >
+            {/* Effet de rotation globale suivant la souris */}
+            <GlobalMouseRotationHook
+              basePosition={baseCameraPosition}
+              targetPosition={targetLookAt}
             />
-          </Suspense>
 
-          <OrbitControls
-            enabled={false} // Désactivé car nous utilisons notre propre système de rotation
-            enableZoom={false}
-            enablePan={false}
-            target={targetLookAt.toArray() as [number, number, number]}
-          />
-        </Canvas>
+            <ambientLight intensity={1.0} />
+            <directionalLight
+              position={[5, 10, 7.5]}
+              intensity={1.5}
+              castShadow
+            />
+            <directionalLight position={[-5, -5, -5]} intensity={0.5} />
+            <hemisphereLight intensity={0.5} groundColor="black" />
+
+            <Suspense fallback={<FallbackMesh />}>
+              {!hasError && (
+                <Model
+                  modelPath={modelPath}
+                  playAnimation={playAnimation}
+                  onAnimationToggleRequest={onToggleAnimation}
+                  onExternalClick={onClick}
+                />
+              )}
+              {hasError && <FallbackMesh />}
+            </Suspense>
+
+            <OrbitControls
+              enabled={false} // Désactivé car nous utilisons notre propre système de rotation
+              enableZoom={false}
+              enablePan={false}
+              target={targetLookAt.toArray() as [number, number, number]}
+            />
+          </Canvas>
+        </ErrorBoundary>
       </div>
     </div>
   );

@@ -17,4 +17,22 @@ export default defineConfig({
   },
   // Ajout de l'option pour inclure les fichiers .glb comme assets
   assetsInclude: ["**/*.glb"], // Indique à Vite de traiter les .glb comme des assets
+
+  // Configuration supplémentaire pour les assets .glb
+  build: {
+    rollupOptions: {
+      output: {
+        assetFileNames: (assetInfo) => {
+          // Conserve les noms de fichiers originaux pour les modèles 3D .glb
+          if (assetInfo.name && assetInfo.name.endsWith(".glb")) {
+            // Ne pas ajouter de hash pour les fichiers .glb
+            console.log(`Asset préservé sans hash: ${assetInfo.name}`);
+            return "assets/[name].[ext]";
+          }
+          // Configuration par défaut pour les autres fichiers
+          return "assets/[name].[hash].[ext]";
+        },
+      },
+    },
+  },
 });

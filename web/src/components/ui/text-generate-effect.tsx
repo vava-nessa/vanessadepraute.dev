@@ -5,9 +5,9 @@ import { cn } from "@/lib/utils";
 
 export const TextGenerateEffect = ({
   words,
-
+  className,
   filter = true,
-  duration = 0.4,
+  duration = 0.5,
 }: {
   words: string;
   className?: string;
@@ -39,7 +39,7 @@ export const TextGenerateEffect = ({
               key={word + idx}
               className="dark:text-white text-black opacity-0"
               style={{
-                filter: filter ? "blur(10px)" : "none",
+                filter: filter ? "blur(5px)" : "none",
               }}
             >
               {word}{" "}
@@ -51,9 +51,9 @@ export const TextGenerateEffect = ({
   };
 
   return (
-    <div className={cn("font-bold text-generate")}>
+    <div className={cn("font-bold", className)}>
       <div className="mt-4">
-        <div className=" dark:text-white text-black text-2xl leading-snug tracking-wide">
+        <div className=" dark:text-white text-black text-xs leading-snug tracking-wide">
           {renderWords()}
         </div>
       </div>

@@ -3,7 +3,7 @@ import ModelViewer from "../ModelViewer/ModelViewer";
 import popCatModelPath from "/pop_cat2.glb";
 import { Message } from "@/components/ui/chat";
 import { Select } from "@/components/ui/select";
-import { TypingAnimation } from "@/registry/magicui/terminal";
+import { TextGenerateEffect } from "../ui/text-generate-effect";
 
 import catgpt from "./catgpt.json";
 import deepcat from "./deepcat.json";
@@ -16,8 +16,8 @@ type PersonalityType = "catgpt" | "claudecat" | "deepcat";
 
 // Type for message with animation state
 type CatMessage = Message & {
-  animationShown?: boolean;
   showGif?: boolean;
+  gifTimestamp?: number;
 };
 
 export function CatBot() {
@@ -30,6 +30,7 @@ export function CatBot() {
     const timeoutRef = useRef<number | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
+    const messagesContainerRef = useRef<HTMLDivElement>(null);
 
     // Clean up any pending timeouts on unmount
     useEffect(() => {
@@ -47,9 +48,7 @@ export function CatBot() {
     // Scroll to bottom when messages change
     useEffect(() => {
       try {
-        if (messagesEndRef.current) {
-          messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-        }
+        scrollToBottom();
       } catch (error) {
         console.error("Error scrolling to bottom:", error);
       }
@@ -162,7 +161,7 @@ export function CatBot() {
         }
 
         // Generate CatBot response after random delay
-        const delay = getRandomDelay();
+        const delay = 400;
 
         // Store the timeout ID so we can clean it up if needed
         timeoutRef.current = window.setTimeout(() => {
@@ -184,8 +183,8 @@ export function CatBot() {
               id: generateId(),
               content: botResponseContent,
               role: "assistant",
-              animationShown: false,
               showGif: showGif,
+              gifTimestamp: showGif ? Date.now() : undefined,
             };
 
             setMessages((prev) => [...prev, botResponse]);
@@ -266,6 +265,34 @@ export function CatBot() {
       }
     }, [isChatOpen]);
 
+    // Fonction pour scroller vers le bas
+    const scrollToBottom = (delay = 0) => {
+      try {
+        setTimeout(() => {
+          if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+          }
+          // Si messagesContainerRef existe, on peut aussi l'utiliser pour un scroll plus précis
+          if (messagesContainerRef.current) {
+            messagesContainerRef.current.scrollTop =
+              messagesContainerRef.current.scrollHeight;
+          }
+        }, delay);
+      } catch (error) {
+        console.error("Error scrolling to bottom:", error);
+      }
+    };
+
+    // Gestionnaire d'événement pour quand un GIF est chargé
+    const handleGifLoaded = () => {
+      try {
+        // Attendez un peu que le DOM se mette à jour
+        scrollToBottom(100);
+      } catch (error) {
+        console.error("Error handling GIF load:", error);
+      }
+    };
+
     // Render chat messages
     const renderMessages = () => {
       try {
@@ -337,38 +364,19 @@ export function CatBot() {
               "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
           };
 
-          if (currentMessage.animationShown === false) {
-            // Update the animation state so it's only shown once
-            currentMessage.animationShown = true;
-
-            return (
-              <div key={message.id} style={assistantMessageStyle}>
-                <div style={assistantBubbleStyle}>
-                  <TypingAnimation delay={0}>{message.content}</TypingAnimation>
-                </div>
-                {currentMessage.showGif && (
-                  <div style={gifContainerStyle}>
-                    <img
-                      src="https://cataas.com/cat/gif"
-                      alt="Random cat gif"
-                      style={gifStyle}
-                    />
-                  </div>
-                )}
-              </div>
-            );
-          }
-
-          // For messages that have already shown animation
+          // For all assistant messages, use TextGenerateEffect
           return (
             <div key={message.id} style={assistantMessageStyle}>
-              <div style={assistantBubbleStyle}>{message.content}</div>
+              <div style={assistantBubbleStyle}>
+                <TextGenerateEffect words={message.content} />
+              </div>
               {currentMessage.showGif && (
                 <div style={gifContainerStyle}>
                   <img
-                    src="https://cataas.com/cat/gif"
+                    src={`https://cataas.com/cat/gif?t=${currentMessage.gifTimestamp}`}
                     alt="Random cat gif"
                     style={gifStyle}
+                    onLoad={handleGifLoaded}
                   />
                 </div>
               )}
@@ -391,8 +399,8 @@ export function CatBot() {
               right: "10px",
               width: "320px",
               margin: "0 auto",
-              backgroundColor: "rgba(255, 255, 255, 0.1)",
-              backdropFilter: "blur(10px)",
+              backgroundColor: "rgba(255, 255, 255, 0.5)",
+              backdropFilter: "blur(15px)",
               boxShadow:
                 "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
               borderRadius: "8px",
@@ -410,20 +418,10 @@ export function CatBot() {
                 style={{
                   padding: "12px 16px",
                   borderBottom: "1px solid #3f3f46",
-                  backgroundColor: "#27272a",
                 }}
               >
                 <div style={{ display: "block", position: "relative" }}>
-                  <h2
-                    style={{
-                      fontSize: "18px",
-                      fontWeight: "600",
-                      color: "white",
-                      display: "inline-block",
-                    }}
-                  >
-                    CatGPT
-                  </h2>
+                  <div></div>
                   <div
                     style={{
                       position: "absolute",
@@ -432,19 +430,6 @@ export function CatBot() {
                       display: "inline-block",
                     }}
                   >
-                    <span
-                      style={{
-                        backgroundColor: "#22c55e",
-                        color: "white",
-                        fontSize: "12px",
-                        padding: "4px 8px",
-                        borderRadius: "9999px",
-                        marginRight: "8px",
-                        display: "inline-block",
-                      }}
-                    >
-                      Online
-                    </span>
                     <Select
                       className="catbot-select text-sm"
                       value={personality}
@@ -474,11 +459,11 @@ export function CatBot() {
 
               {/* Messages container */}
               <div
+                ref={messagesContainerRef}
                 style={{
                   padding: "12px",
                   height: "calc(100% - 110px)",
                   overflowY: "auto",
-                  backgroundColor: "#27272a",
                 }}
               >
                 {messages.length === 0 ? (
@@ -544,7 +529,6 @@ export function CatBot() {
                 style={{
                   padding: "8px 12px",
                   borderTop: "1px solid #3f3f46",
-                  backgroundColor: "#27272a",
                 }}
               >
                 <form

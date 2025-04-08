@@ -270,8 +270,8 @@
   right: 10px;
   width: 320px;
   margin: 0 auto;
-  background-color: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(15px);
+    background-color: rgb(255 220 246 / 89%);
+    backdrop-filter: blur(4px);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border-radius: 8px;
@@ -336,16 +336,24 @@
 }
 
 .catbot-message-bubble.user {
-  background-color: #3b82f6;
-  color: white;
+  background-color: rgb(235, 143, 212);
+  color: rgba(121, 0, 70, 0.808);
+  font-size: 12px;
+  font-weight: bold;
+  min-height: 28px;
+  box-shadow: 2px 2px 0px 0px #ff44c66b;
+  border: 1px solid #ffbec99e;
 }
 
 .catbot-message-bubble.assistant {
   background-color: rgb(255, 220, 246);
-  color: white;
-  min-height: 28px;
+
+  min-height: 28px;f
   box-shadow: 2px 2px 0px 0px #ff44c66b;
   border: 1px solid #ffbec99e;
+  & * {
+    color: rgba(167, 4, 99, 0.808);
+  }
 }
 
 .catbot-message-bubble.system {

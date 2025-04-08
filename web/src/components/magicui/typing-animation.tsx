@@ -47,7 +47,7 @@ export function TypingAnimation({
           observer.disconnect();
         }
       },
-      { threshold: 0.1 },
+      { threshold: 0.1 }
     );
 
     if (elementRef.current) {
@@ -78,10 +78,7 @@ export function TypingAnimation({
   return (
     <MotionComponent
       ref={elementRef}
-      className={cn(
-        "text-4xl font-bold leading-[5rem] tracking-[-0.02em]",
-        className,
-      )}
+      className={cn("text-xs font-bold ", className)}
       {...props}
     >
       {displayedText}

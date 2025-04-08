@@ -3,8 +3,7 @@ import ModelViewer from "../ModelViewer/ModelViewer";
 import popCatModelPath from "/pop_cat2.glb";
 import { Message } from "@/components/ui/chat";
 import { Select } from "@/components/ui/select";
-import { TextGenerateEffect } from "../ui/text-generate-effect";
-
+import { TypingAnimation } from "@/components/magicui/typing-animation";
 import catgpt from "./catgpt.json";
 import deepcat from "./deepcat.json";
 import claudecat from "./claudecat.json";
@@ -299,27 +298,8 @@ export function CatBot() {
         return messages.map((message) => {
           if (message.role === "user") {
             return (
-              <div
-                key={message.id}
-                style={{
-                  display: "block",
-                  textAlign: "right",
-                  marginBottom: "8px",
-                  width: "100%",
-                }}
-              >
-                <span
-                  style={{
-                    display: "inline-block",
-                    backgroundColor: "#3b82f6",
-                    color: "white",
-                    borderRadius: "8px",
-                    padding: "6px 12px",
-                    fontSize: "14px",
-                    maxWidth: "80%",
-                    textAlign: "left",
-                  }}
-                >
+              <div key={message.id} className="catbot-message user">
+                <span className="catbot-message-bubble user">
                   {message.content}
                 </span>
               </div>
@@ -329,56 +309,18 @@ export function CatBot() {
           // For assistant messages
           const currentMessage = message;
 
-          // Common styles for all assistant messages
-          const assistantMessageStyle = {
-            display: "block",
-            textAlign: "left" as const,
-            marginBottom: "8px",
-            width: "100%",
-          };
-
-          const assistantBubbleStyle = {
-            backgroundColor: "rgb(255, 220, 246)",
-            color: "white",
-            borderRadius: "8px",
-            padding: "6px 12px",
-            fontSize: "14px",
-            maxWidth: "80%",
-            minHeight: "28px",
-            textAlign: "left",
-            boxShadow: "2px 2px 0px 0px #ff44c66b",
-            border: "1px solid #ffbec99e",
-          };
-
-          const gifContainerStyle = {
-            display: "block",
-            marginTop: "8px",
-            width: "100%",
-          };
-
-          const gifStyle = {
-            display: "block",
-            maxWidth: "100%",
-            maxHeight: "150px",
-            borderRadius: "6px",
-            boxShadow:
-              "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-            filter: "blur(15px)",
-            animation: "unblur-animation 3s forwards",
-          };
-
-          // For all assistant messages, use TextGenerateEffect
+          // For all assistant messages, use TypingAnimation
           return (
-            <div key={message.id} style={assistantMessageStyle}>
-              <div style={assistantBubbleStyle}>
-                <TextGenerateEffect words={message.content} />
+            <div key={message.id} className="catbot-message assistant">
+              <div className="catbot-message-bubble assistant">
+                <TypingAnimation>{message.content}</TypingAnimation>
               </div>
               {currentMessage.showGif && (
-                <div style={gifContainerStyle}>
+                <div className="catbot-gif-container">
                   <img
                     src={`https://cataas.com/cat/gif?t=${currentMessage.gifTimestamp}`}
                     alt="Random cat gif"
-                    style={gifStyle}
+                    className="catbot-gif"
                     onLoad={handleGifLoaded}
                   />
                 </div>
@@ -395,108 +337,35 @@ export function CatBot() {
     return (
       <div className="catbot_main">
         {isChatOpen && (
-          <div
-            style={{
-              position: "fixed",
-              bottom: "110px",
-              right: "10px",
-              width: "320px",
-              margin: "0 auto",
-              backgroundColor: "rgba(255, 255, 255, 0.5)",
-              backdropFilter: "blur(15px)",
-              boxShadow:
-                "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-              borderRadius: "8px",
-              overflow: "hidden",
-            }}
-          >
-            <style>
-              {`
-                @keyframes unblur-animation {
-                  from { filter: blur(15px); }
-                  to { filter: blur(0px); }
-                }
-              `}
-            </style>
-            <div
-              style={{
-                display: "block",
-                height: "400px",
-              }}
-            >
+          <div className="catbot-chat-window">
+            <div className="catbot-chat-inner">
               {/* Header */}
-              <div
-                style={{
-                  padding: "12px 16px",
-                  borderBottom: "1px solid #3f3f46",
-                }}
-              >
-                <div style={{ display: "block", position: "relative" }}>
-                  <div></div>
-                  <div
-                    style={{
-                      position: "absolute",
-                      right: "0",
-                      top: "0",
-                      display: "inline-block",
-                    }}
-                  >
-                    <Select
-                      className="catbot-select text-sm"
-                      value={personality}
-                      onChange={handlePersonalityChange}
-                      options={[
-                        { value: "catgpt", label: "CatGPT 4.5" },
-                        { value: "claudecat", label: "CatClaude Sonnet 3.7" },
-                        { value: "deepcat", label: "DeepCat R3" },
-                      ]}
-                    />
-                    <button
-                      style={{
-                        color: "#a1a1aa",
-                        marginLeft: "8px",
-                        cursor: "pointer",
-                        background: "none",
-                        border: "none",
-                        fontSize: "20px",
-                      }}
-                      onClick={closeChat}
-                    >
-                      ×
-                    </button>
-                  </div>
+              <div className="catbot-header">
+                <div className="catbot-header-tools">
+                  <Select
+                    className="catbot-select text-sm"
+                    value={personality}
+                    onChange={handlePersonalityChange}
+                    options={[
+                      { value: "catgpt", label: "CatGPT 4.5" },
+                      { value: "claudecat", label: "CatClaude Sonnet 3.7" },
+                      { value: "deepcat", label: "DeepCat R3" },
+                    ]}
+                  />
+                  <button className="catbot-close-btn" onClick={closeChat}>
+                    ×
+                  </button>
                 </div>
               </div>
 
               {/* Messages container */}
               <div
                 ref={messagesContainerRef}
-                style={{
-                  padding: "12px",
-                  height: "calc(100% - 110px)",
-                  overflowY: "auto",
-                }}
+                className="catbot-messages-container"
               >
                 {messages.length === 0 ? (
-                  <div
-                    style={{
-                      display: "block",
-                      textAlign: "left",
-                      marginBottom: "8px",
-                      width: "100%",
-                    }}
-                  >
-                    <span
-                      style={{
-                        display: "inline-block",
-                        backgroundColor: "#71717a",
-                        color: "white",
-                        borderRadius: "8px",
-                        padding: "6px 12px",
-                        fontSize: "14px",
-                        maxWidth: "80%",
-                      }}
-                    >
+                  <div className="catbot-message assistant">
+                    <span className="catbot-message-bubble system">
                       Hello! How can I assist you today?
                     </span>
                   </div>
@@ -504,26 +373,8 @@ export function CatBot() {
                   renderMessages()
                 )}
                 {isGenerating && (
-                  <div
-                    style={{
-                      display: "block",
-                      textAlign: "left",
-                      marginBottom: "8px",
-                      width: "100%",
-                    }}
-                  >
-                    <span
-                      style={{
-                        display: "inline-block",
-                        backgroundColor: "#71717a",
-                        color: "white",
-                        borderRadius: "8px",
-                        padding: "6px 12px",
-                        fontSize: "14px",
-                        maxWidth: "80%",
-                        minHeight: "28px",
-                      }}
-                    >
+                  <div className="catbot-message assistant">
+                    <span className="catbot-message-bubble system">
                       <div className="typing-indicator">
                         <span></span>
                         <span></span>
@@ -536,71 +387,31 @@ export function CatBot() {
               </div>
 
               {/* Input area */}
-              <div
-                style={{
-                  padding: "8px 12px",
-                  borderTop: "1px solid #3f3f46",
-                }}
-              >
-                <form
-                  onSubmit={handleSubmit}
-                  style={{ display: "block", position: "relative" }}
-                >
+              <div className="catbot-input-area">
+                <form onSubmit={handleSubmit} className="catbot-form">
                   <input
                     ref={inputRef}
                     type="text"
                     value={input}
                     onChange={handleInputChange}
                     placeholder="Type your message..."
-                    style={{
-                      display: "block",
-                      width: "calc(100% - 70px)",
-                      padding: "8px",
-                      border: "1px solid #3f3f46",
-                      borderRadius: "8px",
-                      backgroundColor: "#404040",
-                      color: "white",
-                      fontSize: "14px",
-                    }}
+                    className="catbot-input"
                     disabled={isGenerating}
                   />
                   {isGenerating ? (
                     <button
                       type="button"
                       onClick={stopGeneration}
-                      style={{
-                        position: "absolute",
-                        right: "0",
-                        top: "0",
-                        backgroundColor: "#ef4444",
-                        color: "white",
-                        fontWeight: "bold",
-                        padding: "6px 12px",
-                        borderRadius: "8px",
-                        fontSize: "14px",
-                        cursor: "pointer",
-                        border: "none",
-                      }}
+                      className="catbot-button stop"
                     >
                       Stop
                     </button>
                   ) : (
                     <button
                       type="submit"
-                      style={{
-                        position: "absolute",
-                        right: "0",
-                        top: "0",
-                        backgroundColor: "#3b82f6",
-                        color: "white",
-                        fontWeight: "bold",
-                        padding: "6px 12px",
-                        borderRadius: "8px",
-                        fontSize: "14px",
-                        cursor: input.trim() ? "pointer" : "not-allowed",
-                        opacity: input.trim() ? "1" : "0.5",
-                        border: "none",
-                      }}
+                      className={`catbot-button send ${
+                        !input.trim() ? "disabled" : ""
+                      }`}
                       disabled={!input.trim() || isGenerating}
                     >
                       Send

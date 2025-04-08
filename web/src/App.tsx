@@ -132,6 +132,7 @@ function App() {
               <Testimonials />
             </div>
             {/* <Particles options={particleOptions}></Particles> */}
+            <p>TS JS React logos etc...</p>
             <p>Currently learning Portuguese and Chinese</p>
 
             <div className="flex justify-center items-center mb-4">
@@ -144,6 +145,13 @@ function App() {
               <Star delay={2400} color="rgb(238, 175, 92)" />
               <Star delay={2700} color="rgb(201, 126, 64)" />
               <Star delay={3000} color="rgb(180, 79, 39)" />
+            </div>
+            <div className="w-full">
+              <iframe
+                src="https://cal.com/vanessa-depraute-g3wudh/15min?user=vanessa-depraute-g3wudh"
+                className="w-full h-[500px] border-0"
+                title="Embedded content"
+              />
             </div>
           </div>
           {/* </BackgroundGradientAnimation> */}

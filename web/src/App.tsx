@@ -133,7 +133,6 @@ function App() {
             </div>
             {/* <Particles options={particleOptions}></Particles> */}
             <p>TS JS React logos etc...</p>
-            <p>Currently learning Portuguese and Chinese</p>
 
             <div className="flex justify-center items-center mb-4">
               <ContactButton />

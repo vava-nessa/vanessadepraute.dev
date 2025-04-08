@@ -262,3 +262,202 @@
     height: 400px;
   }
 }
+
+/* Chat window */
+.catbot-chat-window {
+  position: fixed;
+  bottom: 110px;
+  right: 10px;
+  width: 320px;
+  margin: 0 auto;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(15px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.catbot-chat-inner {
+  display: block;
+  height: 400px;
+}
+
+.catbot-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid #3f3f46;
+  display: block;
+  position: relative;
+}
+
+.catbot-header-tools {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: inline-block;
+}
+
+.catbot-close-btn {
+  color: #a1a1aa;
+  margin-left: 8px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 20px;
+}
+
+.catbot-messages-container {
+  padding: 12px;
+  height: calc(100% - 110px);
+  overflow-y: auto;
+}
+
+.catbot-message {
+  display: block;
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.catbot-message.user {
+  text-align: right;
+}
+
+.catbot-message.assistant {
+  text-align: left;
+}
+
+.catbot-message-bubble {
+  display: inline-block;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 14px;
+  max-width: 80%;
+  text-align: left;
+}
+
+.catbot-message-bubble.user {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.catbot-message-bubble.assistant {
+  background-color: rgb(255, 220, 246);
+  color: white;
+  min-height: 28px;
+  box-shadow: 2px 2px 0px 0px #ff44c66b;
+  border: 1px solid #ffbec99e;
+}
+
+.catbot-message-bubble.system {
+  background-color: #71717a;
+  color: white;
+  min-height: 28px;
+}
+
+.catbot-gif-container {
+  display: block;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.catbot-gif {
+  display: block;
+  max-width: 100%;
+  max-height: 150px;
+  border-radius: 6px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  filter: blur(15px);
+  animation: unblur-animation 3s forwards;
+}
+
+.catbot-input-area {
+  padding: 8px 12px;
+  border-top: 1px solid #3f3f46;
+}
+
+.catbot-form {
+  display: block;
+  position: relative;
+}
+
+.catbot-input {
+  display: block;
+  width: calc(100% - 70px);
+  padding: 8px;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  background-color: #404040;
+  color: white;
+  font-size: 14px;
+}
+
+.catbot-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: white;
+  font-weight: bold;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+}
+
+.catbot-button.send {
+  background-color: #3b82f6;
+}
+
+.catbot-button.send.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.catbot-button.stop {
+  background-color: #ef4444;
+}
+
+@keyframes unblur-animation {
+  from {
+    filter: blur(15px);
+  }
+  to {
+    filter: blur(0px);
+  }
+}
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.typing-indicator span {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: white;
+  border-radius: 50%;
+  animation: bounce 1.4s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}

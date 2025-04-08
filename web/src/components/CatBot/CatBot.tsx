@@ -177,7 +177,7 @@ export function CatBot() {
             }
 
             // Determine if this response should show a GIF (50% chance)
-            const showGif = Math.random() < 0.5;
+            const showGif = Math.random() < 0.8;
 
             const botResponse: CatMessage = {
               id: generateId(),
@@ -287,7 +287,7 @@ export function CatBot() {
     const handleGifLoaded = () => {
       try {
         // Attendez un peu que le DOM se mette à jour
-        scrollToBottom(100);
+        scrollToBottom(50);
       } catch (error) {
         console.error("Error handling GIF load:", error);
       }
@@ -338,15 +338,16 @@ export function CatBot() {
           };
 
           const assistantBubbleStyle = {
-            display: "inline-block",
-            backgroundColor: "#71717a",
+            backgroundColor: "rgb(255, 220, 246)",
             color: "white",
             borderRadius: "8px",
             padding: "6px 12px",
             fontSize: "14px",
             maxWidth: "80%",
             minHeight: "28px",
-            textAlign: "left" as const,
+            textAlign: "left",
+            boxShadow: "2px 2px 0px 0px #ff44c66b",
+            border: "1px solid #ffbec99e",
           };
 
           const gifContainerStyle = {
@@ -362,6 +363,8 @@ export function CatBot() {
             borderRadius: "6px",
             boxShadow:
               "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+            filter: "blur(15px)",
+            animation: "unblur-animation 3s forwards",
           };
 
           // For all assistant messages, use TextGenerateEffect
@@ -407,6 +410,14 @@ export function CatBot() {
               overflow: "hidden",
             }}
           >
+            <style>
+              {`
+                @keyframes unblur-animation {
+                  from { filter: blur(15px); }
+                  to { filter: blur(0px); }
+                }
+              `}
+            </style>
             <div
               style={{
                 display: "block",

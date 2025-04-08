@@ -19,6 +19,11 @@
   position: fixed;
   bottom: -50px;
   right: -20px;
+  transition: all 0.4s;
+}
+
+.modelviewer_container:hover {
+  opacity: 0.9;
 }
 .catbot-image:hover {
   transform: scale(1.1);

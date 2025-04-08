@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import ModelViewer from "../ModelViewer/ModelViewer";
 import popCatModelPath from "/pop_cat2.glb";
 import { Message } from "@/components/ui/chat";
-import { Select } from "@/components/ui/select";
 import { TypingAnimation } from "@/components/magicui/typing-animation";
+import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
+
 import catgpt from "./catgpt.json";
 import deepcat from "./deepcat.json";
 import claudecat from "./claudecat.json";
@@ -17,6 +18,8 @@ type PersonalityType = "catgpt" | "claudecat" | "deepcat";
 type CatMessage = Message & {
   showGif?: boolean;
   gifTimestamp?: number;
+  hasBeenAnimated?: boolean;
+  animationTimestamp?: number;
 };
 
 export function CatBot() {
@@ -27,9 +30,18 @@ export function CatBot() {
     const [isGenerating, setIsGenerating] = useState(false);
     const [personality, setPersonality] = useState<PersonalityType>("catgpt");
     const timeoutRef = useRef<number | null>(null);
-    const inputRef = useRef<HTMLInputElement>(null);
+    const generationTimeoutRef = useRef<number | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const placeholders = [
+      "Are you cat ?",
+      "Why hate mouses ?",
+      "Meow ?",
+      "How to be cat ?",
+      "Why ?",
+    ];
 
     // Clean up any pending timeouts on unmount
     useEffect(() => {
@@ -38,6 +50,11 @@ export function CatBot() {
           if (timeoutRef.current !== null) {
             clearTimeout(timeoutRef.current);
           }
+          if (generationTimeoutRef.current !== null) {
+            clearTimeout(generationTimeoutRef.current);
+          }
+          // Reset generating state on unmount to avoid issues next time
+          setIsGenerating(false);
         } catch (error) {
           console.error("Error clearing timeout:", error);
         }
@@ -53,28 +70,39 @@ export function CatBot() {
       }
     }, [messages, isGenerating]);
 
-    // Focus input when chat opens
-    useEffect(() => {
-      try {
-        if (isChatOpen && inputRef.current) {
-          inputRef.current.focus();
-        }
-      } catch (error) {
-        console.error("Error focusing input:", error);
-      }
-    }, [isChatOpen]);
-
     // Focus input after message is sent or received
     useEffect(() => {
       try {
         // Focus back on input after a new message is sent or received
         if (isChatOpen && !isGenerating && inputRef.current) {
-          inputRef.current.focus();
+          focusInput();
         }
       } catch (error) {
         console.error("Error focusing input after message:", error);
       }
     }, [isChatOpen, messages, isGenerating]);
+
+    // Focus when chat is opened
+    useEffect(() => {
+      try {
+        if (isChatOpen && !isGenerating) {
+          setTimeout(focusInput, 100);
+        }
+      } catch (error) {
+        console.error("Error focusing input when chat is opened:", error);
+      }
+    }, [isChatOpen]);
+
+    // Helper function to focus the input
+    const focusInput = () => {
+      try {
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
+      } catch (error) {
+        console.error("Error focusing input:", error);
+      }
+    };
 
     // Generate a random ID for messages
     const generateId = () => {
@@ -138,6 +166,7 @@ export function CatBot() {
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
       try {
+        // Prevent page reload
         e.preventDefault();
 
         // Don't submit empty messages
@@ -148,6 +177,8 @@ export function CatBot() {
           id: generateId(),
           content: input,
           role: "user",
+          hasBeenAnimated: false,
+          animationTimestamp: undefined,
         };
 
         setMessages((prev) => [...prev, userMessage]);
@@ -157,6 +188,12 @@ export function CatBot() {
         // Clear any existing timeout
         if (timeoutRef.current !== null) {
           clearTimeout(timeoutRef.current);
+        }
+
+        // Clear any existing generation timeout
+        if (generationTimeoutRef.current !== null) {
+          clearTimeout(generationTimeoutRef.current);
+          generationTimeoutRef.current = null;
         }
 
         // Generate CatBot response after random delay
@@ -184,15 +221,27 @@ export function CatBot() {
               role: "assistant",
               showGif: showGif,
               gifTimestamp: showGif ? Date.now() : undefined,
+              hasBeenAnimated: false,
+              animationTimestamp: undefined,
             };
 
+            // Ajouter la réponse du bot (sans condition de vérification de isGenerating)
             setMessages((prev) => [...prev, botResponse]);
-            setIsGenerating(false);
 
-            // Focus input after adding response
-            if (inputRef.current) {
-              inputRef.current.focus();
+            // Keep isGenerating state for 4 more seconds after message is generated
+            if (generationTimeoutRef.current !== null) {
+              clearTimeout(generationTimeoutRef.current);
             }
+
+            generationTimeoutRef.current = window.setTimeout(() => {
+              setIsGenerating(false);
+              generationTimeoutRef.current = null;
+
+              // Focus the input field after the 4-second delay
+              if (inputRef.current) {
+                inputRef.current.focus();
+              }
+            }, 4000);
           } catch (error) {
             console.error("Error generating bot response:", error);
             setIsGenerating(false);
@@ -210,7 +259,28 @@ export function CatBot() {
           clearTimeout(timeoutRef.current);
           timeoutRef.current = null;
         }
+
+        // Clear any existing generation timeout
+        if (generationTimeoutRef.current !== null) {
+          clearTimeout(generationTimeoutRef.current);
+          generationTimeoutRef.current = null;
+        }
+
+        // Si le dernier message est en cours de génération (et qu'il vient du bot), on le supprime
+        if (isGenerating && messages.length > 0) {
+          const lastMessage = messages[messages.length - 1];
+          if (
+            lastMessage.role === "assistant" &&
+            !lastMessage.hasBeenAnimated
+          ) {
+            setMessages(messages.slice(0, -1));
+          }
+        }
+
         setIsGenerating(false);
+
+        // Focus back on the input field
+        setTimeout(focusInput, 10);
       } catch (error) {
         console.error("Error stopping generation:", error);
       }
@@ -230,18 +300,6 @@ export function CatBot() {
         setIsChatOpen(false);
       } catch (error) {
         console.error("Error closing chat:", error);
-      }
-    };
-
-    // Handle personality change
-    const handlePersonalityChange = (
-      e: React.ChangeEvent<HTMLSelectElement>
-    ) => {
-      try {
-        const newPersonality = e.target.value as PersonalityType;
-        setPersonality(newPersonality);
-      } catch (error) {
-        console.error("Error changing personality:", error);
       }
     };
 
@@ -292,13 +350,39 @@ export function CatBot() {
       }
     };
 
+    // Réinitialiser les animations lorsque le chat est fermé
+    useEffect(() => {
+      // Quand le chat est ouvert après avoir été fermé, on réinitialise les animations pour les messages
+      // qui ont été animés il y a plus de 5 minutes
+      if (isChatOpen) {
+        const now = Date.now();
+        setMessages((prevMessages) =>
+          prevMessages.map((msg) => {
+            // Si le message a une timestamp d'animation (stockée quand il a été marqué comme animé)
+            // et que ça fait plus de 5 minutes, on réinitialise l'animation
+            if (
+              msg.animationTimestamp &&
+              now - msg.animationTimestamp > 5 * 60 * 1000
+            ) {
+              return {
+                ...msg,
+                hasBeenAnimated: false,
+                animationTimestamp: undefined,
+              };
+            }
+            return msg;
+          })
+        );
+      }
+    }, [isChatOpen]);
+
     // Render chat messages
     const renderMessages = () => {
       try {
         return messages.map((message) => {
           if (message.role === "user") {
             return (
-              <div key={message.id} className="catbot-message user">
+              <div key={message.id} className="catbot-message user mt-5">
                 <span className="catbot-message-bubble user">
                   {message.content}
                 </span>
@@ -309,22 +393,47 @@ export function CatBot() {
           // For assistant messages
           const currentMessage = message;
 
-          // For all assistant messages, use TypingAnimation
+          // Pour les messages de l'assistant qui n'ont pas encore été animés
+          // on ne marque comme animé qu'après un certain temps
+          if (!currentMessage.hasBeenAnimated) {
+            setTimeout(() => {
+              setMessages((prev) =>
+                prev.map((msg) =>
+                  msg.id === currentMessage.id
+                    ? {
+                        ...msg,
+                        hasBeenAnimated: true,
+                        animationTimestamp: Date.now(),
+                      }
+                    : msg
+                )
+              );
+            }, 3000); // Attendre 3 secondes pour laisser l'animation se jouer
+          }
+
+          // For all assistant messages, use TypingAnimation only if not yet animated
           return (
             <div key={message.id} className="catbot-message assistant">
-              <div className="catbot-message-bubble assistant">
-                <TypingAnimation>{message.content}</TypingAnimation>
-              </div>
               {currentMessage.showGif && (
                 <div className="catbot-gif-container">
                   <img
                     src={`https://cataas.com/cat/gif?t=${currentMessage.gifTimestamp}`}
                     alt="Random cat gif"
-                    className="catbot-gif"
+                    className={`catbot-gif ${
+                      currentMessage.hasBeenAnimated ? "no-animation" : ""
+                    }`}
                     onLoad={handleGifLoaded}
                   />
                 </div>
               )}
+
+              <div className="catbot-message-bubble assistant mt-5">
+                {currentMessage.hasBeenAnimated ? (
+                  message.content
+                ) : (
+                  <TypingAnimation>{message.content}</TypingAnimation>
+                )}
+              </div>
             </div>
           );
         });
@@ -342,19 +451,32 @@ export function CatBot() {
               {/* Header */}
               <div className="catbot-header">
                 <div className="catbot-header-tools">
-                  <Select
-                    className="catbot-select text-sm"
-                    value={personality}
-                    onChange={handlePersonalityChange}
-                    options={[
-                      { value: "catgpt", label: "CatGPT 4.5" },
-                      { value: "claudecat", label: "CatClaude Sonnet 3.7" },
-                      { value: "deepcat", label: "DeepCat R3" },
-                    ]}
-                  />
-                  <button className="catbot-close-btn" onClick={closeChat}>
-                    ×
-                  </button>
+                  <div className="catbot-personality-buttons">
+                    <button
+                      className={`catbot-personality-btn ${
+                        personality === "catgpt" ? "active" : ""
+                      }`}
+                      onClick={() => setPersonality("catgpt")}
+                    >
+                      CatGPT 4.5
+                    </button>
+                    <button
+                      className={`catbot-personality-btn ${
+                        personality === "claudecat" ? "active" : ""
+                      }`}
+                      onClick={() => setPersonality("claudecat")}
+                    >
+                      CatClaude Sonnet 3.7
+                    </button>
+                    <button
+                      className={`catbot-personality-btn ${
+                        personality === "deepcat" ? "active" : ""
+                      }`}
+                      onClick={() => setPersonality("deepcat")}
+                    >
+                      DeepCat R3
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -365,8 +487,9 @@ export function CatBot() {
               >
                 {messages.length === 0 ? (
                   <div className="catbot-message assistant">
-                    <span className="catbot-message-bubble system">
-                      Hello! How can I assist you today?
+                    <span className="catbot-message-bubble assistant mt-5">
+                      Meow ! I am a LCM (Large Cat Model) Feel free to change
+                      LCM Model above.
                     </span>
                   </div>
                 ) : (
@@ -388,36 +511,17 @@ export function CatBot() {
 
               {/* Input area */}
               <div className="catbot-input-area">
-                <form onSubmit={handleSubmit} className="catbot-form">
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={input}
-                    onChange={handleInputChange}
-                    placeholder="Type your message..."
-                    className="catbot-input"
-                    disabled={isGenerating}
-                  />
-                  {isGenerating ? (
-                    <button
-                      type="button"
-                      onClick={stopGeneration}
-                      className="catbot-button stop"
-                    >
-                      Stop
-                    </button>
-                  ) : (
-                    <button
-                      type="submit"
-                      className={`catbot-button send ${
-                        !input.trim() ? "disabled" : ""
-                      }`}
-                      disabled={!input.trim() || isGenerating}
-                    >
-                      Send
-                    </button>
-                  )}
-                </form>
+                <PlaceholdersAndVanishInput
+                  placeholders={placeholders}
+                  onChange={handleInputChange}
+                  onSubmit={handleSubmit}
+                  value={input}
+                  className="catbot-input"
+                  spellCheck={false}
+                  isGenerating={isGenerating}
+                  onStopGeneration={stopGeneration}
+                  ref={inputRef}
+                />
               </div>
             </div>
           </div>

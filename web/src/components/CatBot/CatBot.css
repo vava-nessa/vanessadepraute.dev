@@ -83,9 +83,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
-  background-color: #f9f9f9;
-  border-bottom: 1px solid #eaeaea;
+  height: 50px;
   z-index: 10;
 }
 
@@ -270,8 +268,8 @@
   right: 10px;
   width: 320px;
   margin: 0 auto;
-    background-color: rgb(255 220 246 / 89%);
-    backdrop-filter: blur(4px);
+  background-color: rgb(37 12 30 / 89%);
+  backdrop-filter: blur(8px);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border-radius: 8px;
@@ -283,17 +281,10 @@
   height: 400px;
 }
 
-.catbot-header {
-  padding: 12px 16px;
-  border-bottom: 1px solid #3f3f46;
-  display: block;
-  position: relative;
-}
-
 .catbot-header-tools {
   position: absolute;
   right: 0;
-  top: 0;
+  top: 15px;
   display: inline-block;
 }
 
@@ -347,8 +338,10 @@
 
 .catbot-message-bubble.assistant {
   background-color: rgb(255, 220, 246);
-
-  min-height: 28px;f
+  color: rgba(167, 4, 99, 0.808);
+  font-weight: bold;
+  font-size: 12px;
+  min-height: 28px;
   box-shadow: 2px 2px 0px 0px #ff44c66b;
   border: 1px solid #ffbec99e;
   & * {
@@ -357,9 +350,8 @@
 }
 
 .catbot-message-bubble.system {
-  background-color: #71717a;
   color: white;
-  min-height: 28px;
+  height: 28px;
 }
 
 .catbot-gif-container {
@@ -379,42 +371,84 @@
   animation: unblur-animation 3s forwards;
 }
 
-.catbot-input-area {
-  padding: 8px 12px;
-  border-top: 1px solid #3f3f46;
+/* Pour les images déjà affichées, pas d'animation de flou */
+.catbot-gif.no-animation {
+  filter: blur(0);
+  animation: none;
 }
 
-.catbot-form {
-  display: block;
+.catbot-input-area {
+  padding: 10px 15px;
+  background-color: transparent;
+  z-index: 5;
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .catbot-input {
-  display: block;
-  width: calc(100% - 70px);
-  padding: 8px;
-  border: 1px solid #3f3f46;
-  border-radius: 8px;
-  background-color: #404040;
-  color: white;
-  font-size: 14px;
+  width: 100%;
+  /* Ensure the input takes up proper space */
+  flex: 1;
+}
+
+.catbot-input form {
+  background-color: transparent !important;
+  border-radius: 20px !important;
+  overflow: hidden;
+}
+
+.catbot-input :where(input) {
+  color: #58014d !important;
+  font-weight: bold;
+  background-color: transparent !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  transition: opacity 0.3s ease;
+}
+
+.catbot-input:disabled :where(input),
+.catbot-input :where(input:disabled) {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.catbot-input :where(input)::placeholder {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.catbot-input :where(.placeholder-text) {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Style for the submit button inside PlaceholdersAndVanishInput */
+.catbot-input :where(button[type="submit"]) {
+  background-color: #67c1f5 !important;
+  color: #000 !important;
+  border-color: #67c1f5 !important;
+}
+
+.catbot-input :where(button[type="submit"]:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .catbot-button {
-  position: absolute;
-  right: 0;
-  top: 0;
-  color: white;
-  font-weight: bold;
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 14px;
+  background-color: transparent;
+  border: 1px solid #fff;
+  border-radius: 20px;
+  color: #fff;
   cursor: pointer;
-  border: none;
+  padding: 8px 15px;
+  margin-left: 10px;
+  transition: all 0.2s ease;
+  font-size: 14px;
 }
 
 .catbot-button.send {
-  background-color: #3b82f6;
+  background-color: #67c1f5;
+  border-color: #67c1f5;
+  color: #000;
 }
 
 .catbot-button.send.disabled {
@@ -423,7 +457,8 @@
 }
 
 .catbot-button.stop {
-  background-color: #ef4444;
+  border-color: #ff6b6b;
+  color: #ff6b6b;
 }
 
 @keyframes unblur-animation {
@@ -468,4 +503,37 @@
   40% {
     transform: scale(1);
   }
+}
+
+/* Personality buttons styles */
+.catbot-personality-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 4px;
+  margin-right: 10px;
+}
+
+.catbot-personality-btn {
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  padding: 4px 6px;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.catbot-personality-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.catbot-personality-btn.active {
+  background-color: rgba(255, 220, 246, 0.2);
+  border-color: rgba(255, 220, 246, 0.8);
+  color: rgb(255, 220, 246);
 }

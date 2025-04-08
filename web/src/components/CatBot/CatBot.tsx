@@ -466,7 +466,7 @@ export function CatBot() {
                       }`}
                       onClick={() => setPersonality("claudecat")}
                     >
-                      CatClaude Sonnet 3.7
+                      Cat Sonnet 3.7
                     </button>
                     <button
                       className={`catbot-personality-btn ${

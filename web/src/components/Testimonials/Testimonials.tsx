@@ -2,49 +2,77 @@ import { AnimatedTooltip } from "../ui/animated-tooltip";
 
 import Star from "@/components/Star/Star";
 // Import images
-import orange from "../../assets/orange.png";
-import livee from "../../assets/livee.jpg";
-import caisse from "../../assets/caisse.png";
-import kogama from "../../assets/kogama.jpg";
-import airbus from "../../assets/airbus.png";
-import loreal from "../../assets/loreal.png";
+import orange from "@/assets/orange.webp";
+import livee from "@/assets/livee.webp";
+import caisse from "@/assets/caisse.webp";
+import kogama from "@/assets/kogama.webp";
+import airbus from "@/assets/airbus.webp";
+import loreal from "@/assets/loreal.webp";
+import radiofrance from "@/assets/radiofrance.webp";
+import spie from "@/assets/spie.webp";
+import carrefour from "@/assets/carrefour.webp";
+import vinci from "@/assets/vinci.webp";
 
 const people = [
   {
-    id: 1,
+    id: 5,
+    name: "Radio France",
+    designation: "UI/UX Designer",
+    image: radiofrance,
+  },
+  {
+    id: 10,
     name: "Orange",
     designation: "UI / UX Designer",
     image: orange,
   },
   {
-    id: 2,
+    id: 15,
+    name: "Carrefour",
+    designation: "React Developer",
+    image: carrefour,
+  },
+  {
+    id: 20,
     name: "LiveE",
     designation: "Full Stack Developer",
     image: livee,
   },
   {
-    id: 3,
+    id: 30,
     name: "Airbus",
     designation: "Frontend Developer",
     image: airbus,
   },
   {
-    id: 4,
+    id: 35,
+    name: "Vinci",
+    designation: "React Developer",
+    image: vinci,
+  },
+  {
+    id: 40,
     name: "Loréal",
     designation: "UI/UX Designer",
     image: loreal,
   },
   {
-    id: 5,
+    id: 50,
     name: "Kogama",
     designation: "React Developer",
     image: kogama,
   },
   {
-    id: 6,
+    id: 60,
     name: "Caisse des dépôts",
     designation: "Video Technician",
     image: caisse,
+  },
+  {
+    id: 65,
+    name: "Spie",
+    designation: "Mobile Developer",
+    image: spie,
   },
 ];
 

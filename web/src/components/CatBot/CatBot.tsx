@@ -135,22 +135,12 @@ export function CatBot() {
     // Get random response from the selected data source
     const getRandomResponse = () => {
       try {
-        const responses = getDataSource();
-        const randomIndex = Math.floor(Math.random() * responses.length);
-        return responses[randomIndex];
+        const dataSource = getDataSource();
+        const randomIndex = Math.floor(Math.random() * dataSource.length);
+        return dataSource[randomIndex];
       } catch (error) {
         console.error("Error getting random response:", error);
-        return "Meow?";
-      }
-    };
-
-    // Generate random delay between 500ms and 2000ms
-    const getRandomDelay = () => {
-      try {
-        return Math.floor(Math.random() * (2000 - 500 + 1)) + 500;
-      } catch (error) {
-        console.error("Error generating random delay:", error);
-        return 1000; // Default to 1 second if there's an error
+        return "Meow? (An error occurred)";
       }
     };
 
@@ -291,15 +281,6 @@ export function CatBot() {
         setIsChatOpen(!isChatOpen);
       } catch (error) {
         console.error("Error toggling chat:", error);
-      }
-    };
-
-    const closeChat = (e: React.MouseEvent) => {
-      try {
-        e.stopPropagation(); // Prevent event from bubbling up
-        setIsChatOpen(false);
-      } catch (error) {
-        console.error("Error closing chat:", error);
       }
     };
 

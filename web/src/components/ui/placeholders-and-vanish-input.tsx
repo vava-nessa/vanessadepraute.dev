@@ -8,10 +8,28 @@ import {
   useState,
   forwardRef,
   ForwardedRef,
+  ChangeEvent,
+  FormEvent,
+  MouseEvent,
 } from "react";
 import { cn } from "@/lib/utils";
 
-export const PlaceholdersAndVanishInput = forwardRef(
+interface PlaceholdersAndVanishInputProps {
+  placeholders: string[];
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  isGenerating?: boolean;
+  onStopGeneration?: () => void;
+  value?: string;
+  className?: string;
+  spellCheck?: boolean;
+  [key: string]: any;
+}
+
+export const PlaceholdersAndVanishInput = forwardRef<
+  HTMLInputElement,
+  PlaceholdersAndVanishInputProps
+>(
   (
     {
       placeholders,
@@ -23,16 +41,6 @@ export const PlaceholdersAndVanishInput = forwardRef(
       className,
       spellCheck = true,
       ...rest
-    }: {
-      placeholders: string[];
-      onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-      onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-      isGenerating?: boolean;
-      onStopGeneration?: () => void;
-      value?: string;
-      className?: string;
-      spellCheck?: boolean;
-      [key: string]: any;
     },
     ref: ForwardedRef<HTMLInputElement>
   ) => {
@@ -278,7 +286,13 @@ export const PlaceholdersAndVanishInput = forwardRef(
           onClick={
             isGenerating
               ? () => onStopGeneration && onStopGeneration()
-              : handleSubmit
+              : (e: MouseEvent<HTMLButtonElement>) => {
+                  e.preventDefault();
+                  const formEvent = {
+                    preventDefault: () => {},
+                  } as FormEvent<HTMLFormElement>;
+                  handleSubmit(formEvent);
+                }
           }
           className={`absolute right-2 top-1/2 z-50 -translate-y-1/2 h-8 w-8 rounded-full ${
             isGenerating

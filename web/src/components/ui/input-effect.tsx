@@ -1,4 +1,4 @@
-import React, { forwardRef, InputHTMLAttributes } from "react";
+import { forwardRef, InputHTMLAttributes } from "react";
 import "./input-effect.css";
 
 interface InputEffectProps

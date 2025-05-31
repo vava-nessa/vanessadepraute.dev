@@ -2,52 +2,43 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import { CatBot } from "./components/CatBot/CatBot.tsx";
 import CoderGirl from "./components/CoderGirl/CoderGirl.tsx";
+// Preserved for future use: Particles component for background effects.
 // import Particles from "./components/Particles";
 import wavingHand from "./assets/waving_hand.webp";
+import { ErrorBoundary } from "../components/ErrorBoundary.tsx";
 
 import rocket from "./assets/rocket.webp";
 import { Testimonials } from "./components/Testimonials/Testimonials.tsx";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import Star from "./components/Star/Star.tsx";
 
+// Preserved for future use: BackgroundGradientAnimation for dynamic backgrounds.
 // import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import ContactButton from "./components/ContactButton";
+
 function App() {
   const [error, setError] = useState<Error | null>(null);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const words = `I've been crafting custom web solutions and sharing insights about freelance development for the past 15 years. I'm passionate about designing web apps, from UI/UX concepts to solving real-life complex problems with code. Feel free to contact me !`;
 
-  // Hook pour détecter la taille de l'écran
-  useEffect(() => {
-    const handleResize = () => {
-      try {
-        setWindowWidth(window.innerWidth);
-      } catch (error) {
-        console.error("Error handling resize:", error);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Personnaliser les options de particules
+  // Configuration for Particles component (preserved for future use).
   /* const particleOptions = {
     particleCount: 50,
-    particleBaseHue: 240,
-    particleHueRange: 60,
-    particleBaseRadius: 4.8,
-    particleRadiusRange: 1,
-    glowBrightness: 100,
-    backgroundColor: "hsl(293deg 100% 90%)",
+    particleBaseHue: 240, // Example: Blue-ish hue
+    particleHueRange: 60, // Example: Range from blue to purple/cyan
+    particleBaseRadius: 4.8, // Example: Base size of particles
+    particleRadiusRange: 1, // Example: Variation in particle size
+    glowBrightness: 100, // Example: Intensity of the glow effect
+    backgroundColor: "hsl(293deg 100% 90%)", // Example: Light purple background
   }; */
 
-  // Error boundary pattern using hooks
+  // useEffect for component initialization logic (if any was needed).
+  // Currently empty, consider removing if no specific initialization logic for App component itself is planned here.
   useEffect(() => {
-    // Component initialization logic (if needed)
+    // Component initialization logic can go here if needed in the future
   }, []);
 
-  // If there was an error, show error fallback UI
+  // If an error occurs in the App component's main logic, display a fallback UI.
+  // Errors within CatBot, CoderGirl, or Testimonials are caught by their respective ErrorBoundary.
   if (error) {
     return (
       <div className="error-container">
@@ -60,77 +51,54 @@ function App() {
   try {
     return (
       <>
-        <CatBot />
+        <ErrorBoundary fallback={<p>CatBot is currently unavailable. Meow-be later?</p>}>
+          <CatBot />
+        </ErrorBoundary>
         <div className="absolute top-0 z-[-2] h-screen w-screen transform ">
+          {/* Preserved for future use: BackgroundGradientAnimation wrapper for visual effects. */}
           {/* <BackgroundGradientAnimation> */}
           <div className="z-0 ">
             <div
-              className="wrapper"
-              style={{
-                display: "flex",
-                flexDirection: windowWidth <= 1000 ? "column" : "row",
-                width: "100%",
-                gap: "20px",
-                padding: "20px",
-              }}
+              className="wrapper flex flex-col lg:flex-row w-full gap-5 p-5"
             >
               <div
-                className="column"
-                style={{
-                  flex: 1,
-                  padding: "20px",
-                  textAlign: "left",
-                  width: windowWidth <= 1000 ? "100%" : "auto",
-                }}
+                className="column flex-1 p-5 text-left w-full lg:w-auto"
               >
                 <h1>
                   Hi there!{" "}
                   <img
                     src={wavingHand}
                     alt="Waving Hand"
-                    style={{
-                      width: "54px",
-                      height: "54px",
-                      display: "inline",
-                    }}
+                    className="w-[54px] h-[54px] inline"
+                    loading="lazy"
                   />
                 </h1>
                 <h2>I'm Vanessa.</h2>
                 <TextGenerateEffect words={words} />
                 <div className="flex mt-4 mb-2"></div>
-                <img src={rocket} width="80px" height="80px" />
+                <img src={rocket} width="80px" height="80px" loading="lazy" />
               </div>
               <div
-                className="column"
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  minHeight: windowWidth <= 1000 ? "300px" : "auto",
-                }}
+                className="column flex-1 flex justify-center items-center min-h-[300px] lg:min-h-0"
               >
-                <div className="cover">
+                <div className="cover relative w-full h-full">
                   <div
-                    style={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      width: "100%",
-                      height: "100%",
-                      zIndex: 5,
-                    }}
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full z-[5]"
                   >
-                    <CoderGirl size="100%" />
+                    <ErrorBoundary fallback={<p>CoderGirl component failed to load.</p>}>
+                      <CoderGirl size="100%" />
+                    </ErrorBoundary>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="flex justify-center">
-              <Testimonials />
+              <ErrorBoundary fallback={<p>Could not load testimonials at this time.</p>}>
+                <Testimonials />
+              </ErrorBoundary>
             </div>
+            {/* Preserved for future use: Renders the Particles component. */}
             {/* <Particles options={particleOptions}></Particles> */}
             <p>TS JS React logos etc...</p>
 
@@ -150,20 +118,23 @@ function App() {
                 src="https://cal.com/vanessa-depraute-g3wudh/15min?user=vanessa-depraute-g3wudh"
                 className="w-full h-[500px] border-0"
                 title="Embedded content"
+                loading="lazy"
               />
             </div>
           </div>
-          {/* </BackgroundGradientAnimation> */}
+          {/* </BackgroundGradientAnimation> */} {/* Closing tag for BackgroundGradientAnimation (preserved for future use) */}
         </div>
       </>
     );
-  } catch (error) {
-    console.error("Error rendering App:", error);
-    setError(error instanceof Error ? error : new Error(String(error)));
+  } catch (e) { // Renamed error to e to avoid conflict with useState's error
+    const appError = e instanceof Error ? e : new Error(String(e));
+    console.error("Error rendering App:", appError);
+    setError(appError);
+    // Fallback UI for errors caught by the App component's main try-catch
     return (
-      <div className="error-container">
-        <h2>Something went wrong</h2>
-        <p>{error instanceof Error ? error.message : String(error)}</p>
+      <div className="error-container p-4 text-center">
+        <h2 className="text-xl font-bold text-red-600">Something went wrong in the application.</h2>
+        <p className="text-red-500">{appError.message}</p>
       </div>
     );
   }

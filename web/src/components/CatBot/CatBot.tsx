@@ -20,6 +20,7 @@ type CatMessage = Message & {
   gifTimestamp?: number;
   hasBeenAnimated?: boolean;
   animationTimestamp?: number;
+  gifError?: boolean; // Added to track GIF loading errors
 };
 
 export function CatBot() {
@@ -404,10 +405,25 @@ export function CatBot() {
                       currentMessage.hasBeenAnimated ? "no-animation" : ""
                     }`}
                     onLoad={handleGifLoaded}
+                    onError={() => {
+                      try {
+                        setMessages((prevMsgs) =>
+                          prevMsgs.map((msg) =>
+                            msg.id === message.id ? { ...msg, showGif: false, gifError: true } : msg
+                          )
+                        );
+                      } catch (e) {
+                        console.error("Error handling GIF load error:", e);
+                      }
+                    }}
                   />
                 </div>
               )}
-
+              {currentMessage.gifError && (
+                <div className="catbot-gif-error-message text-xs text-gray-500">
+                  GIF not available :(
+                </div>
+              )}
               <div className="catbot-message-bubble assistant mt-5">
                 {currentMessage.hasBeenAnimated ? (
                   message.content
@@ -520,6 +536,8 @@ export function CatBot() {
     );
   } catch (error) {
     console.error("Error rendering CatBot:", error);
-    return null;
+    // If a critical error occurs in CatBot's main rendering or setup,
+    // re-throw the error to be caught by the ErrorBoundary in App.tsx.
+    throw error;
   }
 }

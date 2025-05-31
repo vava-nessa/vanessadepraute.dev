@@ -25,7 +25,7 @@ const utils = {
   fadeIn: (t: number, m: number) => t / m,
   fadeOut: (t: number, m: number) => (m - t) / m,
   fadeInOut: (t: number, m: number) => {
-    let hm = 0.5 * m;
+    const hm = 0.5 * m;
     return utils.abs(((t + hm) % m) - hm) / hm;
   },
   dist: (x1: number, y1: number, x2: number, y2: number) =>

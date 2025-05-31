@@ -61,7 +61,7 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
     try {
       if (containerRef && size === "100%") {
         const observer = new ResizeObserver((entries) => {
-          for (let entry of entries) {
+          for (const entry of entries) {
             setContainerWidth(entry.contentRect.width);
           }
         });
@@ -208,7 +208,7 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
         style={getContainerStyles()}
       >
         <div style={getScreenStyles()}>{renderScreenContent()}</div>
-        <img src={girlImage} alt="Coder Girl" style={getImageStyles()} />
+        <img src={girlImage} alt="Coder Girl" style={getImageStyles()} loading="lazy" />
       </div>
     );
   } catch (error) {

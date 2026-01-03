@@ -1,35 +1,19 @@
 import { useState, useEffect } from "react";
 import "./App.css";
-import { CatBot } from "./components/CatBot/CatBot.tsx";
 import CoderGirl from "./components/CoderGirl/CoderGirl.tsx";
-// import Particles from "./components/Particles";
-import wavingHand from "./assets/waving_hand.webp";
 
-import rocket from "./assets/rocket.webp";
 import { Testimonials } from "./components/Testimonials/Testimonials.tsx";
-import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import Star from "./components/Star/Star.tsx";
+import TextType from "./components/TextType";
 
 // import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import ContactButton from "./components/ContactButton";
+import FloatingLines from "./components/FloatingLines/FloatingLines";
+
 function App() {
   const [error, setError] = useState<Error | null>(null);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const words = `I've been crafting custom web solutions and sharing insights about freelance development for the past 15 years. I'm passionate about designing web apps, from UI/UX concepts to solving real-life complex problems with code. Feel free to contact me !`;
 
-  // Hook pour détecter la taille de l'écran
-  useEffect(() => {
-    const handleResize = () => {
-      try {
-        setWindowWidth(window.innerWidth);
-      } catch (error) {
-        console.error("Error handling resize:", error);
-      }
-    };
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   // Personnaliser les options de particules
   /* const particleOptions = {
@@ -59,103 +43,110 @@ function App() {
 
   try {
     return (
-      <>
-        <CatBot />
-        <div className="absolute top-0 z-[-2] h-screen w-screen transform ">
-          {/* <BackgroundGradientAnimation> */}
-          <div className="z-0 ">
-            <div
-              className="wrapper"
-              style={{
-                display: "flex",
-                flexDirection: windowWidth <= 1000 ? "column" : "row",
-                width: "100%",
-                gap: "20px",
-                padding: "20px",
-              }}
-            >
-              <div
-                className="column"
-                style={{
-                  flex: 1,
-                  padding: "20px",
-                  textAlign: "left",
-                  width: windowWidth <= 1000 ? "100%" : "auto",
-                }}
-              >
-                <h1>
-                  Hi there!{" "}
-                  <img
-                    src={wavingHand}
-                    alt="Waving Hand"
-                    style={{
-                      width: "54px",
-                      height: "54px",
-                      display: "inline",
-                    }}
-                  />
-                </h1>
-                <h2>I'm Vanessa.</h2>
-                <TextGenerateEffect words={words} />
-                <div className="flex mt-4 mb-2"></div>
-                <img src={rocket} width="80px" height="80px" />
-              </div>
-              <div
-                className="column"
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  minHeight: windowWidth <= 1000 ? "300px" : "auto",
-                }}
-              >
-                <div className="cover">
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      width: "100%",
-                      height: "100%",
-                      zIndex: 5,
-                    }}
-                  >
-                    <CoderGirl size="100%" />
+      <div className="min-h-screen w-full bg-[rgb(16,16,16)] text-white overflow-x-hidden">
+        {/* FloatingLines Background */}
+        <div className="fixed inset-0 w-full h-full z-0">
+          <FloatingLines
+            linesGradient={["#2F4BC0", "#E945F5"]}
+            enabledWaves={['middle']}
+            lineCount={2}
+            lineDistance={38}
+            animationSpeed={1.8}
+            interactive
+            bendRadius={5}
+            bendStrength={-0.5}
+            mouseDamping={0.03}
+            parallax
+            parallaxStrength={0.2}
+          />
+        </div>
+
+        <div className="relative z-10">
+          <div className="wrapper w-full flex flex-col gap-20 p-5">
+            {/* Header Section */}
+            <div className="w-full max-w-[1200px] mx-auto pt-16 md:pt-24 px-5">
+              {/* Greeting */}
+              <p className="text-neutral-400 text-lg md:text-xl mb-4 font-normal tracking-wide">
+                Hi there! I'm Vanessa.
+              </p>
+
+              {/* Title and Avatar row */}
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 mb-8">
+                <div className="flex-shrink-0">
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white m-0 tracking-tight">
+                    <TextType
+                      text={["Developer", "Designer", "Coder", "UI/UX Designer"]}
+                      typingSpeed={75}
+                      pauseDuration={1500}
+                      showCursor={true}
+                      cursorCharacter="|"
+                    />
+                  </h1>
+                </div>
+
+                {/* Avatar on the right */}
+                <div className="flex-shrink-0 lg:ml-auto">
+                  <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-violet-500 overflow-hidden">
+                    <img
+                      src="/avatar.png"
+                      alt="Vanessa Depraute"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 </div>
               </div>
+
+              {/* Description paragraph below */}
+              <div className="max-w-2xl">
+                <p className="text-neutral-400 text-lg md:text-xl leading-relaxed font-light m-0">
+                  I've been crafting custom web solutions and sharing insights about freelance development since 2006. I'm passionate about designing web apps, from <span className="text-violet-400 font-semibold">UI/UX</span> concepts to solving real-life complex problems with <span className="text-violet-400 font-semibold">code</span>. Feel free to contact me !
+                </p>
+              </div>
             </div>
 
-            <div className="flex justify-center">
+            {/* CoderGirl Section */}
+            <div className="w-full flex justify-center items-center min-h-[300px] lg:min-h-auto">
+              <div className="cover relative w-[600px] h-[600px] flex items-center justify-center">
+                <div className="absolute inset-0 z-5 flex items-center justify-center">
+                  <CoderGirl size="100%" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Social Proof & Contact */}
+          <div className="w-full flex flex-col items-center py-10">
+            <div className="flex justify-center mb-10">
               <Testimonials />
             </div>
-            {/* <Particles options={particleOptions}></Particles> */}
-            <p>TS JS React logos etc...</p>
 
-            <div className="flex justify-center items-center mb-4">
+            <p className="text-neutral-500 text-center my-8 uppercase tracking-widest font-medium">
+              Expert in TS + JS + React + UI/UX Design
+            </p>
+
+            <div className="flex justify-center items-center mb-8">
               <ContactButton />
-              <div className="flex ml-4"></div>
             </div>
-            <div className="flex justify-center items-center mb-4">
+
+            <div className="flex justify-center items-center mb-12">
               <Star delay={1800} color="rgb(235, 190, 68)" />
               <Star delay={2100} color="rgb(245, 180, 105)" />
               <Star delay={2400} color="rgb(238, 175, 92)" />
               <Star delay={2700} color="rgb(201, 126, 64)" />
               <Star delay={3000} color="rgb(180, 79, 39)" />
             </div>
-            <div className="w-full">
+
+            {/* Booking Section */}
+            <div className="w-full max-w-4xl mx-auto mb-20 px-4">
               <iframe
                 src="https://cal.com/vanessa-depraute-g3wudh/15min?user=vanessa-depraute-g3wudh"
-                className="w-full h-[500px] border-0"
+                className="w-full h-[600px] border border-neutral-800 rounded-2xl shadow-2xl bg-neutral-900/50"
                 title="Embedded content"
               />
             </div>
           </div>
-          {/* </BackgroundGradientAnimation> */}
         </div>
-      </>
+      </div>
     );
   } catch (error) {
     console.error("Error rendering App:", error);

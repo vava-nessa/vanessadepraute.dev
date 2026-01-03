@@ -1,11 +1,6 @@
 #root {
   margin: 0 auto;
-  background-color: hsl(293, 100%, 94.7%);
-  text-align: center;
   overflow-x: hidden;
-}
-body {
-  background-color: hsl(293, 100%, 94.7%);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -25,13 +20,11 @@ body {
 
 h1,
 h2 {
-  font-family: "Kanit", cursive;
-  font-weight: 600;
-  font-size: 2rem;
-  color: #570063;
+  font-family: "JetBrains Mono", monospace;
+  color: #ffffff;
 }
 
 .text-generate {
-  font-family: "Kanit", cursive;
+  font-family: "JetBrains Mono", monospace;
   font-weight: normal;
 }

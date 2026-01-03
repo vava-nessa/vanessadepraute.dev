@@ -6,13 +6,9 @@ import { TypingAnimation } from "@/components/magicui/typing-animation";
 import { PlaceholdersAndVanishInput } from "@/components/ui/placeholders-and-vanish-input";
 
 import catgpt from "./catgpt.json";
-import deepcat from "./deepcat.json";
-import claudecat from "./claudecat.json";
 import "./CatBot.css";
 import "@/components/ui/chat.css";
 
-// Type for personality options
-type PersonalityType = "catgpt" | "claudecat" | "deepcat";
 
 // Type for message with animation state
 type CatMessage = Message & {
@@ -28,7 +24,6 @@ export function CatBot() {
     const [input, setInput] = useState("");
     const [messages, setMessages] = useState<CatMessage[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
-    const [personality, setPersonality] = useState<PersonalityType>("catgpt");
     const timeoutRef = useRef<number | null>(null);
     const generationTimeoutRef = useRef<number | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -114,21 +109,13 @@ export function CatBot() {
       }
     };
 
-    // Get the appropriate data based on personality
+    // Get the appropriate data source
     const getDataSource = () => {
       try {
-        switch (personality) {
-          case "claudecat":
-            return claudecat.responses;
-          case "deepcat":
-            return deepcat.responses;
-          case "catgpt":
-          default:
-            return catgpt.responses;
-        }
+        return catgpt.responses;
       } catch (error) {
         console.error("Error getting data source:", error);
-        return catgpt.responses; // Fallback to default
+        return catgpt.responses; // Fallback
       }
     };
 
@@ -382,10 +369,10 @@ export function CatBot() {
                 prev.map((msg) =>
                   msg.id === currentMessage.id
                     ? {
-                        ...msg,
-                        hasBeenAnimated: true,
-                        animationTimestamp: Date.now(),
-                      }
+                      ...msg,
+                      hasBeenAnimated: true,
+                      animationTimestamp: Date.now(),
+                    }
                     : msg
                 )
               );
@@ -400,9 +387,8 @@ export function CatBot() {
                   <img
                     src={`https://cataas.com/cat/gif?t=${currentMessage.gifTimestamp}`}
                     alt="Random cat gif"
-                    className={`catbot-gif ${
-                      currentMessage.hasBeenAnimated ? "no-animation" : ""
-                    }`}
+                    className={`catbot-gif ${currentMessage.hasBeenAnimated ? "no-animation" : ""
+                      }`}
                     onLoad={handleGifLoaded}
                   />
                 </div>
@@ -429,38 +415,6 @@ export function CatBot() {
         {isChatOpen && (
           <div className="catbot-chat-window">
             <div className="catbot-chat-inner">
-              {/* Header */}
-              <div className="catbot-header">
-                <div className="catbot-header-tools">
-                  <div className="catbot-personality-buttons">
-                    <button
-                      className={`catbot-personality-btn ${
-                        personality === "catgpt" ? "active" : ""
-                      }`}
-                      onClick={() => setPersonality("catgpt")}
-                    >
-                      CatGPT 4.5
-                    </button>
-                    <button
-                      className={`catbot-personality-btn ${
-                        personality === "claudecat" ? "active" : ""
-                      }`}
-                      onClick={() => setPersonality("claudecat")}
-                    >
-                      Cat Sonnet 3.7
-                    </button>
-                    <button
-                      className={`catbot-personality-btn ${
-                        personality === "deepcat" ? "active" : ""
-                      }`}
-                      onClick={() => setPersonality("deepcat")}
-                    >
-                      DeepCat R3
-                    </button>
-                  </div>
-                </div>
-              </div>
-
               {/* Messages container */}
               <div
                 ref={messagesContainerRef}
@@ -469,8 +423,7 @@ export function CatBot() {
                 {messages.length === 0 ? (
                   <div className="catbot-message assistant">
                     <span className="catbot-message-bubble assistant mt-5">
-                      Meow ! I am a LCM (Large Cat Model) Feel free to change
-                      LCM Model above.
+                      Meow ! I am a CatBot.
                     </span>
                   </div>
                 ) : (

@@ -3,6 +3,16 @@
   overflow-x: hidden;
 }
 
+::selection {
+  background-color: #9D3D5C;
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background-color: #9D3D5C;
+  color: #ffffff;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;

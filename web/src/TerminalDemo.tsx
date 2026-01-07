@@ -5,6 +5,18 @@ import {
   TypingAnimation,
 } from "@/registry/magicui/terminal";
 
+// Array of cat GIFs to randomly select from
+const CAT_GIFS = [
+  "https://i.giphy.com/rj5LtFB78DKAb0y3aR.webp",
+  "https://i.giphy.com/JIX9t2j0ZTN9S.webp",
+  "https://i.giphy.com/VbnUQpnihPSIgIXuZv.webp",
+  "https://i.giphy.com/mlvseq9yvZhba.webp",
+  "https://i.giphy.com/3oriO0OEd9QIDdllqo.webp",
+  "https://i.giphy.com/ICOgUNjpvO0PC.webp",
+  "https://i.giphy.com/nR4L10XlJcSeQ.webp",
+  "https://i.giphy.com/vFKqnCdLPNOKc.webp",
+];
+
 // Define the sequence of screens to display in order
 type ScreenSequence = {
   id: string;
@@ -14,7 +26,8 @@ type ScreenSequence = {
   maxVisibleLines?: number; // Maximum visible lines before clearing (unused in current implementation)
   content: (
     screenElapsedTime: number,
-    isTypingComplete: boolean
+    isTypingComplete: boolean,
+    randomGif?: string
   ) => React.ReactNode;
 };
 
@@ -24,6 +37,9 @@ export default function TerminalDemo() {
   const [showScreen, setShowScreen] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isTypingComplete, setIsTypingComplete] = useState(false);
+  const [currentGifUrl, setCurrentGifUrl] = useState(() =>
+    CAT_GIFS[Math.floor(Math.random() * CAT_GIFS.length)]
+  );
 
   const screenStartTimeRef = useRef<number>(0); // Timestamp when the current screen started
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -149,7 +165,7 @@ export default function TerminalDemo() {
       command: "cat reaction.gif", // Example command
       typingDuration: 800,
       duration: 5000, // Show GIF for 5 seconds
-      content: (elapsed, typingComplete) => (
+      content: (elapsed, typingComplete, randomGif) => (
         <>
           <TypingAnimation delay={100} className="block text-left">
             &gt; cat reaction.gif
@@ -160,7 +176,7 @@ export default function TerminalDemo() {
               <AnimatedSpan className="block text-left w-full h-full flex items-center justify-center">
                 {/* Ensure the image scales reasonably within the terminal */}
                 <img
-                  src="https://i.giphy.com/rj5LtFB78DKAb0y3aR.webp"
+                  src={randomGif || CAT_GIFS[0]}
                   alt="Reaction GIF"
                   className="max-w-full max-h-48 object-contain" // Adjust size as needed
                 />
@@ -476,6 +492,33 @@ export default function TerminalDemo() {
       ),
     },
 
+    // --- SECOND CAT GIF SCREEN ---
+    {
+      id: "gif-display-2",
+      command: "cat celebration.gif",
+      typingDuration: 800,
+      duration: 4000, // Show GIF for 4 seconds
+      content: (elapsed, typingComplete, randomGif) => (
+        <>
+          <TypingAnimation delay={100} className="block text-left">
+            &gt; cat celebration.gif
+          </TypingAnimation>
+
+          {typingComplete &&
+            elapsed > 200 && (
+              <AnimatedSpan className="block text-left w-full h-full flex items-center justify-center">
+                <img
+                  src={randomGif || CAT_GIFS[0]}
+                  alt="Celebration GIF"
+                  className="max-w-full max-h-48 object-contain"
+                />
+              </AnimatedSpan>
+            )}
+        </>
+      ),
+    },
+    // ---------------------
+
     // Screen 7: Error messages (Adjusted timings)
     {
       id: "error",
@@ -594,6 +637,8 @@ export default function TerminalDemo() {
           // Reset state for the new screen
           setScreenElapsedTime(0);
           setIsTypingComplete(false);
+          // Pick a new random GIF for the next cycle
+          setCurrentGifUrl(CAT_GIFS[Math.floor(Math.random() * CAT_GIFS.length)]);
           screenStartTimeRef.current = Date.now(); // Record start time for the new screen
           setShowScreen(true); // Show the new screen
         } catch (error) {
@@ -720,7 +765,7 @@ export default function TerminalDemo() {
         {showScreen && (
           <Terminal className="bg-black text-white">
             {/* Render the content of the current screen */}
-            {currentScreen.content(screenElapsedTime, isTypingComplete)}
+            {currentScreen.content(screenElapsedTime, isTypingComplete, currentGifUrl)}
           </Terminal>
         )}
         {/* Render nothing during the blank transition period */}

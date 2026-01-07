@@ -12,12 +12,12 @@ interface CoderGirlProps {
 
 // Screen corner coordinates (on 1024x1024 base image)
 // Coordinates are X from left, Y from top
-// With 20px inward margin to prevent overflow
+// With 8px inward margin to prevent overflow
 const SCREEN_CORNERS = {
-  topLeft: { x: 220, y: 120 },
-  topRight: { x: 440, y: 95 },
-  bottomLeft: { x: 220, y: 290 },
-  bottomRight: { x: 440, y: 240 },
+  topLeft: { x: 208, y: 108 },
+  topRight: { x: 452, y: 83 },
+  bottomLeft: { x: 208, y: 302 },
+  bottomRight: { x: 452, y: 252 },
 };
 
 // Calculate the bounding box for positioning
@@ -202,8 +202,8 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
 
       return {
         position: "absolute",
-        top: 0,
-        left: 0,
+        top: "1px",
+        left: "-9px",
         width: `${divWidth}px`,
         height: `${divHeight}px`,
         zIndex: -1,

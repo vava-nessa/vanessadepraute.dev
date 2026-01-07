@@ -1,4 +1,5 @@
 import "./TechStackExtended.css";
+import { useTranslation } from "react-i18next";
 
 interface TechCategory {
   title: string;
@@ -7,9 +8,10 @@ interface TechCategory {
 }
 
 const TechStackExtended = () => {
+  const { t } = useTranslation();
   const categories: TechCategory[] = [
     {
-      title: "⚡️ JavaScript / Core",
+      title: t("techStack.categories.jsCore"),
       icon: "⚡",
       items: [
         "JavaScript",
@@ -24,7 +26,7 @@ const TechStackExtended = () => {
       ],
     },
     {
-      title: "🔥 React Ecosystem",
+      title: t("techStack.categories.reactEcosystem"),
       icon: "⚛️",
       items: [
         "React",
@@ -39,7 +41,7 @@ const TechStackExtended = () => {
       ],
     },
     {
-      title: "💻 Frontend / UI",
+      title: t("techStack.categories.frontendUI"),
       icon: "🎨",
       items: [
         "Tailwind CSS",
@@ -60,7 +62,7 @@ const TechStackExtended = () => {
       ],
     },
     {
-      title: "🏷️ CSS / Styling",
+      title: t("techStack.categories.cssStyling"),
       icon: "🎨",
       items: [
         "CSS3",
@@ -74,7 +76,7 @@ const TechStackExtended = () => {
       ],
     },
     {
-      title: "📦️ Build Tools",
+      title: t("techStack.categories.buildTools"),
       icon: "🔧",
       items: [
         "Webpack",
@@ -86,7 +88,7 @@ const TechStackExtended = () => {
       ],
     },
     {
-      title: "♻️ Design Systems",
+      title: t("techStack.categories.designSystems"),
       icon: "🎭",
       items: [
         "Material UI",
@@ -97,7 +99,7 @@ const TechStackExtended = () => {
       ],
     },
     {
-      title: "🏷️ HTML5 / Graphics",
+      title: t("techStack.categories.html5Graphics"),
       icon: "🖼️",
       items: [
         "HTML5",
@@ -108,7 +110,7 @@ const TechStackExtended = () => {
       ],
     },
     {
-      title: "Backend / Infra",
+      title: t("techStack.categories.backendInfra"),
       icon: "⚙️",
       items: [
         "PostgreSQL",
@@ -124,7 +126,7 @@ const TechStackExtended = () => {
       ],
     },
     {
-      title: "DevOps / Cloud",
+      title: t("techStack.categories.devopsCloud"),
       icon: "☁️",
       items: [
         "Vercel",
@@ -141,7 +143,7 @@ const TechStackExtended = () => {
       ],
     },
     {
-      title: "Mobile / Cross-platform",
+      title: t("techStack.categories.mobileCP"),
       icon: "📱",
       items: [
         "React Native",
@@ -152,7 +154,7 @@ const TechStackExtended = () => {
       ],
     },
     {
-      title: "🐛 Testing & Quality",
+      title: t("techStack.categories.testing"),
       icon: "✅",
       items: [
         "Jest",
@@ -164,7 +166,7 @@ const TechStackExtended = () => {
       ],
     },
     {
-      title: "♻️ Project Management",
+      title: t("techStack.categories.projectManagement"),
       icon: "📋",
       items: [
         "Jira",
@@ -175,7 +177,7 @@ const TechStackExtended = () => {
       ],
     },
     {
-      title: "🌱 CMS / E-commerce",
+      title: t("techStack.categories.cmsEcommerce"),
       icon: "🌐",
       items: [
         "WordPress",
@@ -184,7 +186,7 @@ const TechStackExtended = () => {
       ],
     },
     {
-      title: "🔨 Version Control",
+      title: t("techStack.categories.versionControl"),
       icon: "🔧",
       items: [
         "Git",
@@ -195,7 +197,7 @@ const TechStackExtended = () => {
       ],
     },
     {
-      title: "🧠 LLM & AI Coding",
+      title: t("techStack.categories.llmAI"),
       icon: "🤖",
       items: [
         "OpenAI",
@@ -212,7 +214,7 @@ const TechStackExtended = () => {
       ],
     },
     {
-      title: "⚡ AI Dev Tools",
+      title: t("techStack.categories.aiDevTools"),
       icon: "⚙️",
       items: [
         "GitHub Copilot",
@@ -228,7 +230,7 @@ const TechStackExtended = () => {
       ],
     },
     {
-      title: "🧬 AI Infra / Vector",
+      title: t("techStack.categories.aiInfra"),
       icon: "🔗",
       items: [
         "Pinecone",
@@ -244,7 +246,7 @@ const TechStackExtended = () => {
       ],
     },
     {
-      title: "🤖 Open-Source AI",
+      title: t("techStack.categories.openSourceAI"),
       icon: "📦",
       items: [
         "Meta LLaMA",
@@ -261,7 +263,7 @@ const TechStackExtended = () => {
 
   return (
     <div className="tech-extended-container">
-      <h2 className="tech-extended-title">Full Tech Stack & Expertise</h2>
+      <h2 className="tech-extended-title">{t("techStack.title")}</h2>
 
       <div className="tech-categories">
         {categories.map((category, index) => (

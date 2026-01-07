@@ -1,0 +1,34 @@
+{
+  "header": {
+    "greeting": "Bonjour ! Je suis Vanessa.",
+    "roles": ["Développeuse", "Designer", "Développeuse Code", "Designer UI/UX"],
+    "description": "Je crée des solutions web sur mesure et partage mes connaissances sur le développement freelance depuis 2006. Je suis passionnée par la conception d'applications web, depuis les concepts UI/UX jusqu'à la résolution de problèmes complexes avec du code. N'hésitez pas à me contacter !"
+  },
+  "expert": "Expert en TS + JS + React + UI/UX Design",
+  "techStack": {
+    "title": "Stack Technologique Complète & Expertise",
+    "categories": {
+      "jsCore": "⚡️ JavaScript / Core",
+      "reactEcosystem": "🔥 Écosystème React",
+      "frontendUI": "💻 Frontend / UI",
+      "cssStyling": "🏷️ CSS / Styling",
+      "buildTools": "📦️ Outils de Build",
+      "designSystems": "♻️ Design Systems",
+      "html5Graphics": "🏷️ HTML5 / Graphiques",
+      "backendInfra": "Backend / Infra",
+      "devopsCloud": "DevOps / Cloud",
+      "mobileCP": "Mobile / Multiplateforme",
+      "testing": "🐛 Tests & Qualité",
+      "projectManagement": "♻️ Gestion de Projets",
+      "cmsEcommerce": "🌱 CMS / E-commerce",
+      "versionControl": "🔨 Contrôle de Version",
+      "llmAI": "🧠 LLM & IA Coding",
+      "aiDevTools": "⚡ Outils IA Dev",
+      "aiInfra": "🧬 Infra IA / Vector",
+      "openSourceAI": "🤖 IA Open-Source"
+    }
+  },
+  "footer": {
+    "contact": "Me contacter"
+  }
+}

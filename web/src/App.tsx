@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+import { useTranslation } from "react-i18next";
 import CoderGirl from "./components/CoderGirl/CoderGirl.tsx";
 import TechStack from "./components/TechStack/TechStack.tsx";
 import TechStackExtended from "./components/TechStackExtended/TechStackExtended.tsx";
+import LanguageSwitcher from "./components/LanguageSwitcher/LanguageSwitcher.tsx";
 
 import { Testimonials } from "./components/Testimonials/Testimonials.tsx";
 import Star from "./components/Star/Star.tsx";
@@ -16,6 +18,7 @@ import TerminalInterests from "./components/TerminalInterests.tsx";
 
 function App() {
   const [error, setError] = useState<Error | null>(null);
+  const { t } = useTranslation();
 
 
 
@@ -55,6 +58,7 @@ function App() {
         duration={1100}
         extraScale={1.8}
       >
+        <LanguageSwitcher />
         <div className="min-h-screen w-full bg-black text-white overflow-x-hidden">
 
           <div className="relative z-10">
@@ -77,13 +81,13 @@ function App() {
                   <div className="flex flex-col">
                     {/* Greeting */}
                     <p className="text-neutral-400 text-lg md:text-xl mb-3 font-normal tracking-wide">
-                      Hi there! I'm Vanessa.
+                      {t("header.greeting")}
                     </p>
 
                     {/* Title */}
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white m-0 tracking-tight">
                       <TextType
-                        text={["Developer", "Designer", "Coder", "UI/UX Designer"]}
+                        text={t("header.roles", { returnObjects: true })}
                         typingSpeed={75}
                         pauseDuration={1500}
                         showCursor={true}
@@ -96,7 +100,7 @@ function App() {
                 {/* Description paragraph below the row */}
                 <div className="max-w-2xl">
                   <p className="text-neutral-400 text-lg md:text-xl leading-relaxed font-light m-0">
-                    I've been crafting custom web solutions and sharing insights about freelance development since 2006. I'm passionate about designing web apps, from <span className="text-violet-400 font-semibold">UI/UX</span> concepts to solving real-life complex problems with <span className="text-violet-400 font-semibold">code</span>. Feel free to contact me !
+                    {t("header.description")}
                   </p>
                 </div>
               </div>
@@ -124,7 +128,7 @@ function App() {
               </div>
 
               <p className="text-neutral-500 text-center my-8 uppercase tracking-widest font-medium">
-                Expert in TS + JS + React + UI/UX Design
+                {t("expert")}
               </p>
 
               <div className="flex justify-center items-center mb-8">

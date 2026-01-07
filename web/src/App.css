@@ -38,3 +38,79 @@ h2 {
   font-family: "JetBrains Mono", monospace;
   font-weight: normal;
 }
+
+/* Light Mode Styles */
+:root.light-mode {
+  --bg-primary: #fcf5ff;
+  --bg-secondary: #f9f0ff;
+  --text-primary: #1f1f1f;
+  --text-secondary: #666666;
+  --border-color: rgba(139, 92, 246, 0.2);
+}
+
+:root.light-mode .min-h-screen {
+  background: #fcf5ff !important;
+  color: #1f1f1f !important;
+}
+
+:root.light-mode h1,
+:root.light-mode h2 {
+  color: #1f1f1f;
+}
+
+:root.light-mode p {
+  color: #666666;
+}
+
+:root.light-mode .text-neutral-400 {
+  color: #999999 !important;
+}
+
+:root.light-mode .text-neutral-500 {
+  color: #888888 !important;
+}
+
+:root.light-mode .text-white {
+  color: #1f1f1f !important;
+}
+
+:root.light-mode .wrapper {
+  background: transparent;
+}
+
+:root.light-mode .tech-extended-title {
+  color: #1f1f1f;
+}
+
+:root.light-mode .tech-card {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.3);
+  color: #1f1f1f;
+}
+
+:root.light-mode .tech-card:hover {
+  background: rgba(139, 92, 246, 0.2);
+  border-color: rgba(139, 92, 246, 0.5);
+  color: #1f1f1f;
+}
+
+:root.light-mode .category-title {
+  color: #1f1f1f;
+}
+
+:root.light-mode .text-violet-400 {
+  color: #a78bfa !important;
+}
+
+:root.light-mode .text-violet-500 {
+  color: #8b5cf6 !important;
+}
+
+:root.light-mode button:not(.language-switcher):not(.theme-switcher) {
+  color: #1f1f1f;
+  transition: all 0.3s ease;
+}
+
+:root.light-mode * {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}

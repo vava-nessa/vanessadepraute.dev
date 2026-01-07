@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import { useTranslation } from "react-i18next";
+import { useTheme } from "./contexts/ThemeContext";
 import CoderGirl from "./components/CoderGirl/CoderGirl.tsx";
 import TechStack from "./components/TechStack/TechStack.tsx";
 import TechStackExtended from "./components/TechStackExtended/TechStackExtended.tsx";
 import LanguageSwitcher from "./components/LanguageSwitcher/LanguageSwitcher.tsx";
+import ThemeSwitcher from "./components/ThemeSwitcher/ThemeSwitcher.tsx";
 
 import { Testimonials } from "./components/Testimonials/Testimonials.tsx";
 import Star from "./components/Star/Star.tsx";
@@ -59,6 +61,7 @@ function App() {
         extraScale={1.8}
       >
         <LanguageSwitcher />
+        <ThemeSwitcher />
         <div className="min-h-screen w-full bg-black text-white overflow-x-hidden">
 
           <div className="relative z-10">

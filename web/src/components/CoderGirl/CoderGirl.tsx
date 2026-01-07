@@ -1,6 +1,8 @@
 import React, { useState, useEffect, CSSProperties } from "react";
 import "./CoderGirl.css";
 import girlImage from "../../assets/girl.png";
+import girlLightImage from "../../assets/girlw.png";
+import { useTheme } from "../../contexts/ThemeContext";
 import TerminalDemo from "../../TerminalDemo";
 
 interface CoderGirlProps {
@@ -92,6 +94,10 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
   const [renderError, setRenderError] = useState<Error | null>(null);
   const [containerRef, setContainerRef] = useState<HTMLDivElement | null>(null);
   const [containerWidth, setContainerWidth] = useState<number>(0);
+  const { theme } = useTheme();
+
+  // Choose image based on theme
+  const currentImage = theme === "light" ? girlLightImage : girlImage;
 
   // Calculate scale factor based on size
   const getScaleFactor = () => {
@@ -312,7 +318,7 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
         style={getContainerStyles()}
       >
         <div style={getScreenStyles()}>{renderScreenContent()}</div>
-        <img src={girlImage} alt="Coder Girl" style={getImageStyles()} />
+        <img src={currentImage} alt="Coder Girl" style={getImageStyles()} />
 
         {/* Steam effect */}
         <div style={getSteamStyles()} className="steam-container">

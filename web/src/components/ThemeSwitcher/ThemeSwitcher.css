@@ -1,66 +1,64 @@
-.language-switcher {
+.theme-switcher {
   position: fixed;
   top: 20px;
-  right: 70px;
+  right: 20px;
   z-index: 1000;
   background: rgba(139, 92, 246, 0.1);
   border: 1px solid rgba(139, 92, 246, 0.3);
   border-radius: 8px;
-  padding: 8px 14px;
+  padding: 8px 12px;
   color: white;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.9rem;
-  font-weight: 600;
+  justify-content: center;
+  font-size: 1.1rem;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  min-width: 40px;
+  height: 40px;
 }
 
-.language-switcher:hover {
+.theme-switcher:hover {
   background: rgba(139, 92, 246, 0.2);
   border-color: rgba(139, 92, 246, 0.6);
   box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
   transform: translateY(-2px);
 }
 
-.language-switcher:active {
+.theme-switcher:active {
   transform: translateY(0);
 }
 
-.flag {
-  font-size: 1.2rem;
+.theme-icon {
   display: inline-block;
+  transition: transform 0.3s ease;
 }
 
-.lang-code {
-  min-width: 20px;
-  text-align: center;
+.theme-switcher:hover .theme-icon {
+  transform: rotate(20deg) scale(1.1);
 }
 
 /* Light mode overrides */
-:root.light-mode .language-switcher {
+:root.light-mode .theme-switcher {
   background: rgba(139, 92, 246, 0.15);
   border-color: rgba(139, 92, 246, 0.4);
   color: #333;
 }
 
-:root.light-mode .language-switcher:hover {
+:root.light-mode .theme-switcher:hover {
   background: rgba(139, 92, 246, 0.25);
   border-color: rgba(139, 92, 246, 0.7);
   box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 }
 
 @media (max-width: 640px) {
-  .language-switcher {
+  .theme-switcher {
     top: 15px;
-    right: 55px;
+    right: 15px;
     padding: 6px 10px;
-    font-size: 0.8rem;
-  }
-
-  .flag {
+    min-width: 36px;
+    height: 36px;
     font-size: 1rem;
   }
 }

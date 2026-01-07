@@ -5,11 +5,14 @@ import App from "./App.tsx";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import "./i18n/config.ts";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
-    <Analytics />
-    <SpeedInsights />
+    <ThemeProvider>
+      <App />
+      <Analytics />
+      <SpeedInsights />
+    </ThemeProvider>
   </StrictMode>
 );

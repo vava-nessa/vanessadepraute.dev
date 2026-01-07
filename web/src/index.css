@@ -38,7 +38,8 @@
   --sidebar-ring: rgb(80, 80, 80);
 }
 
-.dark {
+.dark,
+:root.dark-mode {
   --background: rgb(16, 16, 16);
   --foreground: rgb(250, 250, 250);
   --card: rgb(24, 24, 24);
@@ -70,6 +71,40 @@
   --sidebar-accent-foreground: rgb(250, 250, 250);
   --sidebar-border: rgb(40, 40, 40);
   --sidebar-ring: rgb(80, 80, 80);
+}
+
+:root.light-mode {
+  --background: rgb(252, 245, 255);
+  --foreground: rgb(31, 31, 31);
+  --card: rgb(245, 240, 255);
+  --card-foreground: rgb(31, 31, 31);
+  --popover: rgb(252, 245, 255);
+  --popover-foreground: rgb(31, 31, 31);
+  --primary: rgb(31, 31, 31);
+  --primary-foreground: rgb(252, 245, 255);
+  --secondary: rgb(230, 220, 245);
+  --secondary-foreground: rgb(31, 31, 31);
+  --muted: rgb(230, 220, 245);
+  --muted-foreground: rgb(100, 100, 100);
+  --accent: rgb(220, 210, 240);
+  --accent-foreground: rgb(31, 31, 31);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: rgb(220, 210, 240);
+  --input: rgb(245, 240, 255);
+  --ring: rgb(139, 92, 246);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: rgb(245, 240, 255);
+  --sidebar-foreground: rgb(31, 31, 31);
+  --sidebar-primary: rgb(31, 31, 31);
+  --sidebar-primary-foreground: rgb(252, 245, 255);
+  --sidebar-accent: rgb(220, 210, 240);
+  --sidebar-accent-foreground: rgb(31, 31, 31);
+  --sidebar-border: rgb(220, 210, 240);
+  --sidebar-ring: rgb(139, 92, 246);
 }
 
 @theme inline {

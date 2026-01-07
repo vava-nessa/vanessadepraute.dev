@@ -20,15 +20,6 @@ const SCREEN_CORNERS = {
   bottomRight: { x: 452, y: 252 },
 };
 
-// Calculate the bounding box for positioning
-const SCREEN_BOUNDS = {
-  left: SCREEN_CORNERS.topLeft.x,
-  top: Math.min(SCREEN_CORNERS.topLeft.y, SCREEN_CORNERS.topRight.y),
-  width: SCREEN_CORNERS.topRight.x - SCREEN_CORNERS.topLeft.x,
-  height: Math.max(SCREEN_CORNERS.bottomLeft.y, SCREEN_CORNERS.bottomRight.y) -
-    Math.min(SCREEN_CORNERS.topLeft.y, SCREEN_CORNERS.topRight.y),
-};
-
 // Base dimensions (original size)
 const BASE_DIMENSIONS = {
   containerWidth: 1024,

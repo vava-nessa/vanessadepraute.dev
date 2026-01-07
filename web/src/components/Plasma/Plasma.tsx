@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Renderer, Program, Mesh, Triangle } from 'ogl';
 import './Plasma.css';
 
-const hexToRgb = hex => {
+const hexToRgb = (hex: string) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
   if (!result) return [1, 0.5, 0.2];
   return [parseInt(result[1], 16) / 255, parseInt(result[2], 16) / 255, parseInt(result[3], 16) / 255];
@@ -93,7 +93,7 @@ export const Plasma = ({
 
   useEffect(() => {
     if (!containerRef.current) return;
-    const containerEl = containerRef.current;
+    const containerEl = containerRef.current as HTMLElement;
 
     const useCustomColor = color ? 1.0 : 0.0;
     const customColorRgb = color ? hexToRgb(color) : [1, 1, 1];
@@ -111,7 +111,7 @@ export const Plasma = ({
     canvas.style.display = 'block';
     canvas.style.width = '100%';
     canvas.style.height = '100%';
-    containerRef.current.appendChild(canvas);
+    containerEl.appendChild(canvas);
 
     const geometry = new Triangle(gl);
 
@@ -134,9 +134,9 @@ export const Plasma = ({
 
     const mesh = new Mesh(gl, { geometry, program });
 
-    const handleMouseMove = e => {
+    const handleMouseMove = (e: MouseEvent) => {
       if (!mouseInteractive) return;
-      const rect = containerRef.current.getBoundingClientRect();
+      const rect = containerEl.getBoundingClientRect();
       mousePos.current.x = e.clientX - rect.left;
       mousePos.current.y = e.clientY - rect.top;
       const mouseUniform = program.uniforms.uMouse.value;
@@ -149,7 +149,7 @@ export const Plasma = ({
     }
 
     const setSize = () => {
-      const rect = containerRef.current.getBoundingClientRect();
+      const rect = containerEl.getBoundingClientRect();
       const width = Math.max(1, Math.floor(rect.width));
       const height = Math.max(1, Math.floor(rect.height));
       renderer.setSize(width, height);
@@ -162,7 +162,7 @@ export const Plasma = ({
     ro.observe(containerEl);
     setSize();
 
-    let animationId = 0;
+    let animationId: NodeJS.Timeout | null = null;
     const t0 = performance.now();
 
     const loop = () => {
@@ -187,7 +187,7 @@ export const Plasma = ({
     animationId = setTimeout(loop, 16);
 
     return () => {
-      clearTimeout(animationId);
+      if (animationId) clearTimeout(animationId);
       ro.disconnect();
       if (mouseInteractive && containerEl) {
         containerEl.removeEventListener('mousemove', handleMouseMove);

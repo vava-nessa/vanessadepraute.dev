@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import TextType from "./TextType";
 
 interface TerminalLine {
     type: "command" | "output" | "loader" | "error" | "clear";
@@ -60,8 +59,6 @@ const TerminalInterests: React.FC = () => {
         { label: "painting", emoji: "🎨" },
         { label: "vr", emoji: "🥽" }
     ];
-
-    const [showConnectionSuccess, setShowConnectionSuccess] = useState(false);
 
     const steps = useMemo(() => [
         { type: "command", text: "mcp connect ai.vanessa.dev --neuralink-bridge", prefix: ">" },

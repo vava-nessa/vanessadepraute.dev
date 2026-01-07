@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import {
   AnimatedSpan,
   Terminal,
@@ -7,14 +7,14 @@ import {
 
 // Array of cat GIFs to randomly select from
 const CAT_GIFS = [
-  "https://i.giphy.com/rj5LtFB78DKAb0y3aR.webp",
-  "https://i.giphy.com/JIX9t2j0ZTN9S.webp",
-  "https://i.giphy.com/VbnUQpnihPSIgIXuZv.webp",
-  "https://i.giphy.com/mlvseq9yvZhba.webp",
-  "https://i.giphy.com/3oriO0OEd9QIDdllqo.webp",
-  "https://i.giphy.com/ICOgUNjpvO0PC.webp",
-  "https://i.giphy.com/nR4L10XlJcSeQ.webp",
-  "https://i.giphy.com/vFKqnCdLPNOKc.webp",
+  "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcjQxNG81cHZmOGdlZGl1NmdjYWdybDlrNnY0aHRrOGhrYXJiZDd5OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/65n8RPEa3r65q/giphy.gif",
+  "/gifs/cat-celebrate.gif",
+  "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdHpwZzFxb204eDM3M2Q3dmVhcnpuYWIzbnA1b2hxNThzbHl2NTk5YiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/TIejJSkHLZh4s/giphy.gif",
+  "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExeDhpemJyaTFqNW9kdHRjb2g0Zms4NTdzdjJucHkxZzBsZDBmc3V1YiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/nZ9OnDVJoEaLPlVRc1/giphy.gif",
+  "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExb2ZhOW5seDFhem4wNDcwcDZzemQycmt1cTdzY3VvdWhxZnR5NWJyYyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YTzh3zw4mj1XpjjiIb/giphy.gif",
+  "/gifs/cat-curious.gif",
+  "/gifs/cat-jump.gif",
+  "/gifs/cat-play.gif",
 ];
 
 // Define the sequence of screens to display in order
@@ -40,60 +40,110 @@ export default function TerminalDemo() {
   const [currentGifUrl, setCurrentGifUrl] = useState(() =>
     CAT_GIFS[Math.floor(Math.random() * CAT_GIFS.length)]
   );
+  const [patternPosition, setPatternPosition] = useState(0); // 0, 1 = code screens, 2 = gif screen
 
   const screenStartTimeRef = useRef<number>(0); // Timestamp when the current screen started
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const screenTransitionTimerRef = useRef<NodeJS.Timeout | null>(null);
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Define all screen sequences
-  const screenSequences: ScreenSequence[] = [
-    // Screen 1: Initial shadcn init
+  // Define all screen sequences separated by type - memoized to prevent recreation on every render
+  const { codeScreens, gifScreens } = useMemo(() => {
+    const code: ScreenSequence[] = [
+    // Screen 1: SSH connect to server
+    {
+      id: "ssh",
+      command: "ssh deploy@site.dev",
+      typingDuration: 800,
+      duration: 6000,
+      content: (elapsed, typingComplete) => (
+        <>
+          <TypingAnimation delay={20} className="block text-left">
+            &gt; ssh deploy@site.dev
+          </TypingAnimation>
+
+          {typingComplete && elapsed >= 1200 - 800 && (
+            <AnimatedSpan className="text-gray-400 block text-left">
+              <span>Authenticity of host 'site.dev' can't be established.</span>
+            </AnimatedSpan>
+          )}
+
+          {typingComplete && elapsed >= 1700 - 800 && (
+            <AnimatedSpan className="text-gray-400 block text-left">
+              <span>ECDSA key fingerprint: SHA256:h8n2K9xL5mP7qR3wV1sT8yU9</span>
+            </AnimatedSpan>
+          )}
+
+          {typingComplete && elapsed >= 2300 - 800 && (
+            <AnimatedSpan className="text-gray-400 block text-left">
+              <span>Continue connecting (yes/no)? yes</span>
+            </AnimatedSpan>
+          )}
+
+          {typingComplete && elapsed >= 2900 - 800 && (
+            <AnimatedSpan className="text-green-400 block text-left">
+              <span>✓ Added 'site.dev' to known_hosts.</span>
+            </AnimatedSpan>
+          )}
+
+          {typingComplete && elapsed >= 3500 - 800 && (
+            <AnimatedSpan className="text-blue-400 block text-left">
+              <span>Last login: Tue Jan 7 14:32:18 2026</span>
+            </AnimatedSpan>
+          )}
+
+          {typingComplete && elapsed >= 4100 - 800 && (
+            <AnimatedSpan className="text-green-400 block text-left">
+              <span>deploy@site:~$</span>
+            </AnimatedSpan>
+          )}
+        </>
+      ),
+    },
+
+    // Screen 3: Initial shadcn init
     {
       id: "init",
-      command: "pnpm dlx shadcn@latest init",
-      typingDuration: 1200,
+      command: "shadcn-ui init",
+      typingDuration: 900,
       duration: 5000,
       content: (elapsed, typingComplete) => (
         <>
-          {/* Command appears almost instantly */}
-          <TypingAnimation delay={100} className="block text-left">
-            &gt; pnpm dlx shadcn@latest init
+          <TypingAnimation delay={20} className="block text-left">
+            &gt; shadcn-ui init
           </TypingAnimation>
 
-          {/* Content appears after typing animation is complete */}
-          {typingComplete &&
-            elapsed >= 1500 - 1200 && ( // Adjusted timing relative to typing end
-              <AnimatedSpan className="text-green-500 block text-left">
-                <span>✔ Preflight checks.</span>
-              </AnimatedSpan>
-            )}
+          {typingComplete && elapsed >= 1200 - 900 && (
+            <AnimatedSpan className="text-green-500 block text-left">
+              <span>✔ Preflight checks.</span>
+            </AnimatedSpan>
+          )}
 
-          {typingComplete && elapsed >= 1900 - 1200 && (
+          {typingComplete && elapsed >= 1600 - 900 && (
             <AnimatedSpan className="text-green-500 block text-left">
               <span>✔ Verifying framework. Found Next.js.</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2300 - 1200 && (
+          {typingComplete && elapsed >= 2000 - 900 && (
             <AnimatedSpan className="text-green-500 block text-left">
               <span>✔ Validating Tailwind CSS.</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2700 - 1200 && (
+          {typingComplete && elapsed >= 2400 - 900 && (
             <AnimatedSpan className="text-green-500 block text-left">
               <span>✔ Validating import alias.</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 3100 - 1200 && (
+          {typingComplete && elapsed >= 2800 - 900 && (
             <AnimatedSpan className="text-green-500 block text-left">
               <span>✔ Writing components.json.</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 3500 - 1200 && (
+          {typingComplete && elapsed >= 3200 - 900 && (
             <AnimatedSpan className="text-green-500 block text-left">
               <span>✔ Checking registry.</span>
             </AnimatedSpan>
@@ -102,175 +152,128 @@ export default function TerminalDemo() {
       ),
     },
 
-    // Screen 2: Button installation
+    // Screen 4: Button installation
     {
       id: "button",
-      command: "pnpm dlx shadcn@latest install button",
-      typingDuration: 1500,
+      command: "shadcn-ui add button",
+      typingDuration: 1000,
       duration: 9000,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation delay={100} className="block text-left">
-            &gt; pnpm dlx shadcn@latest install button
+          <TypingAnimation delay={20} className="block text-left">
+            &gt; shadcn-ui add button
           </TypingAnimation>
 
-          {typingComplete && elapsed >= 1800 - 1500 && (
+          {typingComplete && elapsed >= 1400 - 1000 && (
             <AnimatedSpan className="text-green-500 block text-left">
               <span>✔ Updating tailwind.config.ts</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2600 - 1500 && (
+          {typingComplete && elapsed >= 2100 - 1000 && (
             <AnimatedSpan className="text-green-500 block text-left">
               <span>✔ Updating app/globals.css</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 3400 - 1500 && (
+          {typingComplete && elapsed >= 2800 - 1000 && (
             <AnimatedSpan className="text-green-500 block text-left">
               <span>✔ Installing dependencies.</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 4200 - 1500 && (
+          {typingComplete && elapsed >= 3500 - 1000 && (
             <AnimatedSpan className="text-blue-500 block text-left">
               <span>ℹ Added components:</span>
               <span className="pl-2">- Button</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 5000 - 1500 && (
+          {typingComplete && elapsed >= 4200 - 1000 && (
             <TypingAnimation
-              delay={500} // Short delay after previous line
-              className="text-muted-foreground block text-left"
+              delay={20}
+              className="text-green-500 block text-left"
             >
-              Success! Component installation completed.
-            </TypingAnimation>
-          )}
-
-          {typingComplete && elapsed >= 6500 - 1500 && (
-            <TypingAnimation
-              delay={500} // Short delay after previous line
-              className="text-muted-foreground block text-left"
-            >
-              You may now use the Button component.
+              ✓ Setup complete!
             </TypingAnimation>
           )}
         </>
       ),
     },
-    // --- NEW GIF SCREEN ---
-    {
-      id: "gif-display",
-      command: "cat reaction.gif", // Example command
-      typingDuration: 800,
-      duration: 5000, // Show GIF for 5 seconds
-      content: (elapsed, typingComplete, randomGif) => (
-        <>
-          <TypingAnimation delay={100} className="block text-left">
-            &gt; cat reaction.gif
-          </TypingAnimation>
 
-          {typingComplete &&
-            elapsed > 200 && ( // Show GIF shortly after typing completes
-              <AnimatedSpan className="block text-left w-full h-full flex items-center justify-center">
-                {/* Ensure the image scales reasonably within the terminal */}
-                <img
-                  src={randomGif || CAT_GIFS[0]}
-                  alt="Reaction GIF"
-                  className="max-w-full max-h-48 object-contain" // Adjust size as needed
-                />
-              </AnimatedSpan>
-            )}
-        </>
-      ),
-    },
-    // ---------------------
-
-    // Screen 3: Object Viewing/Debugging (Adjusted timings)
+    // Screen 5: Object Viewing/Debugging
     {
       id: "data-objects",
-      command: "node inspect src/utils/dataUtils.js",
-      typingDuration: 1300,
+      command: "node inspect types.ts",
+      typingDuration: 900,
       duration: 7000,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation delay={100} className="block text-left">
-            &gt; node inspect src/utils/dataUtils.js
+          <TypingAnimation delay={20} className="block text-left">
+            &gt; node inspect types.ts
           </TypingAnimation>
 
-          {typingComplete && elapsed >= 1600 - 1300 && (
-            <AnimatedSpan className="block text-left text-white">
-              <span>{"< Debugger listening on ws://127.0.0.1:9229/..."}</span>
+          {typingComplete && elapsed >= 1200 - 900 && (
+            <AnimatedSpan className="block text-left text-blue-400">
+              <span>Debugger listening on ws://127.0.0.1:9229/8zcjf3d</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2100 - 1300 && (
-            <AnimatedSpan className="block text-left text-white">
-              <span>{"debug> const data = getInitialData();"}</span>
+          {typingComplete && elapsed >= 1700 - 900 && (
+            <AnimatedSpan className="block text-left text-cyan-400">
+              <span>debug&gt; const portfolio = require('./portfolio.ts');</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2600 - 1300 && (
-            <AnimatedSpan className="block text-left text-white">
-              <span>{"debug> data"}</span>
+          {typingComplete && elapsed >= 2200 - 900 && (
+            <AnimatedSpan className="block text-left text-cyan-400">
+              <span>debug&gt; portfolio</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 3100 - 1300 && (
+          {typingComplete && elapsed >= 2700 - 900 && (
             <AnimatedSpan className="block text-left text-yellow-300">
-              <pre className="whitespace-pre-wrap">
-                {`[
-  {
-    id: "item-1",
-    name: "First data item",
-    value: 42,
-    metadata: { created: "2023-05-12", type: "number" }
-  },
-  {
-    id: "item-2",
-    name: "Second data item",
-    value: "string value",
-    metadata: { created: "2023-05-13", type: "string" }
-  }
-]`}
-              </pre>
-            </AnimatedSpan>
-          )}
-
-          {typingComplete && elapsed >= 4200 - 1300 && (
-            <AnimatedSpan className="block text-left text-white">
-              <span>{"debug> data[0].metadata"}</span>
-            </AnimatedSpan>
-          )}
-
-          {typingComplete && elapsed >= 4700 - 1300 && (
-            <AnimatedSpan className="block text-left text-yellow-300">
-              <pre className="whitespace-pre-wrap">
-                {`{
-  created: "2023-05-12",
-  type: "number"
+              <pre className="whitespace-pre-wrap text-xs">
+                {`PortfolioData {
+  name: 'Vanessa Depraute',
+  title: 'Full-stack Developer',
+  skills: [ 'React', 'Next.js', 'TypeScript' ],
+  experience: 5
 }`}
               </pre>
             </AnimatedSpan>
           )}
+
+          {typingComplete && elapsed >= 3600 - 900 && (
+            <AnimatedSpan className="block text-left text-cyan-400">
+              <span>debug&gt; portfolio.skills</span>
+            </AnimatedSpan>
+          )}
+
+          {typingComplete && elapsed >= 4100 - 900 && (
+            <AnimatedSpan className="block text-left text-yellow-300">
+              <pre className="whitespace-pre-wrap text-xs">
+                {`[ 'React', 'Next.js', 'TypeScript' ]`}
+              </pre>
+            </AnimatedSpan>
+          )}
         </>
       ),
     },
 
-    // Screen 4: Code editor part 1 (Adjusted timings)
+    // Screen 7: Code editor
     {
       id: "code-part1",
-      command: "vim src/components/DataProcessor.tsx",
-      typingDuration: 1300,
+      command: "vim App.tsx",
+      typingDuration: 900,
       duration: 6000,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation delay={100} className="block text-left">
-            &gt; vim src/components/DataProcessor.tsx
+          <TypingAnimation delay={20} className="block text-left">
+            &gt; vim App.tsx
           </TypingAnimation>
 
-          {typingComplete && elapsed >= 1600 - 1300 && (
+          {typingComplete && elapsed >= 1200 - 900 && (
             <AnimatedSpan className="block text-left">
               <pre className="whitespace-pre-wrap">
                 <span className="text-blue-400">import</span>
@@ -285,61 +288,65 @@ export default function TerminalDemo() {
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2200 - 1300 && (
+          {typingComplete && elapsed >= 1700 - 900 && (
             <AnimatedSpan className="block text-left">
               <pre className="whitespace-pre-wrap">
                 <span className="text-blue-400">import</span>
-                <span className="text-white"> </span>
-                <span className="text-purple-400">
-                  {"{ processData, DataItem }"}
-                </span>
-                <span className="text-white"> from </span>
-                <span className="text-yellow-300">"../utils/dataUtils"</span>
+                <span className="text-white">{" { "}</span>
+                <span className="text-purple-400">ReactNode </span>
+                <span className="text-white">{"} from "}</span>
+                <span className="text-yellow-300">"react"</span>
                 <span className="text-white">;</span>
               </pre>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2800 - 1300 && (
+          {typingComplete && elapsed >= 2200 - 900 && (
             <AnimatedSpan className="block text-left">
               <pre className="whitespace-pre-wrap">
                 <span className="text-green-400">
-                  // Advanced data processing component
+                  // Main application component
                 </span>
               </pre>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 3400 - 1300 && (
+          {typingComplete && elapsed >= 2800 - 900 && (
             <AnimatedSpan className="block text-left">
               <pre className="whitespace-pre-wrap">
-                <span className="text-blue-400">interface</span>
-                <span className="text-yellow-200"> DataProcessorProps </span>
-                <span className="text-white">{"{"}</span>
+                <span className="text-blue-400">export default</span>
+                <span className="text-white"> </span>
+                <span className="text-yellow-100">App</span>
+                <span className="text-white">(): </span>
+                <span className="text-blue-300">ReactNode</span>
+                <span className="text-white">{" {"}</span>
               </pre>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 4000 - 1300 && (
+          {typingComplete && elapsed >= 3400 - 900 && (
             <AnimatedSpan className="block text-left">
               <pre className="whitespace-pre-wrap pl-4">
-                <span className="text-blue-300">initialData</span>
-                <span className="text-white">: </span>
-                <span className="text-yellow-200">DataItem[]</span>
-                <span className="text-white">;</span>
+                <span className="text-blue-400">return</span>
+                <span className="text-white"> (</span>
               </pre>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 4600 - 1300 && (
+          {typingComplete && elapsed >= 4000 - 900 && (
             <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap pl-4">
-                <span className="text-blue-300">processingOptions</span>
-                <span className="text-white">?: </span>
-                <span className="text-yellow-200">
-                  {"{ depth: number; recursive: boolean }"}
-                </span>
-                <span className="text-white">;</span>
+              <pre className="whitespace-pre-wrap pl-8">
+                <span className="text-purple-300">&lt;div&gt;</span>
+              </pre>
+            </AnimatedSpan>
+          )}
+
+          {typingComplete && elapsed >= 4500 - 900 && (
+            <AnimatedSpan className="block text-left">
+              <pre className="whitespace-pre-wrap pl-12">
+                <span className="text-purple-300">&lt;h1&gt;</span>
+                <span className="text-white">Hello World</span>
+                <span className="text-purple-300">&lt;/h1&gt;</span>
               </pre>
             </AnimatedSpan>
           )}
@@ -347,273 +354,152 @@ export default function TerminalDemo() {
       ),
     },
 
-    // Screen 5: Code editor part 2 (Adjusted timings)
-    {
-      id: "code-part2",
-      command: "vim src/components/DataProcessor.tsx",
-      typingDuration: 1000,
-      duration: 7000,
-      content: (elapsed, typingComplete) => (
-        <>
-          <TypingAnimation delay={100} className="block text-left">
-            &gt; vim src/components/DataProcessor.tsx (continued)
-          </TypingAnimation>
-
-          {typingComplete && elapsed >= 1300 - 1000 && (
-            <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap">
-                <span className="text-blue-400">const</span>
-                <span className="text-yellow-100"> DataProcessor</span>
-                <span className="text-white">: </span>
-                <span className="text-blue-300">React.FC</span>
-                <span className="text-purple-300">
-                  {"<DataProcessorProps>"}
-                </span>
-                <span className="text-white"> = </span>
-                <span className="text-purple-300">{"({"}</span>
-              </pre>
-            </AnimatedSpan>
-          )}
-
-          {typingComplete && elapsed >= 2100 - 1000 && (
-            <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap pl-4">
-                <span className="text-blue-300">initialData</span>
-                <span className="text-white">,</span>
-              </pre>
-            </AnimatedSpan>
-          )}
-
-          {typingComplete && elapsed >= 2700 - 1000 && (
-            <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap pl-4">
-                <span className="text-blue-300">processingOptions</span>
-                <span className="text-white"> = </span>
-                <span className="text-purple-300">
-                  {"{ depth: 2, recursive: true }"}
-                </span>
-              </pre>
-            </AnimatedSpan>
-          )}
-
-          {typingComplete && elapsed >= 3500 - 1000 && (
-            <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap">
-                <span className="text-purple-300">{"}) => {"}</span>
-              </pre>
-            </AnimatedSpan>
-          )}
-
-          {typingComplete && elapsed >= 4100 - 1000 && (
-            <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap pl-4">
-                <span className="text-blue-400">const</span>
-                <span className="text-white"> [</span>
-                <span className="text-blue-300">data</span>
-                <span className="text-white">, </span>
-                <span className="text-yellow-100">setData</span>
-                <span className="text-white">] = </span>
-                <span className="text-blue-400">useState</span>
-                <span className="text-purple-300">{"<DataItem[]>"}</span>
-                <span className="text-white">(initialData);</span>
-              </pre>
-            </AnimatedSpan>
-          )}
-
-          {typingComplete && elapsed >= 5100 - 1000 && (
-            <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap pl-4">
-                <span className="text-blue-400">try</span>
-                <span className="text-white"> {"{"}</span>
-                <span className="text-white"> // Processing logic... </span>
-                <span className="text-white">{"}"}</span>
-                <span className="text-blue-400"> catch </span>
-                <span className="text-white">(error) {"{"}</span>
-                <span className="text-white"> // Error handling... </span>
-                <span className="text-white">{"}"}</span>
-              </pre>
-            </AnimatedSpan>
-          )}
-        </>
-      ),
-    },
-
-    // Screen 6: npm run dev (Adjusted timings)
+    // Screen 8: npm run dev
     {
       id: "dev",
       command: "npm run dev",
-      typingDuration: 900,
+      typingDuration: 700,
       duration: 5500,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation delay={100} className="block text-left">
+          <TypingAnimation delay={20} className="block text-left">
             &gt; npm run dev
           </TypingAnimation>
 
-          {typingComplete && elapsed >= 1200 - 900 && (
-            <AnimatedSpan className="block text-left text-green-400">
-              <span>Started development server on http://localhost:3000</span>
-            </AnimatedSpan>
-          )}
-
-          {typingComplete && elapsed >= 1800 - 900 && (
-            <AnimatedSpan className="block text-left text-blue-400">
-              <span>
-                ready - started server on 0.0.0.0:3000, url:
-                http://localhost:3000
-              </span>
-            </AnimatedSpan>
-          )}
-
-          {typingComplete && elapsed >= 2400 - 900 && (
-            <AnimatedSpan className="block text-left text-yellow-400">
-              <span>info - Loaded env from .env.local</span>
-            </AnimatedSpan>
-          )}
-
-          {typingComplete && elapsed >= 3000 - 900 && (
-            <AnimatedSpan className="block text-left text-green-400">
-              <span>✓ Ready in 1.8s</span>
-            </AnimatedSpan>
-          )}
-
-          {typingComplete && elapsed >= 3600 - 900 && (
+          {typingComplete && elapsed >= 1100 - 700 && (
             <AnimatedSpan className="block text-left text-gray-400">
-              <span>● Compiling /_error (client and server)...</span>
+              <span>▲ Next.js 14.0.3</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 4200 - 900 && (
-            <AnimatedSpan className="block text-left text-green-400">
-              <span>✓ Compiled successfully</span>
-            </AnimatedSpan>
-          )}
-        </>
-      ),
-    },
-
-    // --- SECOND CAT GIF SCREEN ---
-    {
-      id: "gif-display-2",
-      command: "cat celebration.gif",
-      typingDuration: 800,
-      duration: 4000, // Show GIF for 4 seconds
-      content: (elapsed, typingComplete, randomGif) => (
-        <>
-          <TypingAnimation delay={100} className="block text-left">
-            &gt; cat celebration.gif
-          </TypingAnimation>
-
-          {typingComplete &&
-            elapsed > 200 && (
-              <AnimatedSpan className="block text-left w-full h-full flex items-center justify-center">
-                <img
-                  src={randomGif || CAT_GIFS[0]}
-                  alt="Celebration GIF"
-                  className="max-w-full max-h-48 object-contain"
-                />
-              </AnimatedSpan>
-            )}
-        </>
-      ),
-    },
-    // ---------------------
-
-    // Screen 7: Error messages (Adjusted timings)
-    {
-      id: "error",
-      command: "npm run build",
-      typingDuration: 800,
-      duration: 5500,
-      content: (elapsed, typingComplete) => (
-        <>
-          <TypingAnimation delay={100} className="block text-left">
-            &gt; npm run build
-          </TypingAnimation>
-
-          {typingComplete && elapsed >= 1100 - 800 && (
-            <AnimatedSpan className="block text-left text-red-500 font-bold">
-              <span>ERROR in ./src/components/DataProcessor.tsx</span>
+          {typingComplete && elapsed >= 1600 - 700 && (
+            <AnimatedSpan className="block text-left text-blue-400">
+              <span>  Local:        http://localhost:3000</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 1600 - 800 && (
-            <AnimatedSpan className="block text-left text-red-500">
-              <span>
-                Module build failed (from
-                ./node_modules/babel-loader/lib/index.js):
-              </span>
+          {typingComplete && elapsed >= 2100 - 700 && (
+            <AnimatedSpan className="block text-left text-blue-400">
+              <span>  Environments: .env.local</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2100 - 800 && (
-            <AnimatedSpan className="block text-left text-red-500">
-              <span>
-                SyntaxError: ./src/components/DataProcessor.tsx: Unexpected
-                token (42:18)
-              </span>
+          {typingComplete && elapsed >= 2700 - 700 && (
+            <AnimatedSpan className="text-green-500 block text-left">
+              <span>✓ Ready in 2.1s</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2600 - 800 && (
-            <AnimatedSpan className="block text-left text-red-500">
-              <span>{"> 42 |       setData(result.map(item => {{"}</span>
+          {typingComplete && elapsed >= 3300 - 700 && (
+            <AnimatedSpan className="block text-left text-gray-400">
+              <span>○ Compiling / ...</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 3100 - 800 && (
-            <AnimatedSpan className="block text-left text-red-500 font-bold">
-              <span>Failed to compile.</span>
-            </AnimatedSpan>
-          )}
-
-          {typingComplete && elapsed >= 3600 - 800 && (
-            <AnimatedSpan className="block text-left text-red-500">
-              <span>
-                Error: TypeScript error: Property 'map' does not exist on type
-                'unknown'.
-              </span>
+          {typingComplete && elapsed >= 3900 - 700 && (
+            <AnimatedSpan className="text-green-400 block text-left">
+              <span>✓ Compiled in 1.4s</span>
             </AnimatedSpan>
           )}
         </>
       ),
     },
 
-    // Screen 8: Bug fixed (Adjusted timings)
+    // Screen 9: npm run build - Success
     {
       id: "fixed",
       command: "npm run build",
-      typingDuration: 800,
-      duration: 3500,
+      typingDuration: 700,
+      duration: 4500,
       content: (elapsed, typingComplete) => (
         <>
-          <TypingAnimation delay={100} className="block text-left">
+          <TypingAnimation delay={20} className="block text-left">
             &gt; npm run build
           </TypingAnimation>
 
-          {typingComplete && elapsed >= 1100 - 800 && (
-            <AnimatedSpan className="block text-left text-green-500 font-bold">
-              <span>✓ Bug fixed.</span>
+          {typingComplete && elapsed >= 1100 - 700 && (
+            <AnimatedSpan className="text-gray-400 block text-left">
+              <span>▲ Next.js 14.0.3</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 1800 - 800 && (
-            <AnimatedSpan className="block text-left text-green-500">
-              <span>✓ Creating an optimized production build...</span>
+          {typingComplete && elapsed >= 1700 - 700 && (
+            <AnimatedSpan className="text-blue-400 block text-left">
+              <span>Creating optimized production build...</span>
             </AnimatedSpan>
           )}
 
-          {typingComplete && elapsed >= 2500 - 800 && (
-            <AnimatedSpan className="block text-left text-green-500">
-              <span>✓ Compiled successfully.</span>
+          {typingComplete && elapsed >= 2400 - 700 && (
+            <AnimatedSpan className="text-green-500 block text-left">
+              <span>✓ Compiled successfully</span>
+            </AnimatedSpan>
+          )}
+
+          {typingComplete && elapsed >= 3000 - 700 && (
+            <AnimatedSpan className="text-blue-400 block text-left">
+              <span>✓ Linting and type checking...</span>
+            </AnimatedSpan>
+          )}
+
+          {typingComplete && elapsed >= 3700 - 700 && (
+            <AnimatedSpan className="text-green-500 block text-left">
+              <span>✓ Build completed successfully</span>
             </AnimatedSpan>
           )}
         </>
       ),
     },
-  ];
 
-  // Function to handle screen transitions
+    ];
+
+    // Define GIF screens separately
+    const gif: ScreenSequence[] = [
+    // Fullscreen GIF - Display moment 1
+    {
+      id: "fullscreen-gif-1",
+      command: "",
+      typingDuration: 0,
+      duration: 3000,
+      content: (_elapsed, _typingComplete, randomGif) => (
+        <div className="w-full h-full flex items-center justify-center">
+          <img
+            src={randomGif || CAT_GIFS[0]}
+            alt="Fullscreen GIF"
+            className="max-w-full max-h-full object-contain"
+          />
+        </div>
+      ),
+    },
+
+    // Fullscreen GIF - Display moment 2
+    {
+      id: "fullscreen-gif-2",
+      command: "",
+      typingDuration: 0,
+      duration: 3500,
+      content: (_elapsed, _typingComplete, randomGif) => (
+        <div className="w-full h-full flex items-center justify-center">
+          <img
+            src={randomGif || CAT_GIFS[0]}
+            alt="Fullscreen GIF"
+            className="max-w-full max-h-full object-contain"
+          />
+        </div>
+      ),
+    },
+    ];
+
+    // Return both arrays
+    return { codeScreens: code, gifScreens: gif };
+  }, []); // Empty dependencies - screens never change
+
+  // Combined screen sequences - will be built dynamically based on pattern
+  const screenSequences: ScreenSequence[] = useMemo(
+    () => codeScreens.concat(gifScreens),
+    [codeScreens, gifScreens]
+  );
+
+  // Function to handle screen transitions with pattern-based randomization
   const transitionToNextScreen = useCallback(() => {
     // Clear timers related to the current screen
     if (intervalRef.current) {
@@ -632,13 +518,31 @@ export default function TerminalDemo() {
       // Schedule showing the next screen after a short delay
       setTimeout(() => {
         try {
-          const nextIndex = (currentScreenIndex + 1) % screenSequences.length;
-          setCurrentScreenIndex(nextIndex);
+          // Determine next screen based on pattern (0, 1 = code; 2 = gif)
+          const nextPatternPos = (patternPosition + 1) % 3; // Pattern cycles: 0 → 1 → 2 → 0
+          let nextScreenIndex: number;
+
+          if (nextPatternPos === 0 || nextPatternPos === 1) {
+            // Pick a random code screen
+            const randomCodeIndex = Math.floor(Math.random() * codeScreens.length);
+            nextScreenIndex = randomCodeIndex;
+          } else {
+            // Pick a random GIF screen (pattern position === 2)
+            const randomGifIndex = Math.floor(Math.random() * gifScreens.length);
+            nextScreenIndex = codeScreens.length + randomGifIndex;
+            // Pick a new random GIF URL
+            setCurrentGifUrl(CAT_GIFS[Math.floor(Math.random() * CAT_GIFS.length)]);
+          }
+
+          // Set the new screen index
+          setCurrentScreenIndex(nextScreenIndex);
+
+          // Update pattern position
+          setPatternPosition(nextPatternPos);
+
           // Reset state for the new screen
           setScreenElapsedTime(0);
           setIsTypingComplete(false);
-          // Pick a new random GIF for the next cycle
-          setCurrentGifUrl(CAT_GIFS[Math.floor(Math.random() * CAT_GIFS.length)]);
           screenStartTimeRef.current = Date.now(); // Record start time for the new screen
           setShowScreen(true); // Show the new screen
         } catch (error) {
@@ -650,7 +554,7 @@ export default function TerminalDemo() {
       console.error("Error initiating screen transition:", error);
       // Handle error if hiding fails
     }
-  }, [currentScreenIndex]); // screenSequences.length is constant
+  }, [patternPosition]); // Only patternPosition changes, screen counts are constant
 
   // Initialize the animation only once on mount
   useEffect(() => {
@@ -744,7 +648,7 @@ export default function TerminalDemo() {
       if (localScreenTransitionTimerRef)
         clearTimeout(localScreenTransitionTimerRef);
     };
-  }, [currentScreenIndex, isInitialized, showScreen, transitionToNextScreen]); // Add transitionToNextScreen dependency
+  }, [currentScreenIndex, isInitialized, showScreen, transitionToNextScreen, screenSequences]); // Add transitionToNextScreen dependency
 
   // --- Render Logic ---
   try {

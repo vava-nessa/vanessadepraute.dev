@@ -16,7 +16,22 @@ interface Spark {
   y: number;
   angle: number;
   startTime: number;
+  customDuration: number;
+  customRadius: number;
+  customColor: string;
+  customSize: number;
 }
+
+// Color palette for random sparks
+const SPARK_COLORS = [
+  '#e3058d', // Pink
+  '#d105e3', // Magenta
+  '#6e05e3', // Purple
+  '#14c797', // Teal
+  '#e4ad04', // Yellow/Gold
+  '#0362ff', // Blue
+  '#ff0903', // Red
+];
 
 const ClickSpark: React.FC<ClickSparkProps> = ({
   sparkColor = '#fff',
@@ -97,22 +112,26 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
 
       sparksRef.current = sparksRef.current.filter((spark: Spark) => {
         const elapsed = timestamp - spark.startTime;
-        if (elapsed >= duration) {
+        // Use spark's custom duration and radius
+        const sparkDur = spark.customDuration;
+        const sparkRad = spark.customRadius;
+
+        if (elapsed >= sparkDur) {
           return false;
         }
 
-        const progress = elapsed / duration;
+        const progress = elapsed / sparkDur;
         const eased = easeFunc(progress);
 
-        const distance = eased * sparkRadius * extraScale;
-        const lineLength = sparkSize * (1 - eased);
+        const distance = eased * sparkRad * extraScale;
+        const lineLength = spark.customSize * (1 - eased);
 
         const x1 = spark.x + distance * Math.cos(spark.angle);
         const y1 = spark.y + distance * Math.sin(spark.angle);
         const x2 = spark.x + (distance + lineLength) * Math.cos(spark.angle);
         const y2 = spark.y + (distance + lineLength) * Math.sin(spark.angle);
 
-        ctx.strokeStyle = sparkColor;
+        ctx.strokeStyle = spark.customColor;
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.moveTo(x1, y1);
@@ -132,6 +151,10 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
     };
   }, [sparkColor, sparkSize, sparkRadius, sparkCount, duration, easeFunc, extraScale]);
 
+  // Helper function to generate random values
+  const randomBetween = (min: number, max: number) =>
+    Math.floor(Math.random() * (max - min + 1)) + min;
+
   const handleClick = (e: React.MouseEvent<HTMLDivElement>): void => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -139,12 +162,24 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
 
+    // Randomize values for each click
+    const randomSparkCount = randomBetween(2, 12);
+    const randomDuration = randomBetween(200, 1200);
+    const randomSparkRadius = randomBetween(5, 40);
+    const randomSparkSize = randomBetween(5, 20);
+    const randomColor = SPARK_COLORS[Math.floor(Math.random() * SPARK_COLORS.length)];
+
     const now = performance.now();
-    const newSparks: Spark[] = Array.from({ length: sparkCount }, (_, i) => ({
+    const newSparks: Spark[] = Array.from({ length: randomSparkCount }, (_, i) => ({
       x,
       y,
-      angle: (2 * Math.PI * i) / sparkCount,
-      startTime: now
+      angle: (2 * Math.PI * i) / randomSparkCount,
+      startTime: now,
+      // Store custom duration, radius, size and color per spark batch
+      customDuration: randomDuration,
+      customRadius: randomSparkRadius,
+      customColor: randomColor,
+      customSize: randomSparkSize
     }));
 
     sparksRef.current.push(...newSparks);

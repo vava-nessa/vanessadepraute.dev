@@ -52,7 +52,7 @@ export const AnimatedThemeToggler = ({ className }: AnimatedThemeTogglerProps) =
           ],
         },
         {
-          duration: 700,
+          duration: 600,
           easing: "ease-in-out",
           pseudoElement: "::view-transition-new(root)",
         } as any
@@ -80,8 +80,8 @@ export const AnimatedThemeToggler = ({ className }: AnimatedThemeTogglerProps) =
             initial={{ opacity: 0, scale: 0.55, rotate: 25 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.33 }}
-            className="text-yellow-400"
+            transition={{ duration: 0.165 }}
+            className="text-brand-primary"
           >
             <Sun size={20} />
           </motion.span>
@@ -91,8 +91,8 @@ export const AnimatedThemeToggler = ({ className }: AnimatedThemeTogglerProps) =
             initial={{ opacity: 0, scale: 0.55, rotate: -25 }}
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.33 }}
-            className="text-slate-700"
+            transition={{ duration: 0.165 }}
+            className="text-brand-primary"
           >
             <Moon size={20} />
           </motion.span>

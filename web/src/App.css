@@ -4,13 +4,23 @@
 }
 
 ::selection {
-  background-color: #9D3D5C;
-  color: #ffffff;
+  background-color: rgba(157, 61, 92, 0.1);
+  color: inherit;
 }
 
 ::-moz-selection {
-  background-color: #9D3D5C;
-  color: #ffffff;
+  background-color: rgba(157, 61, 92, 0.1);
+  color: inherit;
+}
+
+:root.light-mode ::selection {
+  background-color: rgba(139, 92, 246, 0.1);
+  color: inherit;
+}
+
+:root.light-mode ::-moz-selection {
+  background-color: rgba(139, 92, 246, 0.1);
+  color: inherit;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -39,6 +49,12 @@ h2 {
   font-weight: normal;
 }
 
+/* Color Variables */
+:root {
+  --color-primary: #ff3d9a;
+  --color-secondary: #ff7cfd;
+}
+
 /* Light Mode Styles */
 :root.light-mode {
   --bg-primary: #fcf5ff;
@@ -46,6 +62,8 @@ h2 {
   --text-primary: #1f1f1f;
   --text-secondary: #666666;
   --border-color: rgba(139, 92, 246, 0.2);
+  --color-primary: #ff3d9a;
+  --color-secondary: #ff7cfd;
 }
 
 :root.light-mode .min-h-screen {
@@ -64,6 +82,10 @@ h2 {
 
 :root.light-mode .text-neutral-400 {
   color: #999999 !important;
+}
+
+:root.light-mode .text-neutral-300 {
+  color: #404040 !important;
 }
 
 :root.light-mode .text-neutral-500 {
@@ -113,4 +135,13 @@ h2 {
 
 :root.light-mode * {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Brand colors for text emphasis */
+.text-brand-primary {
+  color: var(--color-primary);
+}
+
+.text-brand-secondary {
+  color: var(--color-secondary);
 }

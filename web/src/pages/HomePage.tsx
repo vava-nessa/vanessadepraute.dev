@@ -12,7 +12,7 @@ import Star from "../components/Star/Star.tsx";
 import TextType from "../components/TextType";
 import ContactButton from "../components/ContactButton";
 import { ClickSpark } from "../components/ClickSpark";
-import TerminalInterests from "../components/TerminalInterests.tsx";
+import { Accordion } from "../components/ui/Accordion.tsx";
 
 function HomePage() {
   const [error, setError] = useState<Error | null>(null);
@@ -75,7 +75,7 @@ function HomePage() {
                   <div id="header-text-container" className="flex flex-col">
                     {/* Greeting */}
                     <p id="header-greeting" className="text-neutral-400 text-lg md:text-xl mb-3 font-normal tracking-wide">
-                      {t("header.greeting")}
+                      Hi there! I'm <span className="text-brand-primary font-semibold">Vanessa</span>.
                     </p>
 
                     {/* Title */}
@@ -90,20 +90,29 @@ function HomePage() {
                     </h1>
                   </div>
                 </div>
-
-                {/* Description paragraph below the row */}
-                <div id="header-description-container" className="max-w-2xl">
-                  <p id="header-description" className="text-neutral-400 text-lg md:text-xl leading-relaxed font-light m-0">
-                    {t("header.description")}
-                  </p>
-                </div>
               </div>
 
-              {/* CoderGirl Section */}
-              <div id="coder-girl-section" className="w-full flex justify-center items-center min-h-[300px] lg:min-h-auto">
-                <div id="coder-girl-container" className="cover relative w-[600px] h-[600px] flex items-center justify-center">
-                  <div id="coder-girl-wrapper" className="absolute inset-0 z-5 flex items-center justify-center">
-                    <CoderGirl size="100%" />
+              {/* Bio & CoderGirl Section */}
+              <div id="bio-section" className="w-full max-w-[1200px] mx-auto px-5">
+                <div id="bio-content" className="flex flex-col lg:flex-row gap-12 items-center lg:items-start">
+                  {/* Bio text on the left */}
+                  <div id="bio-text-container" className="flex-1">
+                    {(t("bio.paragraphs", { returnObjects: true }) as string[]).map((paragraph, index) => (
+                      <p
+                        key={index}
+                        className="text-neutral-300 text-sm md:text-base leading-relaxed font-light mb-6"
+                        dangerouslySetInnerHTML={{
+                          __html: paragraph.replace(/\*\*(.*?)\*\*/g, '<strong class="text-brand-primary font-semibold">$1</strong>')
+                        }}
+                      />
+                    ))}
+                  </div>
+
+                  {/* CoderGirl on the right */}
+                  <div id="coder-girl-container" className="flex-shrink-0 relative w-full lg:w-[500px] h-[500px] flex items-center justify-center">
+                    <div id="coder-girl-wrapper" className="absolute inset-0 z-5 flex items-center justify-center">
+                      <CoderGirl size="100%" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -111,9 +120,6 @@ function HomePage() {
 
             {/* TechStack Band */}
             <TechStack />
-
-            {/* Extended TechStack */}
-            <TechStackExtended />
 
             {/* Social Proof & Contact */}
             <div id="social-proof-section" className="w-full flex flex-col items-center py-10">
@@ -148,9 +154,11 @@ function HomePage() {
                 </div>
               )}
 
-              {/* Terminal Interests Section */}
-              <div id="terminal-interests-section">
-                <TerminalInterests />
+              {/* Tech Stack Extended Accordion - At the end */}
+              <div id="tech-stack-accordion" className="w-full max-w-4xl mx-auto mt-20 mb-20 px-4">
+                <Accordion title={t("techStack.title")} defaultOpen={false}>
+                  <TechStackExtended />
+                </Accordion>
               </div>
             </div>
           </div>

@@ -1,0 +1,44 @@
+/* View Transition animations */
+::view-transition-old(root) {
+  animation: none;
+}
+
+::view-transition-new(root) {
+  animation: none;
+}
+
+.animated-theme-toggler {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  background: none;
+  border: none;
+  padding: 0;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.animated-theme-toggler:hover {
+  transform: scale(1.1);
+}
+
+.animated-theme-toggler:active {
+  transform: scale(0.95);
+}
+
+/* Light mode overrides */
+:root.light-mode .animated-theme-toggler {
+  color: #333;
+}
+
+@media (max-width: 640px) {
+  .animated-theme-toggler {
+    top: 15px;
+    right: 15px;
+  }
+}

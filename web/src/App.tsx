@@ -5,7 +5,7 @@ import CoderGirl from "./components/CoderGirl/CoderGirl.tsx";
 import TechStack from "./components/TechStack/TechStack.tsx";
 import TechStackExtended from "./components/TechStackExtended/TechStackExtended.tsx";
 import LanguageSwitcher from "./components/LanguageSwitcher/LanguageSwitcher.tsx";
-import ThemeSwitcher from "./components/ThemeSwitcher/ThemeSwitcher.tsx";
+import { AnimatedThemeToggler } from "./components/ui/animated-theme-toggler";
 
 import { Testimonials } from "./components/Testimonials/Testimonials.tsx";
 import Star from "./components/Star/Star.tsx";
@@ -60,7 +60,7 @@ function App() {
         extraScale={1.8}
       >
         <LanguageSwitcher />
-        <ThemeSwitcher />
+        <AnimatedThemeToggler />
         <div id="app-main" className="min-h-screen w-full bg-black text-white overflow-x-hidden">
 
           <div id="app-content-wrapper" className="relative z-10">

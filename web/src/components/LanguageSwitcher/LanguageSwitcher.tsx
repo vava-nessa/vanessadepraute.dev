@@ -19,9 +19,6 @@ const LanguageSwitcher = () => {
       <span className={`flag ${i18n.language}`}>
         {i18n.language === "en" ? "🇬🇧" : "🇫🇷"}
       </span>
-      <span className="lang-code">
-        {i18n.language.toUpperCase()}
-      </span>
     </button>
   );
 };

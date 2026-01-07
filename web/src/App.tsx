@@ -10,6 +10,8 @@ import TextType from "./components/TextType";
 import ContactButton from "./components/ContactButton";
 import { ClickSpark } from "./components/ClickSpark";
 
+import TerminalInterests from "./components/TerminalInterests.tsx";
+
 function App() {
   const [error, setError] = useState<Error | null>(null);
 
@@ -57,14 +59,26 @@ function App() {
             <div className="wrapper w-full flex flex-col gap-20 p-5">
               {/* Header Section */}
               <div className="w-full max-w-[1200px] mx-auto pt-16 md:pt-24 px-5">
-                {/* Greeting */}
-                <p className="text-neutral-400 text-lg md:text-xl mb-4 font-normal tracking-wide">
-                  Hi there! I'm Vanessa.
-                </p>
-
-                {/* Title and Avatar row */}
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 mb-8">
+                <div className="flex flex-col lg:flex-row items-center gap-8 mb-8">
+                  {/* Avatar on the left */}
                   <div className="flex-shrink-0">
+                    <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-violet-500 overflow-hidden">
+                      <img
+                        src="/avatar.png"
+                        alt="Vanessa Depraute"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Text content on the right */}
+                  <div className="flex flex-col">
+                    {/* Greeting */}
+                    <p className="text-neutral-400 text-lg md:text-xl mb-3 font-normal tracking-wide">
+                      Hi there! I'm Vanessa.
+                    </p>
+
+                    {/* Title */}
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white m-0 tracking-tight">
                       <TextType
                         text={["Developer", "Designer", "Coder", "UI/UX Designer"]}
@@ -75,20 +89,9 @@ function App() {
                       />
                     </h1>
                   </div>
-
-                  {/* Avatar on the right */}
-                  <div className="flex-shrink-0 lg:ml-auto">
-                    <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-violet-500 overflow-hidden">
-                      <img
-                        src="/avatar.png"
-                        alt="Vanessa Depraute"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </div>
                 </div>
 
-                {/* Description paragraph below */}
+                {/* Description paragraph below the row */}
                 <div className="max-w-2xl">
                   <p className="text-neutral-400 text-lg md:text-xl leading-relaxed font-light m-0">
                     I've been crafting custom web solutions and sharing insights about freelance development since 2006. I'm passionate about designing web apps, from <span className="text-violet-400 font-semibold">UI/UX</span> concepts to solving real-life complex problems with <span className="text-violet-400 font-semibold">code</span>. Feel free to contact me !
@@ -129,13 +132,18 @@ function App() {
               </div>
 
               {/* Booking Section */}
-              <div className="w-full max-w-4xl mx-auto mb-20 px-4">
-                <iframe
-                  src="https://cal.com/vanessa-depraute-g3wudh/15min?user=vanessa-depraute-g3wudh"
-                  className="w-full h-[600px] border border-neutral-800 rounded-2xl shadow-2xl bg-neutral-900/50"
-                  title="Embedded content"
-                />
-              </div>
+              {false && (
+                <div className="w-full max-w-4xl mx-auto mb-20 px-4">
+                  <iframe
+                    src="https://cal.com/vanessa-depraute-g3wudh/15min?user=vanessa-depraute-g3wudh"
+                    className="w-full h-[600px] border border-neutral-800 rounded-2xl shadow-2xl bg-neutral-900/50"
+                    title="Embedded content"
+                  />
+                </div>
+              )}
+
+              {/* Terminal Interests Section */}
+              <TerminalInterests />
             </div>
           </div>
         </div>

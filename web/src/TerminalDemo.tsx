@@ -184,25 +184,25 @@ export default function TerminalDemo() {
           </TypingAnimation>
 
           {typingComplete && elapsed >= 1600 - 1300 && (
-            <AnimatedSpan className="block text-left text-white text-xs">
+            <AnimatedSpan className="block text-left text-white">
               <span>{"< Debugger listening on ws://127.0.0.1:9229/..."}</span>
             </AnimatedSpan>
           )}
 
           {typingComplete && elapsed >= 2100 - 1300 && (
-            <AnimatedSpan className="block text-left text-white text-xs">
+            <AnimatedSpan className="block text-left text-white">
               <span>{"debug> const data = getInitialData();"}</span>
             </AnimatedSpan>
           )}
 
           {typingComplete && elapsed >= 2600 - 1300 && (
-            <AnimatedSpan className="block text-left text-white text-xs">
+            <AnimatedSpan className="block text-left text-white">
               <span>{"debug> data"}</span>
             </AnimatedSpan>
           )}
 
           {typingComplete && elapsed >= 3100 - 1300 && (
-            <AnimatedSpan className="block text-left text-yellow-300 text-xs">
+            <AnimatedSpan className="block text-left text-yellow-300">
               <pre className="whitespace-pre-wrap">
                 {`[
   {
@@ -223,13 +223,13 @@ export default function TerminalDemo() {
           )}
 
           {typingComplete && elapsed >= 4200 - 1300 && (
-            <AnimatedSpan className="block text-left text-white text-xs">
+            <AnimatedSpan className="block text-left text-white">
               <span>{"debug> data[0].metadata"}</span>
             </AnimatedSpan>
           )}
 
           {typingComplete && elapsed >= 4700 - 1300 && (
-            <AnimatedSpan className="block text-left text-yellow-300 text-xs">
+            <AnimatedSpan className="block text-left text-yellow-300">
               <pre className="whitespace-pre-wrap">
                 {`{
   created: "2023-05-12",
@@ -256,7 +256,7 @@ export default function TerminalDemo() {
 
           {typingComplete && elapsed >= 1600 - 1300 && (
             <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap text-xs">
+              <pre className="whitespace-pre-wrap">
                 <span className="text-blue-400">import</span>
                 <span className="text-white"> React, </span>
                 <span className="text-purple-400">
@@ -271,7 +271,7 @@ export default function TerminalDemo() {
 
           {typingComplete && elapsed >= 2200 - 1300 && (
             <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap text-xs">
+              <pre className="whitespace-pre-wrap">
                 <span className="text-blue-400">import</span>
                 <span className="text-white"> </span>
                 <span className="text-purple-400">
@@ -286,7 +286,7 @@ export default function TerminalDemo() {
 
           {typingComplete && elapsed >= 2800 - 1300 && (
             <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap text-xs">
+              <pre className="whitespace-pre-wrap">
                 <span className="text-green-400">
                   // Advanced data processing component
                 </span>
@@ -296,7 +296,7 @@ export default function TerminalDemo() {
 
           {typingComplete && elapsed >= 3400 - 1300 && (
             <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap text-xs">
+              <pre className="whitespace-pre-wrap">
                 <span className="text-blue-400">interface</span>
                 <span className="text-yellow-200"> DataProcessorProps </span>
                 <span className="text-white">{"{"}</span>
@@ -306,7 +306,7 @@ export default function TerminalDemo() {
 
           {typingComplete && elapsed >= 4000 - 1300 && (
             <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap text-xs pl-4">
+              <pre className="whitespace-pre-wrap pl-4">
                 <span className="text-blue-300">initialData</span>
                 <span className="text-white">: </span>
                 <span className="text-yellow-200">DataItem[]</span>
@@ -317,7 +317,7 @@ export default function TerminalDemo() {
 
           {typingComplete && elapsed >= 4600 - 1300 && (
             <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap text-xs pl-4">
+              <pre className="whitespace-pre-wrap pl-4">
                 <span className="text-blue-300">processingOptions</span>
                 <span className="text-white">?: </span>
                 <span className="text-yellow-200">
@@ -345,7 +345,7 @@ export default function TerminalDemo() {
 
           {typingComplete && elapsed >= 1300 - 1000 && (
             <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap text-xs">
+              <pre className="whitespace-pre-wrap">
                 <span className="text-blue-400">const</span>
                 <span className="text-yellow-100"> DataProcessor</span>
                 <span className="text-white">: </span>
@@ -361,7 +361,7 @@ export default function TerminalDemo() {
 
           {typingComplete && elapsed >= 2100 - 1000 && (
             <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap text-xs pl-4">
+              <pre className="whitespace-pre-wrap pl-4">
                 <span className="text-blue-300">initialData</span>
                 <span className="text-white">,</span>
               </pre>
@@ -370,7 +370,7 @@ export default function TerminalDemo() {
 
           {typingComplete && elapsed >= 2700 - 1000 && (
             <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap text-xs pl-4">
+              <pre className="whitespace-pre-wrap pl-4">
                 <span className="text-blue-300">processingOptions</span>
                 <span className="text-white"> = </span>
                 <span className="text-purple-300">
@@ -382,7 +382,7 @@ export default function TerminalDemo() {
 
           {typingComplete && elapsed >= 3500 - 1000 && (
             <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap text-xs">
+              <pre className="whitespace-pre-wrap">
                 <span className="text-purple-300">{"}) => {"}</span>
               </pre>
             </AnimatedSpan>
@@ -390,7 +390,7 @@ export default function TerminalDemo() {
 
           {typingComplete && elapsed >= 4100 - 1000 && (
             <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap text-xs pl-4">
+              <pre className="whitespace-pre-wrap pl-4">
                 <span className="text-blue-400">const</span>
                 <span className="text-white"> [</span>
                 <span className="text-blue-300">data</span>
@@ -406,7 +406,7 @@ export default function TerminalDemo() {
 
           {typingComplete && elapsed >= 5100 - 1000 && (
             <AnimatedSpan className="block text-left">
-              <pre className="whitespace-pre-wrap text-xs pl-4">
+              <pre className="whitespace-pre-wrap pl-4">
                 <span className="text-blue-400">try</span>
                 <span className="text-white"> {"{"}</span>
                 <span className="text-white"> // Processing logic... </span>
@@ -718,7 +718,7 @@ export default function TerminalDemo() {
       <>
         {/* Conditionally render the Terminal based on showScreen */}
         {showScreen && (
-          <Terminal className="bg-black text-white border border-gray-700 shadow-lg">
+          <Terminal className="bg-black text-white">
             {/* Render the content of the current screen */}
             {currentScreen.content(screenElapsedTime, isTypingComplete)}
           </Terminal>

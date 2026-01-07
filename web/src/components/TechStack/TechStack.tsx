@@ -29,7 +29,7 @@ const TechStack = () => {
               <img
                 src={logo.src}
                 alt={logo.name}
-                className={`techstack-logo ${logo.name === "Next.js" ? "techstack-logo--nextjs" : ""}`}
+                className={`techstack-logo ${logo.name === "Next.js" ? "techstack-logo--nextjs" : ""} ${logo.name === "Supabase" ? "techstack-logo--supabase" : ""}`}
                 title={logo.name}
               />
             </div>

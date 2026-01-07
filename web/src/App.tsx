@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import CoderGirl from "./components/CoderGirl/CoderGirl.tsx";
 import TechStack from "./components/TechStack/TechStack.tsx";
+import TechStackExtended from "./components/TechStackExtended/TechStackExtended.tsx";
 
 import { Testimonials } from "./components/Testimonials/Testimonials.tsx";
 import Star from "./components/Star/Star.tsx";
@@ -112,6 +113,9 @@ function App() {
 
             {/* TechStack Band */}
             <TechStack />
+
+            {/* Extended TechStack */}
+            <TechStackExtended />
 
             {/* Social Proof & Contact */}
             <div className="w-full flex flex-col items-center py-10">

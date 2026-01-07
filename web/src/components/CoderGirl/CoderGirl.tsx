@@ -280,6 +280,30 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
     );
   }
 
+  // Generate steam effect styles
+  const getSteamStyles = (): CSSProperties => {
+    try {
+      const scale = getScaleFactor();
+      const baseX = 200 * scale;
+      const baseY = 420 * scale;
+      const width = 50 * scale;
+      const height = 150 * scale;
+
+      return {
+        position: "absolute",
+        left: `${baseX}px`,
+        top: `${baseY - height}px`,
+        width: `${width}px`,
+        height: `${height}px`,
+        zIndex: 10,
+        pointerEvents: "none",
+      };
+    } catch (error) {
+      console.error("Error generating steam styles:", error);
+      return {};
+    }
+  };
+
   try {
     return (
       <div
@@ -289,6 +313,22 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
       >
         <div style={getScreenStyles()}>{renderScreenContent()}</div>
         <img src={girlImage} alt="Coder Girl" style={getImageStyles()} />
+
+        {/* Steam effect */}
+        <div style={getSteamStyles()} className="steam-container">
+          <div className="steam-particle steam-particle-1"></div>
+          <div className="steam-particle steam-particle-2"></div>
+          <div className="steam-particle steam-particle-3"></div>
+          <div className="steam-particle steam-particle-4"></div>
+          <div className="steam-particle steam-particle-5"></div>
+          <div className="steam-particle steam-particle-6"></div>
+          <div className="steam-particle steam-particle-7"></div>
+          <div className="steam-particle steam-particle-8"></div>
+          <div className="steam-particle steam-particle-9"></div>
+          <div className="steam-particle steam-particle-10"></div>
+          <div className="steam-particle steam-particle-11"></div>
+          <div className="steam-particle steam-particle-12"></div>
+        </div>
       </div>
     );
   } catch (error) {

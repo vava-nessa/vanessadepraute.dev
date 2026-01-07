@@ -1,0 +1,49 @@
+.techstack-container {
+  width: 100vw;
+  overflow: hidden;
+  padding: 40px 0;
+  margin-left: calc(-50vw + 50%);
+  background: transparent;
+}
+
+.techstack-track {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.techstack-content {
+  display: flex;
+  gap: 60px;
+  padding: 0 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.techstack-logo-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 100px;
+  height: 60px;
+  flex-shrink: 0;
+}
+
+.techstack-logo {
+  max-width: 90px;
+  max-height: 55px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  opacity: 1;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.techstack-logo:hover {
+  transform: scale(1.1);
+}
+
+.techstack-logo--nextjs {
+  filter: invert(1) brightness(1.1);
+}

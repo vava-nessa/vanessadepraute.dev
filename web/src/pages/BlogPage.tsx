@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import "../App.css";
 import LanguageSwitcher from "../components/LanguageSwitcher/LanguageSwitcher.tsx";
 import { AnimatedThemeToggler } from "../components/ui/animated-theme-toggler";
 import { useEffect } from "react";

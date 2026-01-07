@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
+import "../App.css";
 import CoderGirl from "../components/CoderGirl/CoderGirl.tsx";
 import TechStack from "../components/TechStack/TechStack.tsx";
 import TechStackExtended from "../components/TechStackExtended/TechStackExtended.tsx";

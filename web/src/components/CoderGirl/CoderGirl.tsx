@@ -10,17 +10,87 @@ interface CoderGirlProps {
   containerClassName?: string;
 }
 
+// Screen corner coordinates (on 1024x1024 base image)
+// Coordinates are X from left, Y from top
+// With 20px inward margin to prevent overflow
+const SCREEN_CORNERS = {
+  topLeft: { x: 220, y: 120 },
+  topRight: { x: 440, y: 95 },
+  bottomLeft: { x: 220, y: 290 },
+  bottomRight: { x: 440, y: 240 },
+};
+
+// Calculate the bounding box for positioning
+const SCREEN_BOUNDS = {
+  left: SCREEN_CORNERS.topLeft.x,
+  top: Math.min(SCREEN_CORNERS.topLeft.y, SCREEN_CORNERS.topRight.y),
+  width: SCREEN_CORNERS.topRight.x - SCREEN_CORNERS.topLeft.x,
+  height: Math.max(SCREEN_CORNERS.bottomLeft.y, SCREEN_CORNERS.bottomRight.y) -
+    Math.min(SCREEN_CORNERS.topLeft.y, SCREEN_CORNERS.topRight.y),
+};
+
 // Base dimensions (original size)
 const BASE_DIMENSIONS = {
   containerWidth: 1024,
   containerHeight: 1024,
-  screenTop: 89,
-  screenLeft: 194,
-  screenWidth: 247,
-  screenHeight: 204,
   fontSize: 10,
-  padding: 20,
+  padding: 8,
 };
+
+// Compute matrix3d for perspective transformation
+// Maps a rectangle to an arbitrary quadrilateral defined by 4 corners
+function computeMatrix3d(
+  w: number, // source width
+  h: number, // source height
+  x0: number, y0: number, // top-left destination
+  x1: number, y1: number, // top-right destination
+  x2: number, y2: number, // bottom-right destination
+  x3: number, y3: number  // bottom-left destination
+): string {
+  // Compute the transformation matrix using projective geometry
+  // Based on: https://math.stackexchange.com/questions/296794
+
+  const dx1 = x1 - x2;
+  const dx2 = x3 - x2;
+  const dx3 = x0 - x1 + x2 - x3;
+  const dy1 = y1 - y2;
+  const dy2 = y3 - y2;
+  const dy3 = y0 - y1 + y2 - y3;
+
+  const det = dx1 * dy2 - dx2 * dy1;
+  if (Math.abs(det) < 1e-10) {
+    // Fallback if degenerate
+    return 'none';
+  }
+
+  const a13 = (dx3 * dy2 - dx2 * dy3) / det;
+  const a23 = (dx1 * dy3 - dx3 * dy1) / det;
+
+  const a11 = x1 - x0 + a13 * x1;
+  const a21 = x3 - x0 + a23 * x3;
+  const a31 = x0;
+  const a12 = y1 - y0 + a13 * y1;
+  const a22 = y3 - y0 + a23 * y3;
+  const a32 = y0;
+
+  // Scale to source dimensions
+  const scaleX = 1 / w;
+  const scaleY = 1 / h;
+
+  // Build matrix3d (column-major order for CSS)
+  // The CSS matrix3d format is:
+  // matrix3d(a1, b1, c1, d1, a2, b2, c2, d2, a3, b3, c3, d3, a4, b4, c4, d4)
+  const m11 = a11 * scaleX;
+  const m12 = a12 * scaleX;
+  const m14 = a13 * scaleX;
+  const m21 = a21 * scaleY;
+  const m22 = a22 * scaleY;
+  const m24 = a23 * scaleY;
+  const m41 = a31;
+  const m42 = a32;
+
+  return `matrix3d(${m11}, ${m12}, 0, ${m14}, ${m21}, ${m22}, 0, ${m24}, 0, 0, 1, 0, ${m41}, ${m42}, 0, 1)`;
+}
 
 const CoderGirl: React.FC<CoderGirlProps> = ({
   backgroundColor = "transparent",
@@ -78,8 +148,6 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
   // Generate container styles
   const getContainerStyles = (): CSSProperties => {
     try {
-      // const scaleFactor = getScaleFactor(); // Removed unused variable
-
       if (size === "100%") {
         return {
           position: "relative",
@@ -107,20 +175,41 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
     }
   };
 
-  // Generate screen content styles
+  // Generate screen content styles with matrix3d transform
   const getScreenStyles = (): CSSProperties => {
     try {
+      const scale = getScaleFactor();
+
+      // Scale the corner coordinates
+      const tl = { x: SCREEN_CORNERS.topLeft.x * scale, y: SCREEN_CORNERS.topLeft.y * scale };
+      const tr = { x: SCREEN_CORNERS.topRight.x * scale, y: SCREEN_CORNERS.topRight.y * scale };
+      const bl = { x: SCREEN_CORNERS.bottomLeft.x * scale, y: SCREEN_CORNERS.bottomLeft.y * scale };
+      const br = { x: SCREEN_CORNERS.bottomRight.x * scale, y: SCREEN_CORNERS.bottomRight.y * scale };
+
+      // Calculate the div dimensions (we use the bounding box size)
+      const divWidth = tr.x - tl.x;
+      const divHeight = Math.max(bl.y, br.y) - Math.min(tl.y, tr.y);
+
+      // Compute matrix3d to map rectangle to the 4 corners
+      // The matrix will transform from (0,0)-(divWidth,divHeight) to the 4 corners
+      const matrix = computeMatrix3d(
+        divWidth, divHeight,
+        tl.x, tl.y,  // top-left
+        tr.x, tr.y,  // top-right
+        br.x, br.y,  // bottom-right
+        bl.x, bl.y   // bottom-left
+      );
+
       return {
         position: "absolute",
-        top: `${scaleValue(BASE_DIMENSIONS.screenTop)}px`,
-        left: `${scaleValue(BASE_DIMENSIONS.screenLeft)}px`,
-        width: `${scaleValue(BASE_DIMENSIONS.screenWidth)}px`,
-        height: `${scaleValue(BASE_DIMENSIONS.screenHeight)}px`,
+        top: 0,
+        left: 0,
+        width: `${divWidth}px`,
+        height: `${divHeight}px`,
         zIndex: -1,
         overflow: "hidden",
-        transformOrigin: "center center",
-        transform: "skew(0deg, 349deg) rotate3d(10, 100, 1, 9deg)",
-        boxShadow: "inset 100px 0 100px rgba(0, 0, 0, 0.548)",
+        transformOrigin: "0 0",
+        transform: matrix,
         backgroundColor: backgroundColor,
         backfaceVisibility: "hidden",
       };

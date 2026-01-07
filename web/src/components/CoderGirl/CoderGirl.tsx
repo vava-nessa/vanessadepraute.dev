@@ -1,6 +1,6 @@
 import React, { useState, useEffect, CSSProperties } from "react";
 import "./CoderGirl.css";
-import girlImage from "../../assets/girl.png";
+import girlImage from "../../assets/girl.webp";
 import girlLightImage from "../../assets/girlw.png";
 import { useTheme } from "../../contexts/ThemeContext";
 import TerminalDemo from "../../TerminalDemo";
@@ -190,7 +190,7 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
       // Compute matrix3d to map rectangle to the 4 corners
       // The matrix will transform from (0,0)-(divWidth,divHeight) to the 4 corners
       const matrix = computeMatrix3d(
-        divWidth, divHeight,
+        divWidth, divHeight + 48,
         tl.x, tl.y,  // top-left
         tr.x, tr.y,  // top-right
         br.x, br.y,  // bottom-right
@@ -199,11 +199,11 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
 
       return {
         position: "absolute",
-        top: "1px",
+        top: "-2px",
         left: "-9px",
         width: `${divWidth}px`,
-        height: `${divHeight}px`,
-        zIndex: -1,
+        height: `${divHeight + 48}px`,
+        zIndex: 1,
         overflow: "hidden",
         transformOrigin: "0 0",
         transform: matrix,
@@ -212,6 +212,93 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
       };
     } catch (error) {
       console.error("Error generating screen styles:", error);
+      return {};
+    }
+  };
+
+  // Generate screen background styles (black background behind screen)
+  const getScreenBackgroundStyles = (): CSSProperties => {
+    try {
+      const scale = getScaleFactor();
+
+      // Scale the corner coordinates
+      const tl = { x: SCREEN_CORNERS.topLeft.x * scale, y: SCREEN_CORNERS.topLeft.y * scale };
+      const tr = { x: SCREEN_CORNERS.topRight.x * scale, y: SCREEN_CORNERS.topRight.y * scale };
+      const bl = { x: SCREEN_CORNERS.bottomLeft.x * scale, y: SCREEN_CORNERS.bottomLeft.y * scale };
+      const br = { x: SCREEN_CORNERS.bottomRight.x * scale, y: SCREEN_CORNERS.bottomRight.y * scale };
+
+      // Calculate the div dimensions
+      const divWidth = tr.x - tl.x;
+      const divHeight = Math.max(bl.y, br.y) - Math.min(tl.y, tr.y);
+
+      // Compute matrix3d for the background
+      const matrix = computeMatrix3d(
+        divWidth, divHeight + 48,
+        tl.x, tl.y,  // top-left
+        tr.x, tr.y,  // top-right
+        br.x, br.y,  // bottom-right
+        bl.x, bl.y   // bottom-left
+      );
+
+      return {
+        position: "absolute",
+        top: "-2px",
+        left: "-9px",
+        width: `${divWidth}px`,
+        height: `${divHeight + 68}px`,
+        zIndex: 0,
+        overflow: "hidden",
+        transformOrigin: "0 0",
+        transform: matrix,
+        backgroundColor: "#000000",
+        backfaceVisibility: "hidden",
+      };
+    } catch (error) {
+      console.error("Error generating screen background styles:", error);
+      return {};
+    }
+  };
+
+  // Generate screen overlay styles with gradient
+  const getScreenOverlayStyles = (): CSSProperties => {
+    try {
+      const scale = getScaleFactor();
+
+      // Scale the corner coordinates
+      const tl = { x: SCREEN_CORNERS.topLeft.x * scale, y: SCREEN_CORNERS.topLeft.y * scale };
+      const tr = { x: SCREEN_CORNERS.topRight.x * scale, y: SCREEN_CORNERS.topRight.y * scale };
+      const bl = { x: SCREEN_CORNERS.bottomLeft.x * scale, y: SCREEN_CORNERS.bottomLeft.y * scale };
+      const br = { x: SCREEN_CORNERS.bottomRight.x * scale, y: SCREEN_CORNERS.bottomRight.y * scale };
+
+      // Calculate the div dimensions
+      const divWidth = tr.x - tl.x;
+      const divHeight = Math.max(bl.y, br.y) - Math.min(tl.y, tr.y);
+
+      // Compute matrix3d for the overlay
+      const matrix = computeMatrix3d(
+        divWidth, divHeight + 48,
+        tl.x, tl.y,  // top-left
+        tr.x, tr.y,  // top-right
+        br.x, br.y,  // bottom-right
+        bl.x, bl.y   // bottom-left
+      );
+
+      return {
+        position: "absolute",
+        top: "-2px",
+        left: "-9px",
+        width: `${divWidth}px`,
+        height: `${divHeight + 48}px`,
+        zIndex: 2,
+        overflow: "hidden",
+        transformOrigin: "0 0",
+        transform: matrix,
+        background: "linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%)",
+        backfaceVisibility: "hidden",
+        pointerEvents: "none",
+      };
+    } catch (error) {
+      console.error("Error generating screen overlay styles:", error);
       return {};
     }
   };
@@ -313,15 +400,18 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
   try {
     return (
       <div
+        id="coder-girl-main"
         ref={(ref) => setContainerRef(ref)}
         className={containerClassName}
         style={getContainerStyles()}
       >
-        <div style={getScreenStyles()}>{renderScreenContent()}</div>
-        <img src={currentImage} alt="Coder Girl" style={getImageStyles()} />
+        <div id="screen-background-layer" style={getScreenBackgroundStyles()}></div>
+        <div id="screen-content-layer" style={getScreenStyles()}>{renderScreenContent()}</div>
+        <div id="screen-overlay-layer" style={getScreenOverlayStyles()}></div>
+        <img id="girl-image" src={currentImage} alt="Coder Girl" style={getImageStyles()} />
 
         {/* Steam effect */}
-        <div style={getSteamStyles()} className="steam-container">
+        <div id="steam-effect-container" style={getSteamStyles()} className="steam-container">
           <div className="steam-particle steam-particle-1"></div>
           <div className="steam-particle steam-particle-2"></div>
           <div className="steam-particle steam-particle-3"></div>

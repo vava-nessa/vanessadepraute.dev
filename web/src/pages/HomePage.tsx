@@ -17,8 +17,10 @@ import { Accordion } from "../components/ui/Accordion.tsx";
 import { HandWrittenTitle } from "../components/ui/hand-writing-text";
 import Aurora from "../components/Aurora";
 import profilePicture from "../assets/profilepicture.webp";
+import namiPattern from "../assets/nami.webp";
 import { useErrorHandler } from "@/hooks/useErrorHandler";
 import * as Sentry from "@sentry/react";
+import LightRays from "../components/LightRays/LightRays";
 
 function HomePage() {
   const { handleError } = useErrorHandler("HomePage");
@@ -37,13 +39,20 @@ function HomePage() {
     }
   }, [lang, i18n, handleError]);
 
-  // Randomize roles: 2/3 important, 1/3 secondary
+  // Randomize roles: 2 important, 1 secondary (except first is always "Developer"/"Développeuse")
   const shuffledRoles = useMemo(() => {
     try {
       const important = t("header.important_roles", { returnObjects: true }) as string[];
       const secondary = t("header.secondary_roles", { returnObjects: true }) as string[];
 
       if (!Array.isArray(important) || !Array.isArray(secondary)) return [];
+
+      // Shuffle important roles (excluding the first one which is always "Developer"/"Développeuse")
+      const shuffledImportant = [...important];
+      for (let i = shuffledImportant.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledImportant[i], shuffledImportant[j]] = [shuffledImportant[j], shuffledImportant[i]];
+      }
 
       // Shuffle secondary roles
       const shuffledSecondary = [...secondary];
@@ -54,28 +63,28 @@ function HomePage() {
 
       const result: string[] = [];
 
-      // Always start with the first two important roles
-      if (important.length >= 2) {
-        result.push(important[0], important[1]);
-      } else if (important.length === 1) {
-        result.push(important[0], important[0]);
+      // ALWAYS start with the FIRST important role (Developer/Développeuse)
+      if (important.length > 0) {
+        result.push(important[0]);
       }
 
-      // Add one secondary role
-      if (shuffledSecondary.length > 0) {
-        result.push(shuffledSecondary[0]);
-      }
+      // Then follow the 2 important / 1 secondary pattern with randomized roles
+      let importantIndex = 0;
+      let secondaryIndex = 0;
 
-      // Fill the rest with 2 important / 1 secondary pattern
-      // We want to use all secondary roles at least once
-      for (let i = 1; i < shuffledSecondary.length; i++) {
-        // Alternate important roles order for variety
-        if (i % 2 === 0) {
-          result.push(important[0], important[1] || important[0]);
-        } else {
-          result.push(important[1] || important[0], important[0]);
-        }
-        result.push(shuffledSecondary[i]);
+      // We want to cycle through all roles, giving priority to showing variety
+      const totalCycles = Math.max(shuffledSecondary.length, 10); // Show at least 10 cycles
+
+      for (let i = 0; i < totalCycles; i++) {
+        // Add 2 important roles (random from shuffled list)
+        result.push(shuffledImportant[importantIndex % shuffledImportant.length]);
+        importantIndex++;
+        result.push(shuffledImportant[importantIndex % shuffledImportant.length]);
+        importantIndex++;
+
+        // Add 1 secondary role (random from shuffled list)
+        result.push(shuffledSecondary[secondaryIndex % shuffledSecondary.length]);
+        secondaryIndex++;
       }
 
       return result;
@@ -111,10 +120,10 @@ function HomePage() {
 
   return (
     <ClickSpark
-      sparkColor="#ff7cfdec"
+      sparkColor="#ff3d9a"
       sparkSize={14}
       sparkRadius={30}
-      sparkCount={6}
+      sparkCount={3}
       duration={1100}
       extraScale={1.8}
     >
@@ -158,23 +167,27 @@ function HomePage() {
                   <p
                     id="header-greeting"
                     className="text-neutral-400 text-lg md:text-xl mb-3 font-normal tracking-wide"
-                    dangerouslySetInnerHTML={{
-                      __html: t("header.greeting").replace(
-                        /\*\*(.*?)\*\*/g,
-                        '<span class="text-brand-primary font-semibold">$1</span>'
-                      )
-                    }}
-                  />
+                  >
+                    {i18n.language === 'fr' ? 'Hello ! Je suis' : "Hi there! I'm"}{' '}
+                    <span className="text-neutral-400">&lt;</span>
+                    <span className="text-brand-primary font-semibold">Vanessa</span>
+                    <span className="text-neutral-400"> /&gt;</span>
+                  </p>
 
                   {/* Title */}
-                  <h1 id="header-title" className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white m-0 tracking-tight">
+                  <h1 id="header-title" className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white m-0 tracking-tight flex items-center gap-3">
+                    <span className="text-brand-primary font-mono flex-shrink-0" aria-hidden="true">➜</span>
+                    <span className="text-brand-primary font-mono flex-shrink-0" aria-hidden="true">~</span>
                     <TextType
                       key={i18n.language}
                       text={shuffledRoles}
-                      typingSpeed={75}
-                      pauseDuration={1500}
+                      typingSpeed={65}
+                      pauseDuration={800}
+                      deletingSpeed={100}
+                      cursorBlinkDuration={0.5}
                       showCursor={true}
-                      cursorCharacter="|"
+                      cursorCharacter="_"
+                      variableSpeed={{ min: 10, max: 105 }}
                     />
                   </h1>
                 </div>
@@ -296,6 +309,35 @@ function HomePage() {
               <Star delay={3000} color="rgb(180, 79, 39)" />
             </div>
 
+            {/* Dark Band Section with Pattern */}
+            <div
+              className="w-full bg-black py-20"
+              style={{
+                backgroundImage: `url(${namiPattern})`,
+                backgroundRepeat: 'repeat',
+                backgroundSize: 'auto'
+              }}
+            >
+              <div className="max-w-7xl mx-auto px-5">
+                {/* Contenu de la bande */}
+              </div>
+            </div>
+
+            {/* Light Rays Section */}
+            <div className="w-full relative" style={{ height: '100vh', minHeight: '600px' }}>
+              <LightRays
+                raysOrigin="top-center"
+                raysColor="#00ffff"
+                raysSpeed={1.5}
+                lightSpread={0.8}
+                rayLength={1.2}
+                followMouse={true}
+                mouseInfluence={0.1}
+                noiseAmount={0.1}
+                distortion={0.05}
+              />
+            </div>
+
             {/* Booking Section */}
             {false && (
               <div id="booking-section" className="w-full max-w-4xl mx-auto mb-20 px-4">
@@ -316,7 +358,7 @@ function HomePage() {
 
             {/* Sentry Test Error Button - Development Only */}
             {import.meta.env.DEV && (
-              <div className="w-full flex justify-center pb-10">
+              <div className="w-full flex justify-center gap-4 pb-10">
                 <button
                   onClick={() => {
                     Sentry.logger.info("User triggered test error");
@@ -324,7 +366,19 @@ function HomePage() {
                   }}
                   className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors"
                 >
-                  🐛 Break the world (Test Sentry)
+                  🐛 Break the world (Sync Error)
+                </button>
+                <button
+                  onClick={() => {
+                    Sentry.logger.info("User triggered async test error");
+                    // Async IIFE that throws - will be caught as unhandled rejection
+                    (async () => {
+                      throw new Error("This is an unhandled promise rejection!");
+                    })();
+                  }}
+                  className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-medium transition-colors"
+                >
+                  ⚡ Async Error (Promise Rejection)
                 </button>
               </div>
             )}

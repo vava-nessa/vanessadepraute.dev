@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import path from "path"; // Assurez-vous que @types/node est installé (pnpm add -D @types/node) si vous avez des erreurs TypeScript ici
+import { fileURLToPath } from "url";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 
@@ -12,7 +13,7 @@ export default defineConfig({
       // Pour Vite avec ES Modules, préférez :
       // "@": path.resolve(new URL('.', import.meta.url).pathname, "./src"),
       // Ou si __dirname est défini (par exemple avec CommonJS interop) :
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(path.dirname(fileURLToPath(import.meta.url)), "./src"),
     },
   },
   // Ajout de l'option pour inclure les fichiers .glb comme assets

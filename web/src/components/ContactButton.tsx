@@ -1,8 +1,11 @@
 import { cn } from "@/lib/utils";
 import { AnimatedGradientText } from "@/components/magicui/animated-gradient-text";
 import { ChevronRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function ContactButton() {
+  const { t } = useTranslation();
+
   return (
     <div className="group relative mx-auto flex items-center justify-center rounded-full px-4 py-1.5 shadow-[inset_0_-8px_10px_#8fdfff1f] transition-shadow duration-500 ease-out hover:shadow-[inset_0_-5px_10px_#8fdfff3f] ">
       <span
@@ -25,7 +28,7 @@ export default function ContactButton() {
         colorTo="#ccc"
         className="text-2xl font-semibold tracking-tight"
       >
-        Contactez moi
+        {t("footer.contact")}
       </AnimatedGradientText>
       <ChevronRight
         className="ml-1 size-4 stroke-neutral-500 transition-transform

@@ -2,7 +2,6 @@ import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "../App.css";
 import LanguageSwitcher from "../components/LanguageSwitcher/LanguageSwitcher.tsx";
-import ThemeSwitcher from "../components/ThemeSwitcher/ThemeSwitcher.tsx";
 import ControlsBar from "../components/ControlsBar/ControlsBar.tsx";
 import { AnimatedThemeToggler } from "../components/ui/animated-theme-toggler";
 import { useEffect } from "react";

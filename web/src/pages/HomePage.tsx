@@ -6,7 +6,6 @@ import CoderGirl from "../components/CoderGirl/CoderGirl.tsx";
 import TechStack from "../components/TechStack/TechStack.tsx";
 import TechStackExtended from "../components/TechStackExtended/TechStackExtended.tsx";
 import LanguageSwitcher from "../components/LanguageSwitcher/LanguageSwitcher.tsx";
-import ThemeSwitcher from "../components/ThemeSwitcher/ThemeSwitcher.tsx";
 import ControlsBar from "../components/ControlsBar/ControlsBar.tsx";
 import { AnimatedThemeToggler } from "../components/ui/animated-theme-toggler";
 import { Testimonials } from "../components/Testimonials/Testimonials.tsx";
@@ -93,9 +92,9 @@ function HomePage() {
           </div>
 
           <div id="app-content-wrapper" className="relative z-10">
-            <div id="app-wrapper" className="wrapper w-full flex flex-col gap-20 p-5">
+            <div id="app-wrapper" className="wrapper w-full flex flex-col gap-20 px-5 pt-2 pb-5">
               {/* Header Section */}
-              <div id="header-section" className="w-full max-w-[1200px] mx-auto pt-16 md:pt-24 px-5">
+              <div id="header-section" className="w-full max-w-[1200px] mx-auto pt-4 md:pt-6 px-5">
                 <div id="header-content" className="flex flex-col lg:flex-row items-center gap-8 mb-8">
                   {/* Avatar on the left */}
                   <div id="header-avatar-container" className="flex-shrink-0">
@@ -120,6 +119,7 @@ function HomePage() {
                     {/* Title */}
                     <h1 id="header-title" className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white m-0 tracking-tight">
                       <TextType
+                        key={i18n.language}
                         text={t("header.roles", { returnObjects: true }) as string[]}
                         typingSpeed={75}
                         pauseDuration={1500}
@@ -133,26 +133,26 @@ function HomePage() {
 
               {/* Bio & CoderGirl Section */}
               <div id="bio-section" className="w-full max-w-[1200px] mx-auto px-5">
-                <div id="bio-content" className="flex flex-col lg:flex-row gap-12 items-center lg:items-start">
+                <div id="bio-content" className="flex flex-col lg:flex-row gap-12 items-center lg:items-start mb-12">
                   {/* Bio text on the left */}
                   <div id="bio-text-container" className="flex-1">
                     {(t("bio.paragraphs", { returnObjects: true }) as string[]).map((paragraph, index, arr) => {
-                      // Check if this is the last paragraph (contains "Let's talk")
                       const isLastParagraph = index === arr.length - 1;
-                      const containsLetsTalk = paragraph.toLowerCase().includes("let") && paragraph.toLowerCase().includes("talk");
+                      const hasBold = paragraph.includes("**");
 
-                      if (isLastParagraph && containsLetsTalk) {
-                        // Extract the text inside ** ** for the title
-                        const match = paragraph.match(/\*\*(.*?)\*\*/);
-                        const title = match ? match[1] : paragraph;
-
-                        return (
-                          <div key={index} className="relative" style={{ height: '100px', marginBottom: '1.5rem' }}>
-                            <div className="absolute inset-0" style={{ transform: 'scale(0.5)', transformOrigin: 'left center' }}>
-                              <HandWrittenTitle title={title} subtitle="" textSize="text-3xl md:text-4xl font-bold" />
-                            </div>
-                          </div>
-                        );
+                      if (isLastParagraph && hasBold) {
+                        // Extract the text BEFORE the bold part to show it as a normal paragraph
+                        const beforeBold = paragraph.split("**")[0].trim();
+                        
+                        return beforeBold ? (
+                          <p
+                            key={index}
+                            className="text-neutral-300 text-sm md:text-base leading-relaxed font-light mb-6"
+                            dangerouslySetInnerHTML={{
+                              __html: beforeBold.replace(/\*\*(.*?)\*\*/g, '<strong class="text-brand-primary font-semibold">$1</strong>')
+                            }}
+                          />
+                        ) : null;
                       }
 
                       return (
@@ -174,6 +174,27 @@ function HomePage() {
                     </div>
                   </div>
                 </div>
+
+                {/* Centered Let's Talk / Parlons-en section */}
+                {(() => {
+                  const paragraphs = t("bio.paragraphs", { returnObjects: true }) as string[];
+                  const lastParagraph = paragraphs[paragraphs.length - 1];
+                  const match = lastParagraph.match(/\*\*(.*?)\*\*/);
+                  const title = match ? match[1] : null;
+
+                  if (title) {
+                    return (
+                      <div id="lets-talk-centered" className="w-full flex justify-center items-center py-10">
+                        <div className="relative w-full max-w-lg" style={{ height: '160px' }}>
+                          <div className="absolute inset-0 flex items-center justify-center" style={{ transform: 'scale(0.6)', transformOrigin: 'center center' }}>
+                            <HandWrittenTitle title={title} subtitle="" textSize="text-4xl md:text-5xl font-bold" />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
             </div>
 

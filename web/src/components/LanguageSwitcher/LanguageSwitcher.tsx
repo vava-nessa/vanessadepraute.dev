@@ -21,7 +21,7 @@ const LanguageSwitcher = () => {
       aria-label="Toggle language"
       title={currentLang === "en" ? "Switch to French" : "Passer en anglais"}
     >
-      {currentLang === "en" ? "Français" : "English"}
+      {currentLang === "en" ? "FR" : "EN"}
     </button>
   );
 };

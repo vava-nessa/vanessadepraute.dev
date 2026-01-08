@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { captureError } from "@/utils/errorHandling";
 
 type Theme = "light" | "dark";
 
@@ -16,33 +17,51 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Always start with dark mode, but respect if user explicitly switched to light
-    const savedTheme = localStorage.getItem("theme") as Theme | null;
-    // Only use saved theme if user explicitly set it to light, otherwise force dark
-    if (savedTheme === "light") {
-      setTheme("light");
-    } else {
-      // Force dark mode by default, ignoring system preference
+    try {
+      // Always start with dark mode, but respect if user explicitly switched to light
+      const savedTheme = localStorage.getItem("theme") as Theme | null;
+      // Only use saved theme if user explicitly set it to light, otherwise force dark
+      if (savedTheme === "light") {
+        setTheme("light");
+      } else {
+        // Force dark mode by default, ignoring system preference
+        setTheme("dark");
+      }
+      setMounted(true);
+    } catch (error) {
+      captureError(error, {
+        component: "ThemeProvider",
+        action: "initialize_theme",
+      });
+      // Fallback to dark mode if there's an error
       setTheme("dark");
+      setMounted(true);
     }
-    setMounted(true);
   }, []);
 
   useEffect(() => {
     if (!mounted) return;
 
-    // Apply theme to document
-    const root = document.documentElement;
-    if (theme === "light") {
-      root.classList.add("light-mode");
-      root.classList.remove("dark-mode");
-    } else {
-      root.classList.add("dark-mode");
-      root.classList.remove("light-mode");
-    }
+    try {
+      // Apply theme to document
+      const root = document.documentElement;
+      if (theme === "light") {
+        root.classList.add("light-mode");
+        root.classList.remove("dark-mode");
+      } else {
+        root.classList.add("dark-mode");
+        root.classList.remove("light-mode");
+      }
 
-    // Save to localStorage
-    localStorage.setItem("theme", theme);
+      // Save to localStorage
+      localStorage.setItem("theme", theme);
+    } catch (error) {
+      captureError(error, {
+        component: "ThemeProvider",
+        action: "apply_theme",
+        additionalData: { theme },
+      });
+    }
   }, [theme, mounted]);
 
   const toggleTheme = () => {

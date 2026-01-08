@@ -46,6 +46,10 @@ Always read this file before starting any task in this repo.
 - shadcn/ui config: `components.json`.
 - ESLint config: `eslint.config.js`.
 
+## Testing
+
+- **IMPORTANT**: Always run `pnpm build` at the end of each task to verify that the code compiles correctly and there are no type errors.
+
 ## Deployment
 
 - `../vercel.json` disables git deployments and sets a Basic-Auth header for all routes.

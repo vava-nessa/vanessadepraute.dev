@@ -89,6 +89,12 @@
   "errors": {
     "somethingWentWrong": "Something went wrong"
   },
+  "error": {
+    "title": "Something went wrong",
+    "description": "We're sorry, but something unexpected happened. The error has been reported and we'll fix it as soon as possible.",
+    "tryAgain": "Try again",
+    "goHome": "Go home"
+  },
   "profile": {
     "altText": "Vanessa Depraute - Full-stack developer and AI engineer"
   },

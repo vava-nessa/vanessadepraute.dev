@@ -89,6 +89,12 @@
   "errors": {
     "somethingWentWrong": "Une erreur s'est produite"
   },
+  "error": {
+    "title": "Une erreur s'est produite",
+    "description": "Nous sommes désolés, mais quelque chose d'inattendu s'est produit. L'erreur a été signalée et nous allons la corriger dans les plus brefs délais.",
+    "tryAgain": "Réessayer",
+    "goHome": "Retour à l'accueil"
+  },
   "profile": {
     "altText": "Vanessa Depraute - Développeuse full-stack et ingénieure IA"
   },

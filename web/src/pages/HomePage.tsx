@@ -17,100 +17,98 @@ import { Accordion } from "../components/ui/Accordion.tsx";
 import { HandWrittenTitle } from "../components/ui/hand-writing-text";
 import Aurora from "../components/Aurora";
 import profilePicture from "../assets/profilepicture.webp";
+import { useErrorHandler } from "@/hooks/useErrorHandler";
 
 function HomePage() {
-  const [error, setError] = useState<Error | null>(null);
+  const { handleError } = useErrorHandler("HomePage");
   const { t, i18n } = useTranslation();
   const { lang } = useParams();
   const [isDarkMode, setIsDarkMode] = useState(true);
 
   // Initialiser la langue basée sur la route
   useEffect(() => {
-    if (lang === "fr" || lang === "en") {
-      i18n.changeLanguage(lang);
+    try {
+      if (lang === "fr" || lang === "en") {
+        i18n.changeLanguage(lang);
+      }
+    } catch (error) {
+      handleError(error, { action: "change_language" });
     }
-  }, [lang, i18n]);
+  }, [lang, i18n, handleError]);
 
   // Randomize roles: 2/3 important, 1/3 secondary
   const shuffledRoles = useMemo(() => {
-    const important = t("header.important_roles", { returnObjects: true }) as string[];
-    const secondary = t("header.secondary_roles", { returnObjects: true }) as string[];
+    try {
+      const important = t("header.important_roles", { returnObjects: true }) as string[];
+      const secondary = t("header.secondary_roles", { returnObjects: true }) as string[];
 
-    if (!Array.isArray(important) || !Array.isArray(secondary)) return [];
+      if (!Array.isArray(important) || !Array.isArray(secondary)) return [];
 
-    // Shuffle secondary roles
-    const shuffledSecondary = [...secondary];
-    for (let i = shuffledSecondary.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [shuffledSecondary[i], shuffledSecondary[j]] = [shuffledSecondary[j], shuffledSecondary[i]];
-    }
-
-    const result: string[] = [];
-
-    // Always start with the first two important roles
-    if (important.length >= 2) {
-      result.push(important[0], important[1]);
-    } else if (important.length === 1) {
-      result.push(important[0], important[0]);
-    }
-
-    // Add one secondary role
-    if (shuffledSecondary.length > 0) {
-      result.push(shuffledSecondary[0]);
-    }
-
-    // Fill the rest with 2 important / 1 secondary pattern
-    // We want to use all secondary roles at least once
-    for (let i = 1; i < shuffledSecondary.length; i++) {
-      // Alternate important roles order for variety
-      if (i % 2 === 0) {
-        result.push(important[0], important[1] || important[0]);
-      } else {
-        result.push(important[1] || important[0], important[0]);
+      // Shuffle secondary roles
+      const shuffledSecondary = [...secondary];
+      for (let i = shuffledSecondary.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledSecondary[i], shuffledSecondary[j]] = [shuffledSecondary[j], shuffledSecondary[i]];
       }
-      result.push(shuffledSecondary[i]);
-    }
 
-    return result;
-  }, [t, i18n.language]);
+      const result: string[] = [];
+
+      // Always start with the first two important roles
+      if (important.length >= 2) {
+        result.push(important[0], important[1]);
+      } else if (important.length === 1) {
+        result.push(important[0], important[0]);
+      }
+
+      // Add one secondary role
+      if (shuffledSecondary.length > 0) {
+        result.push(shuffledSecondary[0]);
+      }
+
+      // Fill the rest with 2 important / 1 secondary pattern
+      // We want to use all secondary roles at least once
+      for (let i = 1; i < shuffledSecondary.length; i++) {
+        // Alternate important roles order for variety
+        if (i % 2 === 0) {
+          result.push(important[0], important[1] || important[0]);
+        } else {
+          result.push(important[1] || important[0], important[0]);
+        }
+        result.push(shuffledSecondary[i]);
+      }
+
+      return result;
+    } catch (error) {
+      handleError(error, { action: "shuffle_roles" });
+      return [];
+    }
+  }, [t, i18n.language, handleError]);
 
   // Détecter le thème
   useEffect(() => {
-    const checkTheme = () => {
-      const isLight = document.documentElement.classList.contains('light-mode');
-      setIsDarkMode(!isLight);
-    };
+    try {
+      const checkTheme = () => {
+        const isLight = document.documentElement.classList.contains('light-mode');
+        setIsDarkMode(!isLight);
+      };
 
-    // Check initial theme
-    checkTheme();
+      // Check initial theme
+      checkTheme();
 
-    // Observer les changements de thème
-    const observer = new MutationObserver(checkTheme);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
+      // Observer les changements de thème
+      const observer = new MutationObserver(checkTheme);
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class']
+      });
 
-    return () => observer.disconnect();
-  }, []);
+      return () => observer.disconnect();
+    } catch (error) {
+      handleError(error, { action: "theme_observer" });
+    }
+  }, [handleError]);
 
-  // Error boundary pattern using hooks
-  useEffect(() => {
-    // Component initialization logic (if needed)
-  }, []);
-
-  // If there was an error, show error fallback UI
-  if (error) {
-    return (
-      <div className="error-container">
-        <h2>{t("errors.somethingWentWrong")}</h2>
-        <p>{error.message}</p>
-      </div>
-    );
-  }
-
-  try {
-    return (
+  return (
       <ClickSpark
         sparkColor="#ff7cfdec"
         sparkSize={14}
@@ -296,16 +294,6 @@ function HomePage() {
         </div>
       </ClickSpark>
     );
-  } catch (error) {
-    console.error("Error rendering HomePage:", error);
-    setError(error instanceof Error ? error : new Error(String(error)));
-    return (
-      <div className="error-container">
-        <h2>{t("errors.somethingWentWrong")}</h2>
-        <p>{error instanceof Error ? error.message : String(error)}</p>
-      </div>
-    );
-  }
 }
 
 export default HomePage;

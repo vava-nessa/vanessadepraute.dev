@@ -22,16 +22,8 @@ interface Spark {
   customSize: number;
 }
 
-// Color palette for random sparks
-const SPARK_COLORS = [
-  '#e3058d', // Pink
-  '#d105e3', // Magenta
-  '#6e05e3', // Purple
-  '#14c797', // Teal
-  '#e4ad04', // Yellow/Gold
-  '#0362ff', // Blue
-  '#ff0903', // Red
-];
+// Primary brand color for sparks
+const SPARK_COLOR = '#ff3d9a'; // Primary pink
 
 const ClickSpark: React.FC<ClickSparkProps> = ({
   sparkColor = '#fff',
@@ -163,11 +155,10 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
     const y = e.clientY - rect.top;
 
     // Randomize values for each click
-    const randomSparkCount = randomBetween(2, 12);
+    const randomSparkCount = randomBetween(3, 12);
     const randomDuration = randomBetween(200, 1200);
     const randomSparkRadius = randomBetween(5, 40);
     const randomSparkSize = randomBetween(5, 20);
-    const randomColor = SPARK_COLORS[Math.floor(Math.random() * SPARK_COLORS.length)];
 
     const now = performance.now();
     const newSparks: Spark[] = Array.from({ length: randomSparkCount }, (_, i) => ({
@@ -178,7 +169,7 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
       // Store custom duration, radius, size and color per spark batch
       customDuration: randomDuration,
       customRadius: randomSparkRadius,
-      customColor: randomColor,
+      customColor: SPARK_COLOR,
       customSize: randomSparkSize
     }));
 

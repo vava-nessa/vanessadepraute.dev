@@ -15,7 +15,8 @@ import TextType from "./components/TextType";
 import ContactButton from "./components/ContactButton";
 import { ClickSpark } from "./components/ClickSpark";
 
-import TerminalInterests from "./components/TerminalInterests.tsx";
+import TerminalInterests from "./components/TerminalInterests.tsx";import { HandWrittenTitle } from "./components/ui/hand-writing-text"; */
+import profilePicture from "./assets/profilepicture.webp";
 
 function App() {
   const [error, setError] = useState<Error | null>(null);

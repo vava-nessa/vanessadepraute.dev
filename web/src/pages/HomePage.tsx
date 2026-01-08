@@ -16,6 +16,7 @@ import { ClickSpark } from "../components/ClickSpark";
 import { Accordion } from "../components/ui/Accordion.tsx";
 import { HandWrittenTitle } from "../components/ui/hand-writing-text";
 import Aurora from "../components/Aurora";
+import profilePicture from "../assets/profilepicture.webp";
 
 function HomePage() {
   const [error, setError] = useState<Error | null>(null);
@@ -100,7 +101,7 @@ function HomePage() {
                   <div id="header-avatar-container" className="flex-shrink-0">
                     <div id="header-avatar" className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-violet-500 overflow-hidden">
                       <img
-                        src="/avatar.png"
+                        src={profilePicture}
                         alt="Vanessa Depraute - Full-stack developer and AI engineer"
                         className="w-full h-full object-cover"
                         style={{ userSelect: 'none', pointerEvents: 'none' }}

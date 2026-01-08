@@ -12,16 +12,16 @@ const LanguageSwitcher = () => {
     navigate(`/${newLang}`, { replace: true });
   };
 
+  const currentLang = lang || i18n.language;
+
   return (
     <button
       className="language-switcher"
       onClick={toggleLanguage}
       aria-label="Toggle language"
-      title={(lang || i18n.language) === "en" ? "Français" : "English"}
+      title={currentLang === "en" ? "Switch to French" : "Passer en anglais"}
     >
-      <span className={`flag ${lang || i18n.language}`}>
-        {(lang || i18n.language) === "en" ? "🇬🇧" : "🇫🇷"}
-      </span>
+      {currentLang === "en" ? "Français" : "English"}
     </button>
   );
 };

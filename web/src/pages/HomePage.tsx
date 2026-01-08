@@ -6,6 +6,8 @@ import CoderGirl from "../components/CoderGirl/CoderGirl.tsx";
 import TechStack from "../components/TechStack/TechStack.tsx";
 import TechStackExtended from "../components/TechStackExtended/TechStackExtended.tsx";
 import LanguageSwitcher from "../components/LanguageSwitcher/LanguageSwitcher.tsx";
+import ThemeSwitcher from "../components/ThemeSwitcher/ThemeSwitcher.tsx";
+import ControlsBar from "../components/ControlsBar/ControlsBar.tsx";
 import { AnimatedThemeToggler } from "../components/ui/animated-theme-toggler";
 import { Testimonials } from "../components/Testimonials/Testimonials.tsx";
 import Star from "../components/Star/Star.tsx";
@@ -74,8 +76,11 @@ function HomePage() {
         duration={1100}
         extraScale={1.8}
       >
-        <LanguageSwitcher />
-        <AnimatedThemeToggler />
+        <ControlsBar>
+          <LanguageSwitcher />
+          <div className="controls-separator" />
+          <AnimatedThemeToggler />
+        </ControlsBar>
         <div id="app-main" className="min-h-screen w-full bg-black text-white overflow-x-hidden">
           {/* Aurora Background */}
           <div className="absolute top-0 left-0 w-full h-[800px] overflow-hidden pointer-events-none z-0">

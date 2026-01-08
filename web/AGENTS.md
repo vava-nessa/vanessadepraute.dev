@@ -4,7 +4,8 @@ Always read this file before starting any task in this repo.
 
 ## Non-negotiables
 
-- Use pnpm only (no npm, no yarn).
+- **CRITICAL**: It is very important to read the README files and strictly follow their indications.
+- **ALWAYS** read the README and **ALWAYS** use pnpm only (no npm, no yarn).
 - This repo can host multiple apps; this file documents the website in this folder.
 - Paths below are relative to this `web/` folder unless they start with `../`.
 

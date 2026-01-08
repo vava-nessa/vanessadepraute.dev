@@ -2,6 +2,8 @@ import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "../App.css";
 import LanguageSwitcher from "../components/LanguageSwitcher/LanguageSwitcher.tsx";
+import ThemeSwitcher from "../components/ThemeSwitcher/ThemeSwitcher.tsx";
+import ControlsBar from "../components/ControlsBar/ControlsBar.tsx";
 import { AnimatedThemeToggler } from "../components/ui/animated-theme-toggler";
 import { useEffect } from "react";
 
@@ -18,8 +20,11 @@ function BlogPage() {
 
   return (
     <>
-      <LanguageSwitcher />
-      <AnimatedThemeToggler />
+      <ControlsBar>
+        <LanguageSwitcher />
+        <div className="controls-separator" />
+        <AnimatedThemeToggler />
+      </ControlsBar>
       <div id="app-main" className="min-h-screen w-full bg-black text-white overflow-x-hidden">
         <div id="app-content-wrapper" className="relative z-10">
           <div id="app-wrapper" className="wrapper w-full flex flex-col gap-20 p-5">

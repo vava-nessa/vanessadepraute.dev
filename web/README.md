@@ -54,6 +54,81 @@ pnpm dev
 
 - `../vercel.json` disables git deployments and sets a Basic-Auth header for all routes.
 
+## Error Handling
+
+The project uses a comprehensive error handling strategy with Sentry for monitoring.
+
+### Architecture
+
+- **Sentry**: Configured in `src/main.tsx` for error tracking, session replays, and performance monitoring
+- **ErrorBoundary**: `src/components/ErrorBoundary/ErrorBoundary.tsx` catches React rendering errors
+- **Hooks**: `src/hooks/useErrorHandler.ts` provides `useErrorHandler` and `useAsyncError`
+- **Utilities**: `src/utils/errorHandling.ts` provides `captureError`, `safeAsync`, `safeSync`, `logMessage`
+
+### Usage
+
+#### useErrorHandler Hook
+
+```tsx
+import { useErrorHandler } from "@/hooks/useErrorHandler";
+
+function MyComponent() {
+  const { handleError, isError, getErrorMessage } = useErrorHandler("MyComponent");
+
+  useEffect(() => {
+    try {
+      // Your code
+    } catch (error) {
+      handleError(error, { action: "fetch_data" });
+    }
+  }, [handleError]);
+}
+```
+
+#### useAsyncError Hook
+
+```tsx
+import { useAsyncError } from "@/hooks/useErrorHandler";
+
+function MyComponent() {
+  const { executeAsync, isLoading, isError } = useAsyncError("MyComponent");
+
+  const fetchData = async () => {
+    const result = await executeAsync(
+      async () => await fetch("/api/data").then(r => r.json()),
+      { action: "fetch_data" }
+    );
+  };
+}
+```
+
+#### Utility Functions
+
+```typescript
+import { captureError, safeAsync, safeSync, logMessage, ErrorSeverity } from "@/utils/errorHandling";
+
+// Manual error capture
+captureError(error, { component: "MyComponent", action: "user_action" }, ErrorSeverity.Error);
+
+// Safe wrappers
+const result = await safeAsync(() => fetchData(), { action: "fetch" });
+const value = safeSync(() => JSON.parse(data), { action: "parse" });
+
+// Logging
+logMessage("User completed action", ErrorSeverity.Info, { userId: "123" });
+```
+
+### Best Practices
+
+1. **Wrap risky operations** in try-catch (localStorage, JSON.parse, API calls)
+2. **Use hooks** (`useErrorHandler`, `useAsyncError`) in React components
+3. **Add context** to errors (action, component, relevant data)
+4. **Don't over-catch**: Let ErrorBoundary handle rendering errors
+
+### Translations
+
+Error UI messages are in `src/locales/{en,fr}.json` under the `errors` key.
+
 ## Notes
 
 - Use pnpm only (this repo has a `pnpm-lock.yaml`).

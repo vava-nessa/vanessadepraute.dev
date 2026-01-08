@@ -46,6 +46,12 @@ Always read this file before starting any task in this repo.
 - shadcn/ui config: `components.json`.
 - ESLint config: `eslint.config.js`.
 
+## Documentation
+
+- **ALWAYS** document new features directly in `README.md`.
+- **NEVER** create separate `.md` files for documentation unless the user explicitly requests it.
+- Keep documentation concise but complete with usage examples.
+
 ## Testing
 
 - **IMPORTANT**: Always run `pnpm build` at the end of each task to verify that the code compiles correctly and there are no type errors.

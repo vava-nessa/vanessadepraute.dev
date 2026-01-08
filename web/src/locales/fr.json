@@ -49,10 +49,13 @@
     "paragraphs": [
       "Je suis **développeuse full-stack freelance** basée à Paris, créant des expériences web et mobile depuis 2006. Au fil des années, j'ai eu la chance de travailler avec de grandes entreprises ainsi qu'avec des startups.",
       "J'adore transformer des idées en choses réelles et fonctionnelles. Que ce soit créer une interface élégante, architecturer un backend complexe, ou résoudre des problèmes délicats avec du code : je suis partante. Ces derniers temps, je suis particulièrement enthousiaste à propos de **Next.js**, **React Native**, et de la façon dont l'IA transforme notre manière de développer.",
-      "Je travaille actuellement sur mon propre projet appelé Out Of Burn : une application de coaching bien-être pour **web, iOS et Android** conçue pour aider les gens à se remettre du burnout et à le prévenir.",
       "Quand je ne code pas, je fais probablement de la musique électronique avec Ableton Live et beaucoup trop de VSTs, je lis des articles de recherche sur l'IA, ou je câline mes chats. Il y a quelque chose dans le sound design qui procure la même satisfaction créative que la programmation.",
       "Vous avez un projet en tête ? **Parlons-en.**"
     ]
+  },
+  "outOfBurn": {
+    "title": "Je travaille actuellement sur mon propre projet appelé **Out Of Burn** : une application de coaching bien-être pour **web, iOS et Android** conçue pour aider les gens à se remettre du burnout et à le prévenir.",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
   },
   "expert": "Expert en TS + JS + React + UI/UX Design",
   "techStack": {

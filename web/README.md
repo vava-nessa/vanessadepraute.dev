@@ -1,54 +1,61 @@
-# React + TypeScript + Vite
+# web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend app for vanessadepraute.dev (Vite + React + TypeScript).
 
-Currently, two official plugins are available:
+## Quick start (pnpm only)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+pnpm install
+pnpm dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Scripts
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- `pnpm dev` - local dev server
+- `pnpm build` - typecheck + production build
+- `pnpm lint` - lint the codebase
+- `pnpm preview` - preview production build
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+## Architecture (high level)
+
+- App root: this folder (`web/` at repo root)
+- Entry point: `src/main.tsx` (RouterProvider, ThemeProvider, Vercel Analytics)
+- Routing: `src/routes.tsx`
+  - `/` redirects to `/en`
+  - `/:lang` renders `HomePage`
+  - `/:lang/blog` renders `BlogPage`
+  - `*` renders `NotFoundPage`
+- Layout: `src/components/Layout/Layout.tsx` wraps pages and adds a global blur layer.
+- i18n: `src/i18n/config.ts` + `src/locales/en.json` and `src/locales/fr.json`.
+- Theme: `src/contexts/ThemeContext.tsx` toggles `dark-mode` / `light-mode` on `documentElement`.
+- Styling: Tailwind v4 + custom CSS (`src/index.css`, `src/App.css`, and component CSS files).
+- Assets:
+  - `public/` for static files served as-is.
+  - `src/assets/` for bundled assets imported by components.
+
+## Project map
+
+- `src/pages/` - route-level pages (Home, Blog, NotFound)
+- `src/components/` - site-specific UI
+- `src/components/ui/` - shared UI primitives and effects
+- `src/components/magicui/` and `src/registry/magicui/` - animated UI elements
+- `src/TerminalDemo.tsx` and `src/components/TerminalInterests.tsx` - terminal-style content blocks
+- `src/contexts/ThemeContext.tsx` - theme state and persistence
+- `src/i18n/config.ts` - language setup (route-driven)
+
+## Tooling and config
+
+- Vite config: `vite.config.ts` (alias `@` -> `src`, `.glb` asset handling).
+- Tailwind config: `tailwind.config.js`.
+- shadcn/ui config: `components.json`.
+- ESLint config: `eslint.config.js`.
+
+## Deployment
+
+- `../vercel.json` disables git deployments and sets a Basic-Auth header for all routes.
+
+## Notes
+
+- Use pnpm only (this repo has a `pnpm-lock.yaml`).
+- `src/App.tsx` exists but is not wired to the router; use `src/pages/` instead.
+- Read `AGENTS.md` before starting any task.

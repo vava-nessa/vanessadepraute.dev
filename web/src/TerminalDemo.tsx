@@ -354,16 +354,16 @@ export default function TerminalDemo() {
       ),
     },
 
-    // Screen 8: npm run dev
+    // Screen 8: pnpm dev
     {
       id: "dev",
-      command: "npm run dev",
+      command: "pnpm dev",
       typingDuration: 700,
       duration: 5500,
       content: (elapsed, typingComplete) => (
         <>
           <TypingAnimation delay={20} className="block text-left">
-            &gt; npm run dev
+            &gt; pnpm dev
           </TypingAnimation>
 
           {typingComplete && elapsed >= 1100 - 700 && (
@@ -405,16 +405,16 @@ export default function TerminalDemo() {
       ),
     },
 
-    // Screen 9: npm run build - Success
+    // Screen 9: pnpm build - Success
     {
       id: "fixed",
-      command: "npm run build",
+      command: "pnpm build",
       typingDuration: 700,
       duration: 4500,
       content: (elapsed, typingComplete) => (
         <>
           <TypingAnimation delay={20} className="block text-left">
-            &gt; npm run build
+            &gt; pnpm build
           </TypingAnimation>
 
           {typingComplete && elapsed >= 1100 - 700 && (

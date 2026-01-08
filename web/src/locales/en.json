@@ -39,5 +39,10 @@
   },
   "footer": {
     "contact": "Contact me"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "Oops! The page you're looking for doesn't exist.",
+    "redirect": "Redirecting to home in {{seconds}} seconds..."
   }
 }

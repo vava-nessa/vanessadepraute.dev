@@ -319,6 +319,8 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
         backfaceVisibility: "hidden",
         transform: "translateZ(0)",
         willChange: "transform",
+        userSelect: "none",
+        pointerEvents: "none",
       };
     } catch (error) {
       console.error("Error generating image styles:", error);

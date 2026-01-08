@@ -13,11 +13,14 @@ import TextType from "../components/TextType";
 import ContactButton from "../components/ContactButton";
 import { ClickSpark } from "../components/ClickSpark";
 import { Accordion } from "../components/ui/Accordion.tsx";
+import { HandWrittenTitle } from "../components/ui/hand-writing-text";
+import Aurora from "../components/Aurora";
 
 function HomePage() {
   const [error, setError] = useState<Error | null>(null);
   const { t, i18n } = useTranslation();
   const { lang } = useParams();
+  const [isDarkMode, setIsDarkMode] = useState(true);
 
   // Initialiser la langue basée sur la route
   useEffect(() => {
@@ -25,6 +28,26 @@ function HomePage() {
       i18n.changeLanguage(lang);
     }
   }, [lang, i18n]);
+
+  // Détecter le thème
+  useEffect(() => {
+    const checkTheme = () => {
+      const isLight = document.documentElement.classList.contains('light-mode');
+      setIsDarkMode(!isLight);
+    };
+
+    // Check initial theme
+    checkTheme();
+
+    // Observer les changements de thème
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+
+    return () => observer.disconnect();
+  }, []);
 
   // Error boundary pattern using hooks
   useEffect(() => {
@@ -54,6 +77,15 @@ function HomePage() {
         <LanguageSwitcher />
         <AnimatedThemeToggler />
         <div id="app-main" className="min-h-screen w-full bg-black text-white overflow-x-hidden">
+          {/* Aurora Background */}
+          <div className="absolute top-0 left-0 w-full h-[800px] overflow-hidden pointer-events-none z-0">
+            <Aurora
+              colorStops={isDarkMode ? ["#0c003d", "#5c0075"] : ["#e9d5ff", "#fae8ff"]}
+              amplitude={0.5}
+              blend={0.75}
+              speed={2.5}
+            />
+          </div>
 
           <div id="app-content-wrapper" className="relative z-10">
             <div id="app-wrapper" className="wrapper w-full flex flex-col gap-20 p-5">
@@ -65,8 +97,10 @@ function HomePage() {
                     <div id="header-avatar" className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-violet-500 overflow-hidden">
                       <img
                         src="/avatar.png"
-                        alt="Vanessa Depraute"
+                        alt="Vanessa Depraute - Full-stack developer and AI engineer"
                         className="w-full h-full object-cover"
+                        style={{ userSelect: 'none', pointerEvents: 'none' }}
+                        draggable={false}
                       />
                     </div>
                   </div>
@@ -97,15 +131,35 @@ function HomePage() {
                 <div id="bio-content" className="flex flex-col lg:flex-row gap-12 items-center lg:items-start">
                   {/* Bio text on the left */}
                   <div id="bio-text-container" className="flex-1">
-                    {(t("bio.paragraphs", { returnObjects: true }) as string[]).map((paragraph, index) => (
-                      <p
-                        key={index}
-                        className="text-neutral-300 text-sm md:text-base leading-relaxed font-light mb-6"
-                        dangerouslySetInnerHTML={{
-                          __html: paragraph.replace(/\*\*(.*?)\*\*/g, '<strong class="text-brand-primary font-semibold">$1</strong>')
-                        }}
-                      />
-                    ))}
+                    {(t("bio.paragraphs", { returnObjects: true }) as string[]).map((paragraph, index, arr) => {
+                      // Check if this is the last paragraph (contains "Let's talk")
+                      const isLastParagraph = index === arr.length - 1;
+                      const containsLetsTalk = paragraph.toLowerCase().includes("let") && paragraph.toLowerCase().includes("talk");
+
+                      if (isLastParagraph && containsLetsTalk) {
+                        // Extract the text inside ** ** for the title
+                        const match = paragraph.match(/\*\*(.*?)\*\*/);
+                        const title = match ? match[1] : paragraph;
+
+                        return (
+                          <div key={index} className="relative" style={{ height: '100px', marginBottom: '1.5rem' }}>
+                            <div className="absolute inset-0" style={{ transform: 'scale(0.5)', transformOrigin: 'left center' }}>
+                              <HandWrittenTitle title={title} subtitle="" textSize="text-3xl md:text-4xl font-bold" />
+                            </div>
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <p
+                          key={index}
+                          className="text-neutral-300 text-sm md:text-base leading-relaxed font-light mb-6"
+                          dangerouslySetInnerHTML={{
+                            __html: paragraph.replace(/\*\*(.*?)\*\*/g, '<strong class="text-brand-primary font-semibold">$1</strong>')
+                          }}
+                        />
+                      );
+                    })}
                   </div>
 
                   {/* CoderGirl on the right */}

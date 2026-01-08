@@ -1,6 +1,7 @@
 import { Navigate, createBrowserRouter } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import BlogPage from "./pages/BlogPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 const routes = createBrowserRouter([
   {
@@ -14,6 +15,10 @@ const routes = createBrowserRouter([
   {
     path: "/:lang/blog",
     element: <BlogPage />,
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />,
   },
 ]);
 

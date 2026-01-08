@@ -39,5 +39,10 @@
   },
   "footer": {
     "contact": "Me contacter"
+  },
+  "notFound": {
+    "title": "Page Introuvable",
+    "description": "Oups ! La page que vous recherchez n'existe pas.",
+    "redirect": "Redirection vers l'accueil dans {{seconds}} secondes..."
   }
 }

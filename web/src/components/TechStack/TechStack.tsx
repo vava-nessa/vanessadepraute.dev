@@ -21,16 +21,18 @@ const TechStack = () => {
   ];
 
   return (
-    <div className="techstack-container">
+    <div className="techstack-container" role="region" aria-label="Technologies Stack">
       <div className="techstack-track">
         <div className="techstack-content">
           {logos.map((logo, index) => (
             <div key={index} className="techstack-logo-wrapper">
               <img
                 src={logo.src}
-                alt={logo.name}
+                alt={`${logo.name} technology logo`}
                 className={`techstack-logo ${logo.name === "Next.js" ? "techstack-logo--nextjs" : ""} ${logo.name === "Supabase" ? "techstack-logo--supabase" : ""}`}
                 title={logo.name}
+                style={{ userSelect: 'none' }}
+                draggable={false}
               />
             </div>
           ))}

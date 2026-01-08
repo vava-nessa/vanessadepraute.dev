@@ -15,8 +15,7 @@ import TextType from "./components/TextType";
 import ContactButton from "./components/ContactButton";
 import { ClickSpark } from "./components/ClickSpark";
 
-import TerminalInterests from "./components/TerminalInterests.tsx";import { HandWrittenTitle } from "./components/ui/hand-writing-text"; */
-import profilePicture from "./assets/profilepicture.webp";
+import TerminalInterests from "./components/TerminalInterests.tsx";
 
 function App() {
   const [error, setError] = useState<Error | null>(null);
@@ -44,7 +43,7 @@ function App() {
   if (error) {
     return (
       <div className="error-container">
-        <h2>Something went wrong</h2>
+        <h2>{t("errors.somethingWentWrong")}</h2>
         <p>{error.message}</p>
       </div>
     );
@@ -74,7 +73,7 @@ function App() {
                     <div id="header-avatar" className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-violet-500 overflow-hidden">
                       <img
                         src="/avatar.png"
-                        alt="Vanessa Depraute"
+                        alt={t("profile.altText")}
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -171,7 +170,7 @@ function App() {
     setError(error instanceof Error ? error : new Error(String(error)));
     return (
       <div className="error-container">
-        <h2>Something went wrong</h2>
+        <h2>{t("errors.somethingWentWrong")}</h2>
         <p>{error instanceof Error ? error.message : String(error)}</p>
       </div>
     );

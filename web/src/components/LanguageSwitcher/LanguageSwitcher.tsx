@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./LanguageSwitcher.css";
 
 const LanguageSwitcher = () => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { lang } = useParams();
 
@@ -18,8 +18,8 @@ const LanguageSwitcher = () => {
     <button
       className="language-switcher"
       onClick={toggleLanguage}
-      aria-label="Toggle language"
-      title={currentLang === "en" ? "Switch to French" : "Passer en anglais"}
+      aria-label={t("language.toggleLanguage")}
+      title={currentLang === "en" ? t("language.switchToFrench") : t("language.switchToEnglish")}
     >
       {currentLang === "en" ? "FR" : "EN"}
     </button>

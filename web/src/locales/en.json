@@ -1,7 +1,48 @@
 {
   "header": {
-    "greeting": "Hi there! I'm Vanessa.",
-    "roles": ["Developer", "Designer", "Coder", "UI/UX Designer"],
+    "greeting": "Hi there! I'm **Vanessa**.",
+    "important_roles": [
+      "Developer",
+      "Software Engineer",
+      "Full-Stack Engineer",
+      "React Specialist",
+      "Frontend Architect",
+      "Next.js Developer",
+      "React Native Builder",
+      "Node.js Developer",
+      "Mobile App Maker",
+      "Component Architect",
+      "Performance Optimizer"
+    ],
+    "secondary_roles": [
+      "Designer",
+      "Coder",
+      "UI/UX Designer",
+      "Code Craftswoman",
+      "Bug Whisperer",
+      "Console.log Enthusiast",
+      "Git Commit Poet",
+      "AI Prompt Whisperer",
+      "TypeScript Enthusiast",
+      "UI/UX Thinker",
+      "API Whisperer",
+      "Design System Crafter",
+      "Tailwind Tamer",
+      "Figma-to-Code Translator",
+      "State Management Guru",
+      "Accessibility Advocate",
+      "Webhook Wrangler",
+      "Claude Code Enthusiast",
+      "Cursor Power User",
+      "Codex Collaborator",
+      "Gemini-CLI Explorer",
+      "Qwen Tinkerer",
+      "MCP Server Hacker",
+      "Vercel Deployer",
+      "Supabase Builder",
+      "AI Pair Programmer",
+      "Vibe Coder"
+    ],
     "description": "I've been crafting custom web solutions and sharing insights about freelance development since 2006. I'm passionate about designing web apps, from UI/UX concepts to solving real-life complex problems with code. Feel free to contact me!"
   },
   "bio": {
@@ -44,5 +85,36 @@
     "title": "Page Not Found",
     "description": "Oops! The page you're looking for doesn't exist.",
     "redirect": "Redirecting to home in {{seconds}} seconds..."
+  },
+  "errors": {
+    "somethingWentWrong": "Something went wrong"
+  },
+  "profile": {
+    "altText": "Vanessa Depraute - Full-stack developer and AI engineer"
+  },
+  "blog": {
+    "title": "Blog",
+    "description": "Welcome to my blog page. It will soon be filled with interesting articles!",
+    "comingSoon": "Coming Soon..."
+  },
+  "theme": {
+    "lightMode": "Light Mode",
+    "darkMode": "Dark Mode",
+    "toggleTheme": "Toggle theme"
+  },
+  "language": {
+    "switchToFrench": "Switch to French",
+    "switchToEnglish": "Switch to English",
+    "toggleLanguage": "Toggle language"
+  },
+  "testimonials": {
+    "designations": {
+      "uiUxDesigner": "UI/UX Designer",
+      "reactDeveloper": "React Developer",
+      "fullStackDeveloper": "Full Stack Developer",
+      "frontendDeveloper": "Frontend Developer",
+      "mobileDeveloper": "Mobile Developer",
+      "videoTechnician": "Video Technician"
+    }
   }
 }

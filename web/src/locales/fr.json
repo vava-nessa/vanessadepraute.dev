@@ -1,7 +1,48 @@
 {
   "header": {
-    "greeting": "Bonjour ! Je suis Vanessa.",
-    "roles": ["Développeuse", "Designer", "Développeuse Code", "Designer UI/UX"],
+    "greeting": "Hello ! Je suis **Vanessa**",
+    "important_roles": [
+      "Développeuse",
+      "Ingénieure Logiciel",
+      "Ingénieure Full-Stack",
+      "Spécialiste React",
+      "Architecte Frontend",
+      "Développeuse Next.js",
+      "Développeuse React Native",
+      "Développeuse Node.js",
+      "Créatrice d'Apps Mobile",
+      "Architecte de Composants",
+      "Optimisatrice de Performance"
+    ],
+    "secondary_roles": [
+      "Designer",
+      "Développeuse Code",
+      "Designer UI/UX",
+      "Artisane du Code",
+      "Dompteuse de Bugs",
+      "Fan de Console.log",
+      "Poétesse de Git Commit",
+      "Experte en Prompts IA",
+      "Passionnée TypeScript",
+      "Penseuse UI/UX",
+      "Magicienne des APIs",
+      "Créatrice de Design Systems",
+      "Dompteuse de Tailwind",
+      "Traductrice Figma-vers-Code",
+      "Guru du State Management",
+      "Défenseuse de l'Accessibilité",
+      "Dompteuse de Webhooks",
+      "Fan de Claude Code",
+      "Power User Cursor",
+      "Collaboratrice Codex",
+      "Exploratrice Gemini-CLI",
+      "Bricoleuse Qwen",
+      "Hackeuse de Serveurs MCP",
+      "Déployeuse Vercel",
+      "Bâtisseuse Supabase",
+      "Pair Programmer IA",
+      "Vibe Coder"
+    ],
     "description": "Je crée des solutions web sur mesure et partage mes connaissances sur le développement freelance depuis 2006. Je suis passionnée par la conception d'applications web, depuis les concepts UI/UX jusqu'à la résolution de problèmes complexes avec du code. N'hésitez pas à me contacter !"
   },
   "bio": {
@@ -44,5 +85,36 @@
     "title": "Page Introuvable",
     "description": "Oups ! La page que vous recherchez n'existe pas.",
     "redirect": "Redirection vers l'accueil dans {{seconds}} secondes..."
+  },
+  "errors": {
+    "somethingWentWrong": "Une erreur s'est produite"
+  },
+  "profile": {
+    "altText": "Vanessa Depraute - Développeuse full-stack et ingénieure IA"
+  },
+  "blog": {
+    "title": "Blog",
+    "description": "Bienvenue sur ma page blog. Elle sera bientôt remplie d'articles intéressants !",
+    "comingSoon": "Bientôt..."
+  },
+  "theme": {
+    "lightMode": "Mode clair",
+    "darkMode": "Mode sombre",
+    "toggleTheme": "Changer de thème"
+  },
+  "language": {
+    "switchToFrench": "Passer en français",
+    "switchToEnglish": "Passer en anglais",
+    "toggleLanguage": "Changer de langue"
+  },
+  "testimonials": {
+    "designations": {
+      "uiUxDesigner": "Designer UI/UX",
+      "reactDeveloper": "Développeur React",
+      "fullStackDeveloper": "Développeur Full Stack",
+      "frontendDeveloper": "Développeur Frontend",
+      "mobileDeveloper": "Développeur Mobile",
+      "videoTechnician": "Technicien Vidéo"
+    }
   }
 }

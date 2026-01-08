@@ -1,4 +1,6 @@
 import { AnimatedTooltip } from "../ui/animated-tooltip";
+import { useTranslation } from "react-i18next";
+import { useMemo } from "react";
 
 import Star from "@/components/Star/Star";
 // Import images
@@ -13,70 +15,90 @@ import spie from "@/assets/spie.webp";
 import carrefour from "@/assets/carrefour.webp";
 import vinci from "@/assets/vinci.webp";
 
-const people = [
-  {
-    id: 5,
-    name: "Radio France",
-    designation: "UI/UX Designer",
-    image: radiofrance,
-  },
-  {
-    id: 10,
-    name: "Orange",
-    designation: "UI / UX Designer",
-    image: orange,
-  },
-  {
-    id: 15,
-    name: "Carrefour",
-    designation: "React Developer",
-    image: carrefour,
-  },
-  {
-    id: 20,
-    name: "LiveE",
-    designation: "Full Stack Developer",
-    image: livee,
-  },
-  {
-    id: 30,
-    name: "Airbus",
-    designation: "Frontend Developer",
-    image: airbus,
-  },
-  {
-    id: 35,
-    name: "Vinci",
-    designation: "React Developer",
-    image: vinci,
-  },
-  {
-    id: 40,
-    name: "Loréal",
-    designation: "UI/UX Designer",
-    image: loreal,
-  },
-  {
-    id: 50,
-    name: "Kogama",
-    designation: "React Developer",
-    image: kogama,
-  },
-  {
-    id: 60,
-    name: "Caisse des dépôts",
-    designation: "Video Technician",
-    image: caisse,
-  },
-  {
-    id: 65,
-    name: "Spie",
-    designation: "Mobile Developer",
-    image: spie,
-  },
-];
+// Designation key mapping
+type DesignationKey = "uiUxDesigner" | "reactDeveloper" | "fullStackDeveloper" | "frontendDeveloper" | "mobileDeveloper" | "videoTechnician";
+
+const peopleData: Array<{
+  id: number;
+  name: string;
+  designationKey: DesignationKey;
+  image: string;
+}> = [
+    {
+      id: 5,
+      name: "Radio France",
+      designationKey: "uiUxDesigner",
+      image: radiofrance,
+    },
+    {
+      id: 10,
+      name: "Orange",
+      designationKey: "uiUxDesigner",
+      image: orange,
+    },
+    {
+      id: 15,
+      name: "Carrefour",
+      designationKey: "reactDeveloper",
+      image: carrefour,
+    },
+    {
+      id: 20,
+      name: "LiveE",
+      designationKey: "fullStackDeveloper",
+      image: livee,
+    },
+    {
+      id: 30,
+      name: "Airbus",
+      designationKey: "frontendDeveloper",
+      image: airbus,
+    },
+    {
+      id: 35,
+      name: "Vinci",
+      designationKey: "reactDeveloper",
+      image: vinci,
+    },
+    {
+      id: 40,
+      name: "Loréal",
+      designationKey: "uiUxDesigner",
+      image: loreal,
+    },
+    {
+      id: 50,
+      name: "Kogama",
+      designationKey: "reactDeveloper",
+      image: kogama,
+    },
+    {
+      id: 60,
+      name: "Caisse des dépôts",
+      designationKey: "videoTechnician",
+      image: caisse,
+    },
+    {
+      id: 65,
+      name: "Spie",
+      designationKey: "mobileDeveloper",
+      image: spie,
+    },
+  ];
 
 export function Testimonials() {
+  const { t } = useTranslation();
+
+  // Translate designations using useMemo
+  const people = useMemo(() => {
+    return peopleData.map((person) => ({
+      id: person.id,
+      name: person.name,
+      designation: t(`testimonials.designations.${person.designationKey}`),
+      image: person.image,
+    }));
+  }, [t]);
+
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="z-90 flex flex-row items-center justify-center mb-10 ">

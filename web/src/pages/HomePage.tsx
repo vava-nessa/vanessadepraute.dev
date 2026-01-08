@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import "../App.css";
@@ -31,6 +31,49 @@ function HomePage() {
     }
   }, [lang, i18n]);
 
+  // Randomize roles: 2/3 important, 1/3 secondary
+  const shuffledRoles = useMemo(() => {
+    const important = t("header.important_roles", { returnObjects: true }) as string[];
+    const secondary = t("header.secondary_roles", { returnObjects: true }) as string[];
+
+    if (!Array.isArray(important) || !Array.isArray(secondary)) return [];
+
+    // Shuffle secondary roles
+    const shuffledSecondary = [...secondary];
+    for (let i = shuffledSecondary.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledSecondary[i], shuffledSecondary[j]] = [shuffledSecondary[j], shuffledSecondary[i]];
+    }
+
+    const result: string[] = [];
+
+    // Always start with the first two important roles
+    if (important.length >= 2) {
+      result.push(important[0], important[1]);
+    } else if (important.length === 1) {
+      result.push(important[0], important[0]);
+    }
+
+    // Add one secondary role
+    if (shuffledSecondary.length > 0) {
+      result.push(shuffledSecondary[0]);
+    }
+
+    // Fill the rest with 2 important / 1 secondary pattern
+    // We want to use all secondary roles at least once
+    for (let i = 1; i < shuffledSecondary.length; i++) {
+      // Alternate important roles order for variety
+      if (i % 2 === 0) {
+        result.push(important[0], important[1] || important[0]);
+      } else {
+        result.push(important[1] || important[0], important[0]);
+      }
+      result.push(shuffledSecondary[i]);
+    }
+
+    return result;
+  }, [t, i18n.language]);
+
   // Détecter le thème
   useEffect(() => {
     const checkTheme = () => {
@@ -60,7 +103,7 @@ function HomePage() {
   if (error) {
     return (
       <div className="error-container">
-        <h2>Something went wrong</h2>
+        <h2>{t("errors.somethingWentWrong")}</h2>
         <p>{error.message}</p>
       </div>
     );
@@ -99,10 +142,10 @@ function HomePage() {
                 <div id="header-content" className="flex flex-col lg:flex-row items-center gap-8 mb-8">
                   {/* Avatar on the left */}
                   <div id="header-avatar-container" className="flex-shrink-0">
-                    <div id="header-avatar" className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-violet-500 overflow-hidden">
+                    <div id="header-avatar" className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-brand-primary overflow-hidden">
                       <img
                         src={profilePicture}
-                        alt="Vanessa Depraute - Full-stack developer and AI engineer"
+                        alt={t("profile.altText")}
                         className="w-full h-full object-cover"
                         style={{ userSelect: 'none', pointerEvents: 'none' }}
                         draggable={false}
@@ -113,15 +156,22 @@ function HomePage() {
                   {/* Text content on the right */}
                   <div id="header-text-container" className="flex flex-col">
                     {/* Greeting */}
-                    <p id="header-greeting" className="text-neutral-400 text-lg md:text-xl mb-3 font-normal tracking-wide">
-                      Hi there! I'm <span className="text-brand-primary font-semibold">Vanessa</span>.
-                    </p>
+                    <p
+                      id="header-greeting"
+                      className="text-neutral-400 text-lg md:text-xl mb-3 font-normal tracking-wide"
+                      dangerouslySetInnerHTML={{
+                        __html: t("header.greeting").replace(
+                          /\*\*(.*?)\*\*/g,
+                          '<span class="text-brand-primary font-semibold">$1</span>'
+                        )
+                      }}
+                    />
 
                     {/* Title */}
                     <h1 id="header-title" className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white m-0 tracking-tight">
                       <TextType
                         key={i18n.language}
-                        text={t("header.roles", { returnObjects: true }) as string[]}
+                        text={shuffledRoles}
                         typingSpeed={75}
                         pauseDuration={1500}
                         showCursor={true}
@@ -144,7 +194,7 @@ function HomePage() {
                       if (isLastParagraph && hasBold) {
                         // Extract the text BEFORE the bold part to show it as a normal paragraph
                         const beforeBold = paragraph.split("**")[0].trim();
-                        
+
                         return beforeBold ? (
                           <p
                             key={index}
@@ -251,7 +301,7 @@ function HomePage() {
     setError(error instanceof Error ? error : new Error(String(error)));
     return (
       <div className="error-container">
-        <h2>Something went wrong</h2>
+        <h2>{t("errors.somethingWentWrong")}</h2>
         <p>{error instanceof Error ? error.message : String(error)}</p>
       </div>
     );

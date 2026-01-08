@@ -7,7 +7,7 @@ import { AnimatedThemeToggler } from "../components/ui/animated-theme-toggler";
 import { useEffect } from "react";
 
 function BlogPage() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { lang } = useParams();
 
   // Initialiser la langue basée sur la route
@@ -31,13 +31,10 @@ function BlogPage() {
             <div id="blog-header-section" className="w-full max-w-[1200px] mx-auto pt-16 md:pt-24 px-5">
               <div id="blog-header-content" className="flex flex-col items-center gap-8">
                 <h1 id="blog-title" className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white text-center">
-                  {lang === "fr" ? "Blog FR" : "Blog EN"}
+                  {t("blog.title")}
                 </h1>
                 <p id="blog-description" className="text-neutral-400 text-lg md:text-xl text-center max-w-2xl">
-                  {lang === "fr"
-                    ? "Bienvenue sur ma page blog. Elle sera bientôt remplie d'articles intéressants!"
-                    : "Welcome to my blog page. It will soon be filled with interesting articles!"
-                  }
+                  {t("blog.description")}
                 </p>
               </div>
             </div>
@@ -46,7 +43,7 @@ function BlogPage() {
             <div id="coming-soon-section" className="w-full flex flex-col items-center py-20">
               <div className="text-center">
                 <p className="text-neutral-500 text-2xl uppercase tracking-widest font-medium">
-                  {lang === "fr" ? "Bientôt..." : "Coming Soon..."}
+                  {t("blog.comingSoon")}
                 </p>
               </div>
             </div>

@@ -145,3 +145,11 @@ h2 {
 .text-brand-secondary {
   color: var(--color-secondary);
 }
+
+.border-brand-primary {
+  border-color: var(--color-primary) !important;
+}
+
+.border-brand-secondary {
+  border-color: var(--color-secondary) !important;
+}

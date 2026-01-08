@@ -2,6 +2,7 @@ import { Navigate, createBrowserRouter } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import BlogPage from "./pages/BlogPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import Layout from "./components/Layout/Layout";
 
 const routes = createBrowserRouter([
   {
@@ -10,15 +11,15 @@ const routes = createBrowserRouter([
   },
   {
     path: "/:lang",
-    element: <HomePage />,
+    element: <Layout><HomePage /></Layout>,
   },
   {
     path: "/:lang/blog",
-    element: <BlogPage />,
+    element: <Layout><BlogPage /></Layout>,
   },
   {
     path: "*",
-    element: <NotFoundPage />,
+    element: <Layout><NotFoundPage /></Layout>,
   },
 ]);
 

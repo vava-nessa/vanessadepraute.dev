@@ -1,4 +1,4 @@
-import { useRef, useEffect, Suspense } from "react";
+import { useRef, useEffect, Suspense, useState } from "react";
 import { Canvas, useFrame, useThree, useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three-stdlib";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
@@ -55,7 +55,7 @@ const CAMERA_CONFIG = {
 
   // Distance limits
   minDistance: 5,
-  maxDistance: 100,
+  maxDistance: 300,
 };
 
 // Lighting configuration
@@ -97,6 +97,10 @@ interface ModelViewerProps {
   cameraConfig?: Partial<typeof CAMERA_CONFIG>;
   lightConfig?: Partial<typeof LIGHT_CONFIG>;
   enableOrbitControls?: boolean;
+  enableZoom?: boolean;
+  autoFit?: boolean;
+  autoFitMargin?: number;
+  debug?: boolean;
 }
 
 // Camera animation system
@@ -222,10 +226,42 @@ function AnimatedCamera({
   return null;
 }
 
+// Debug data updater (runs inside Canvas)
+function DebugDataUpdater({
+  onUpdate
+}: {
+  onUpdate: (data: {
+    cameraPosition: [number, number, number];
+    cameraRotation: [number, number, number];
+    fov: number;
+    zoom: number;
+  }) => void;
+}) {
+  const { camera } = useThree();
+
+  useFrame(() => {
+    const pos = camera.position;
+    const rot = camera.rotation;
+    const fov = (camera as THREE.PerspectiveCamera).fov || 0;
+    const zoom = camera.zoom;
+
+    onUpdate({
+      cameraPosition: [pos.x, pos.y, pos.z],
+      cameraRotation: [rot.x, rot.y, rot.z],
+      fov,
+      zoom,
+    });
+  });
+
+  return null;
+}
+
 function CameraController({
   cameraConfig = CAMERA_CONFIG,
+  enableZoom = true,
 }: {
   cameraConfig?: Partial<typeof CAMERA_CONFIG>;
+  enableZoom?: boolean;
 }) {
   const controlsRef = useRef<any>(null);
   const mergedConfig = { ...CAMERA_CONFIG, ...cameraConfig };
@@ -268,7 +304,8 @@ function CameraController({
   return (
     <OrbitControls
       ref={controlsRef}
-      enableZoom={false}
+      makeDefault
+      enableZoom={enableZoom}
       enablePan={false}
       enableRotate={false}
     />
@@ -278,22 +315,80 @@ function CameraController({
 function Model({
   modelPath,
   playAnimation,
+  autoFit,
+  autoFitMargin = 1.2,
+  cameraConfig,
 }: {
   modelPath: string;
   playAnimation: boolean;
   cameraConfig?: Partial<typeof CAMERA_CONFIG>;
+  autoFit?: boolean;
+  autoFitMargin?: number;
 }) {
   const { handleError } = useErrorHandler("ModelViewer.Model");
   const modelRef = useRef<THREE.Group>(null);
   const mixer = useRef<THREE.AnimationMixer | null>(null);
+  const { camera, controls } = useThree();
 
-  let gltf;
-  try {
-    gltf = useLoader(GLTFLoader, modelPath);
-  } catch (error) {
-    handleError(error, { action: "load_gltf_model", additionalData: { modelPath } });
-    throw error; // Re-throw to be caught by ErrorBoundary
-  }
+  // useLoader throws promises during suspense - let Suspense handle it, don't catch
+  const gltf = useLoader(GLTFLoader, modelPath);
+
+  // Handle manual lookAt when autoFit is false
+  useEffect(() => {
+    if (!autoFit && controls && cameraConfig?.lookAt) {
+      const target = new THREE.Vector3(...cameraConfig.lookAt);
+      // @ts-ignore
+      controls.target.copy(target);
+      // @ts-ignore
+      controls.update();
+    }
+  }, [autoFit, controls, cameraConfig?.lookAt]);
+
+  // Auto-fit logic
+  useEffect(() => {
+    try {
+      if (autoFit && gltf.scene) {
+        const box = new THREE.Box3().setFromObject(gltf.scene);
+        const sphere = new THREE.Sphere();
+        box.getBoundingSphere(sphere);
+        const { center, radius } = sphere;
+
+        const fov = (camera as THREE.PerspectiveCamera).fov * (Math.PI / 180);
+
+        // Calculate distance to fit the sphere radius within the FOV
+        // Using radius / sin(fov/2) ensures the sphere is fully contained vertically
+        const distance = (radius / Math.sin(fov / 2)) * autoFitMargin;
+
+        // Position camera
+        const currentPos = camera.position.clone();
+        const direction = currentPos.sub(center).normalize(); // Direction from center to camera
+
+        // If direction is zero (camera at center), default to Z axis
+        if (direction.lengthSq() === 0) {
+          direction.set(0, 0, 1);
+        }
+
+        const newPos = center.clone().add(direction.multiplyScalar(distance));
+
+        // Update camera
+        camera.position.copy(newPos);
+        camera.lookAt(center);
+
+        // Update controls target if available
+        if (controls) {
+          // @ts-ignore
+          controls.target.copy(center);
+          // @ts-ignore
+          controls.update();
+        }
+      }
+    } catch (error) {
+      captureError(error, {
+        component: "ModelViewer.Model",
+        action: "auto_fit_model"
+      }, ErrorSeverity.Warning);
+    }
+  }, [gltf, autoFit, autoFitMargin, camera, controls]);
 
   useEffect(() => {
     try {
@@ -372,11 +467,41 @@ export default function ModelViewer({
   cameraConfig,
   lightConfig = LIGHT_CONFIG,
   enableOrbitControls = false,
+  enableZoom = true,
+  autoFit = false,
+  autoFitMargin = 1.2,
+  debug = false,
 }: ModelViewerProps) {
   const { handleError, isError, getErrorMessage } = useErrorHandler("ModelViewer");
   const mergedLightConfig = { ...LIGHT_CONFIG, ...lightConfig };
   const mergedCameraConfig = { ...CAMERA_CONFIG, ...cameraConfig };
   const canvasRef = useRef<HTMLDivElement>(null);
+  const [debugInfo, setDebugInfo] = useState({
+    cameraPosition: [0, 0, 0] as [number, number, number],
+    cameraRotation: [0, 0, 0] as [number, number, number],
+    fov: 0,
+    zoom: 0,
+  });
+
+  // Update debug info with throttling
+  const updateDebugInfo = useRef((data: typeof debugInfo) => {
+    setDebugInfo((prev) => {
+      // Only update if values changed significantly
+      if (
+        Math.abs(prev.cameraPosition[0] - data.cameraPosition[0]) > 0.01 ||
+        Math.abs(prev.cameraPosition[1] - data.cameraPosition[1]) > 0.01 ||
+        Math.abs(prev.cameraPosition[2] - data.cameraPosition[2]) > 0.01 ||
+        Math.abs(prev.cameraRotation[0] - data.cameraRotation[0]) > 0.01 ||
+        Math.abs(prev.cameraRotation[1] - data.cameraRotation[1]) > 0.01 ||
+        Math.abs(prev.cameraRotation[2] - data.cameraRotation[2]) > 0.01
+      ) {
+        return data;
+      }
+      return prev;
+    });
+  }).current;
+
+  const formatNumber = (num: number) => num.toFixed(2);
 
   // Handle click event separately from the canvas
   const handleClick = (e: React.MouseEvent) => {
@@ -408,9 +533,57 @@ export default function ModelViewer({
   return (
     <div
       ref={canvasRef}
-      style={{ width, height, cursor: onClick ? "pointer" : "default" }}
+      style={{
+        width,
+        height,
+        cursor: onClick ? "pointer" : "default",
+        position: "relative",
+        border: debug ? '1px solid red' : 'none'
+      }}
       onClick={handleClick}
     >
+      {/* Debug overlay (outside Canvas) */}
+      {debug && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            right: '0',
+            background: 'rgba(0, 0, 0, 0.9)',
+            color: '#00ff00',
+            padding: '6px 10px',
+            fontFamily: 'monospace',
+            fontSize: '10px',
+            pointerEvents: 'none',
+            userSelect: 'none',
+            zIndex: 1000,
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '10px',
+            alignItems: 'center',
+            lineHeight: '1.4'
+          }}
+        >
+          <span style={{ color: '#00ffff', fontWeight: 'bold' }}>🎥</span>
+          <span style={{ color: '#888' }}>Pos:</span>
+          <span>
+            [{formatNumber(debugInfo.cameraPosition[0])}, {formatNumber(debugInfo.cameraPosition[1])}, {formatNumber(debugInfo.cameraPosition[2])}]
+          </span>
+          <span style={{ color: '#888' }}>|</span>
+          <span style={{ color: '#888' }}>Rot:</span>
+          <span>
+            [{formatNumber(debugInfo.cameraRotation[0])}, {formatNumber(debugInfo.cameraRotation[1])}, {formatNumber(debugInfo.cameraRotation[2])}]
+          </span>
+          <span style={{ color: '#888' }}>|</span>
+          <span style={{ color: '#888' }}>FOV:</span>
+          <span>{formatNumber(debugInfo.fov)}°</span>
+          <span style={{ color: '#888' }}>|</span>
+          <span style={{ color: '#888' }}>Zoom:</span>
+          <span>{formatNumber(debugInfo.zoom)}</span>
+        </div>
+      )}
+
       <Canvas
         // Canvas configuration
         gl={{
@@ -438,12 +611,16 @@ export default function ModelViewer({
           quaternion={mergedCameraConfig.quaternion}
         />
 
-        {/* Camera controllers - always apply oscillation */}
-        <CameraController cameraConfig={mergedCameraConfig} />
-        {(mergedCameraConfig.enableAnimation ||
-          mergedCameraConfig.oscillation?.enabled) && (
-            <AnimatedCamera cameraConfig={mergedCameraConfig} />
-          )}
+        {/* Camera controllers - only if orbit controls are disabled */}
+        {!enableOrbitControls && (
+          <>
+            <CameraController cameraConfig={mergedCameraConfig} enableZoom={enableZoom} />
+            {(mergedCameraConfig.enableAnimation ||
+              mergedCameraConfig.oscillation?.enabled) && (
+                <AnimatedCamera cameraConfig={mergedCameraConfig} />
+              )}
+          </>
+        )}
 
         {/* Lighting */}
         <ambientLight intensity={mergedLightConfig.ambient.intensity} />
@@ -473,13 +650,23 @@ export default function ModelViewer({
 
         {/* Model with Suspense for loading state */}
         <Suspense fallback={null}>
-          <Model modelPath={modelPath} playAnimation={playAnimation} />
+          <Model
+            modelPath={modelPath}
+            playAnimation={playAnimation}
+            autoFit={autoFit}
+            autoFitMargin={autoFitMargin}
+            cameraConfig={mergedCameraConfig}
+          />
         </Suspense>
+
+        {/* Debug data updater */}
+        {debug && <DebugDataUpdater onUpdate={updateDebugInfo} />}
 
         {/* Optional orbit controls if explicitly enabled */}
         {enableOrbitControls && (
           <OrbitControls
-            enableZoom={true}
+            makeDefault
+            enableZoom={enableZoom}
             enablePan={true}
             enableRotate={true}
             target={mergedCameraConfig.lookAt}

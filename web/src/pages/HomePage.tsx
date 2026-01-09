@@ -23,12 +23,15 @@ import GitHubCalendar from "../components/GitHubCalendar/GitHubCalendar";
 import FAQ from "../components/FAQ";
 import Footer from "../components/Footer/Footer";
 import { ErrorBoundary } from "../components/ErrorBoundary/ErrorBoundary";
+import ModelViewer from "../components/ModelViewer/ModelViewer";
 
 function HomePage() {
   const { handleError } = useErrorHandler("HomePage");
   const { t, i18n } = useTranslation();
   const { lang } = useParams();
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [debugMode, setDebugMode] = useState(false);
+  const clickCountRef = useState({ count: 0, timeout: null as NodeJS.Timeout | null })[0];
 
   // Initialiser la langue basée sur la route
   useEffect(() => {
@@ -119,6 +122,33 @@ function HomePage() {
       handleError(error, { action: "theme_observer" });
     }
   }, [handleError]);
+
+  // Easter egg: 15 rapid clicks to toggle debug mode
+  const handleModelClick = () => {
+    try {
+      clickCountRef.count++;
+
+      // Clear previous timeout
+      if (clickCountRef.timeout) {
+        clearTimeout(clickCountRef.timeout);
+      }
+
+      // Check if we reached 15 clicks
+      if (clickCountRef.count >= 15) {
+        setDebugMode((prev) => !prev);
+        clickCountRef.count = 0;
+        clickCountRef.timeout = null;
+      } else {
+        // Reset counter after 2 seconds of inactivity
+        clickCountRef.timeout = setTimeout(() => {
+          clickCountRef.count = 0;
+          clickCountRef.timeout = null;
+        }, 2000);
+      }
+    } catch (error) {
+      handleError(error, { action: "model_click_easter_egg" });
+    }
+  };
 
   return (
     <ClickSpark
@@ -364,6 +394,32 @@ function HomePage() {
               <ErrorBoundary>
                 <GitHubCalendar username="vavanesssa" theme={isDarkMode ? "dark" : "light"} />
               </ErrorBoundary>
+            </div>
+
+            {/* IBM Terminal Section */}
+            <div id="ibm-terminal-section" className="w-full mb-20 flex justify-center">
+              <div className="w-[300px] h-[300px]">
+                <ErrorBoundary>
+                  <ModelViewer
+                    modelPath="/ibm_3278_terminal.glb"
+                    playAnimation={true}
+                    width="100%"
+                    height="100%"
+                    enableOrbitControls={true}
+                    enableZoom={true}
+                    autoFit={false}
+                    debug={debugMode}
+                    onClick={handleModelClick}
+                    cameraConfig={{
+                      position: [124.39, 63.56, -66.43],
+                      rotation: [-2.48, 0.98, 2.56],
+                      lookAt: [0, 5, 0],
+                      autoRotate: false,
+                      oscillation: { enabled: false, amplitude: 0, period: 0, axis: "y" }
+                    }}
+                  />
+                </ErrorBoundary>
+              </div>
             </div>
 
             {/* Tech Stack Extended - Displayed directly */}

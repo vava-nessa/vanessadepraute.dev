@@ -54,7 +54,7 @@ Always read this file before starting any task in this repo.
 
 ## Testing
 
-- **IMPORTANT**: Always run `pnpm build` at the end of each task to verify that the code compiles correctly and there are no type errors.
+- **Testing**: Run `pnpm build` only when you are unsure about type safety or when explicitly requested. Do not run it after every small change to save time.
 
 ## Git Workflow
 

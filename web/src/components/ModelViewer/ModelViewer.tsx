@@ -483,6 +483,26 @@ export default function ModelViewer({
     zoom: 0,
   });
 
+  // Detect light/dark mode for debug overlay
+  const [isLightMode, setIsLightMode] = useState(false);
+
+  useEffect(() => {
+    const checkTheme = () => {
+      const isLight = document.documentElement.classList.contains('light-mode');
+      setIsLightMode(isLight);
+    };
+
+    checkTheme();
+
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   // Update debug info with throttling
   const updateDebugInfo = useRef((data: typeof debugInfo) => {
     setDebugInfo((prev) => {
@@ -531,60 +551,88 @@ export default function ModelViewer({
   }
 
   return (
-    <div
-      ref={canvasRef}
-      style={{
-        width,
-        height,
-        cursor: onClick ? "pointer" : "default",
-        position: "relative",
-        border: debug ? '1px solid red' : 'none'
-      }}
-      onClick={handleClick}
-    >
-      {/* Debug overlay (outside Canvas) */}
-      {debug && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '0',
-            left: '0',
-            right: '0',
-            background: 'rgba(0, 0, 0, 0.9)',
-            color: '#00ff00',
-            padding: '6px 10px',
-            fontFamily: 'monospace',
-            fontSize: '10px',
-            pointerEvents: 'none',
-            userSelect: 'none',
-            zIndex: 1000,
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '10px',
-            alignItems: 'center',
-            lineHeight: '1.4'
-          }}
-        >
-          <span style={{ color: '#00ffff', fontWeight: 'bold' }}>🎥</span>
-          <span style={{ color: '#888' }}>Pos:</span>
-          <span>
-            [{formatNumber(debugInfo.cameraPosition[0])}, {formatNumber(debugInfo.cameraPosition[1])}, {formatNumber(debugInfo.cameraPosition[2])}]
-          </span>
-          <span style={{ color: '#888' }}>|</span>
-          <span style={{ color: '#888' }}>Rot:</span>
-          <span>
-            [{formatNumber(debugInfo.cameraRotation[0])}, {formatNumber(debugInfo.cameraRotation[1])}, {formatNumber(debugInfo.cameraRotation[2])}]
-          </span>
-          <span style={{ color: '#888' }}>|</span>
-          <span style={{ color: '#888' }}>FOV:</span>
-          <span>{formatNumber(debugInfo.fov)}°</span>
-          <span style={{ color: '#888' }}>|</span>
-          <span style={{ color: '#888' }}>Zoom:</span>
-          <span>{formatNumber(debugInfo.zoom)}</span>
-        </div>
-      )}
+    <>
 
-      <Canvas
+      <div
+        ref={canvasRef}
+        style={{
+          width,
+          height,
+          cursor: onClick ? "pointer" : "default",
+          position: "relative",
+          border: debug
+            ? `2px solid ${isLightMode ? '#00cc00' : '#00ff00'}`
+            : '2px solid transparent'
+        }}
+        onClick={handleClick}
+      >
+        {/* Debug overlay - Compact and centered */}
+        {debug && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '6px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              height: 'auto',
+              background: isLightMode
+                ? 'rgba(255, 255, 255, 0.75)'
+                : 'rgba(0, 0, 0, 0.6)',
+              backdropFilter: 'blur(4px)',
+              WebkitBackdropFilter: 'blur(4px)',
+              border: `1px solid ${isLightMode ? '#00cc00' : '#00ff00'}`,
+              borderRadius: '3px',
+              color: isLightMode ? '#00aa00' : '#00ff00',
+              padding: '3px 6px',
+              fontFamily: '"Courier New", monospace',
+              fontSize: '9px',
+              fontWeight: 'bold',
+              pointerEvents: 'none',
+              userSelect: 'none',
+              zIndex: 1001,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1px',
+              lineHeight: '1.2',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            <div style={{ display: 'flex', gap: '4px', fontSize: '8px', opacity: 0.6, marginBottom: '1px' }}>
+              <span>DEBUG</span>
+            </div>
+            <div style={{ display: 'flex', gap: '4px' }}>
+              <span style={{ opacity: 0.7, minWidth: '24px' }}>POS</span>
+              <span style={{ fontSize: '8px' }}>
+                [{formatNumber(debugInfo.cameraPosition[0])},{formatNumber(debugInfo.cameraPosition[1])},{formatNumber(debugInfo.cameraPosition[2])}]
+              </span>
+            </div>
+            <div style={{ display: 'flex', gap: '4px' }}>
+              <span style={{ opacity: 0.7, minWidth: '24px' }}>ROT</span>
+              <span style={{ fontSize: '8px' }}>
+                [{formatNumber(debugInfo.cameraRotation[0])},{formatNumber(debugInfo.cameraRotation[1])},{formatNumber(debugInfo.cameraRotation[2])}]
+              </span>
+            </div>
+            <div style={{ display: 'flex', gap: '4px' }}>
+              <span style={{ opacity: 0.7, minWidth: '24px' }}>FOV</span>
+              <span style={{ fontSize: '8px' }}>{formatNumber(debugInfo.fov)}°</span>
+            </div>
+            <div style={{ display: 'flex', gap: '4px' }}>
+              <span style={{ opacity: 0.7, minWidth: '24px' }}>ZM</span>
+              <span style={{ fontSize: '8px' }}>{formatNumber(debugInfo.zoom)}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Canvas wrapper - ensures it's not pushed by overlay */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 1
+        }}>
+          <Canvas
         // Canvas configuration
         gl={{
           antialias: true,
@@ -682,7 +730,9 @@ export default function ModelViewer({
             dampingFactor={mergedCameraConfig.dampingFactor}
           />
         )}
-      </Canvas>
-    </div>
+          </Canvas>
+        </div>
+      </div>
+    </>
   );
 }

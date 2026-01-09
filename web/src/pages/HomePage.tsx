@@ -21,6 +21,8 @@ import namiPattern from "../assets/nami.webp";
 import { useErrorHandler } from "@/hooks/useErrorHandler";
 import * as Sentry from "@sentry/react";
 import LightRays from "../components/LightRays/LightRays";
+import GitHubCalendar from "../components/GitHubCalendar/GitHubCalendar";
+import FAQ from "../components/FAQ";
 
 function HomePage() {
   const { handleError } = useErrorHandler("HomePage");
@@ -349,12 +351,20 @@ function HomePage() {
               </div>
             )}
 
+            {/* GitHub Calendar - Before Tech Stack */}
+            <div id="github-calendar-section" className="w-full mb-20">
+              <GitHubCalendar username="vavanesssa" theme={isDarkMode ? "dark" : "light"} />
+            </div>
+
             {/* Tech Stack Extended Accordion - At the end */}
             <div id="tech-stack-accordion" className="w-full max-w-4xl mx-auto mt-20 mb-20 px-4">
               <Accordion title={t("techStack.title")} defaultOpen={false}>
                 <TechStackExtended />
               </Accordion>
             </div>
+
+            {/* FAQ Section */}
+            <FAQ />
 
             {/* Sentry Test Error Button - Development Only */}
             {import.meta.env.DEV && (

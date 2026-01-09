@@ -134,3 +134,299 @@ Error UI messages are in `src/locales/{en,fr}.json` under the `errors` key.
 - Use pnpm only (this repo has a `pnpm-lock.yaml`).
 - `src/App.tsx` exists but is not wired to the router; use `src/pages/` instead.
 - Read `AGENTS.md` before starting any task.
+
+
+
+
+## DATA about Vanessa Depraute (this website user)
+
+# Vanessa Depraute
+
+## Professional Summary
+
+**Senior Full-Stack JavaScript Developer** with 19+ years of experience, working professionally since 2006. Main expertise in full-stack JavaScript development, with strong secondary skills in UI/UX design, WebGL, real-time systems, and video/streaming technologies. Proven ability to design, build, and deliver complex applications end-to-end, from architecture to production. Extensive experience with large enterprise clients and international teams. Advanced practitioner of AI-assisted development and modern frontend/backend ecosystems.
+
+---
+
+## Key Information
+
+* **Role**: Full-Stack JavaScript Developer (primary)
+* **Status**: Freelance (open to contracts and full-time roles)
+* **Location**: Paris / Saint-Maur-des-Fossés, Île-de-France, France
+* **Experience**: 19 years (since 2006)
+
+---
+
+## Professional Titles
+
+* Full-Stack JavaScript Developer (primary)
+* UI/UX Designer (secondary)
+* WebGL Developer (secondary)
+* Video Broadcast & Stream Technician (secondary)
+
+---
+
+## Languages
+
+* **French**: Native
+* **English**: B2 – Professional working proficiency
+* **Spanish**: A1 – Basic
+* **Chinese (Mandarin)**: Currently learning
+
+---
+
+## Core Expertise
+
+* Full-stack JavaScript architecture and development
+* Real-time applications and event-driven systems
+* High-performance frontend (WebGL, data visualization)
+* Enterprise-grade applications and internal tools
+* AI-assisted development workflows
+* End-to-end project ownership (solo or team-based)
+
+---
+
+## Technical Skills
+
+### JavaScript & Core Concepts
+
+* JavaScript, TypeScript, ES10+
+* Async/Await, Promises
+* Dynamic Imports, Spread/Rest
+* Generators, Memoization
+
+### Frontend Frameworks & State Management
+
+* React, Next.js
+* Redux Saga, Redux Thunk, Recoil
+* Custom Hooks, Context API
+* React Query, TanStack Query
+
+### UI, Design & Motion
+
+* Tailwind CSS, Vite
+* Figma, Storybook
+* Framer Motion, shadcn/ui
+* Material UI, Ant Design, Chakra UI
+* Styled Components, Vue.js
+* Adobe XD, Illustrator, Photoshop
+
+### CSS Architecture
+
+* CSS3, SASS / SCSS, LESS
+* Flexbox, Responsive Design
+* BEM, Atomic Design
+
+### Build & Tooling
+
+* Vite, Webpack, Parcel
+* Gulp, Snowpack
+* Storybook
+
+### Graphics, WebGL & Visualization
+
+* HTML5 Canvas
+* SVG Animation
+* WebGL, Babylon.js
+* deck.gl, D3.js
+* Mapbox, MapLibre
+
+### Backend & APIs
+
+* Node.js, Express
+* PostgreSQL, MySQL, MongoDB
+* Prisma
+* GraphQL, tRPC
+* Redis, Stripe
+
+### DevOps, Cloud & Observability
+
+* Vercel, Cloudflare
+* AWS, Docker, Kubernetes
+* Terraform
+* GitHub Actions, CI/CD
+* Datadog, Sentry
+
+### Mobile & Cross-Platform
+
+* React Native
+* Expo, EAS
+* Firebase, Ionic
+
+### Testing & Quality
+
+* Jest, Vitest
+* Playwright, Cypress
+* React Testing Library
+
+### Version Control & Collaboration
+
+* Git, GitHub, GitLab, Bitbucket
+* Jira, Trello, Notion
+* Agile / Scrum
+
+---
+
+## AI & Machine Learning Ecosystem
+
+### LLM Providers
+
+* OpenAI, Anthropic, Mistral AI, DeepSeek
+* Google Gemini, xAI, Cohere
+* Perplexity, Groq, Together AI
+
+### AI Development Tools
+
+* GitHub Copilot
+* Cursor
+* Claude Code
+* AugmentCode
+* Continue, Codeium, Tabnine
+* Warp, Replit, v0.dev, Cody
+* AntiGravity
+
+### AI Infrastructure & Tooling
+
+* OpenRouter
+* Langfuse, LangSmith
+* Pinecone, Weaviate, Qdrant, Chroma
+* pgvector, Milvus
+* LangChain, LlamaIndex
+* Hugging Face
+
+### Open-Source Models & Runtimes
+
+* Meta LLaMA
+* Mistral (7B)
+* vLLM, Ollama
+* Stability AI
+* OpenRouter-hosted OSS models
+
+---
+
+## Professional Experience
+
+### Full-Stack Web Developer — Freelance
+
+**Paris, France | 2010 → Present**
+
+Design and development of custom business applications, internal tools, CRMs, live video interfaces, real-time dashboards, websites, and e-commerce platforms. Responsible for full project lifecycle: architecture, development, deployment, and maintenance. Frequent collaboration with designers, developers, and non-technical stakeholders, as well as full autonomy on solo projects.
+
+---
+
+### Front-End & WebGL Developer — Kogama / ABOX
+
+**Stockholm, Sweden | 2020 → 2022**
+
+* Development of real-time multiplayer features using React and WebGL
+* WebGL rendering optimizations (reduced draw calls, improved FPS)
+* In-game monetization components
+* 3D user interfaces, menus, and model selectors
+* Migration and refactoring toward Babylon.js
+* Tooling standardization (Prettier, coding conventions)
+* Work within a fully distributed international team
+
+---
+
+### Video Broadcast & Stream Technician — Livee & Partners
+
+**Paris, France | 2005 → Present**
+
+* Professional live streaming setups
+* Real-time overlays and audience interactions
+* Corporate and large-scale event production
+* Multi-platform live broadcasting
+* Real-time technical support and audiovisual supervision
+
+---
+
+## Career Timeline
+
+* **2005**: Entry into video production, event management, and graphic design
+* **2006**: Self-taught web development beginnings
+* **2009**: Formal JavaScript training
+* **2010–2018**: Enterprise business applications, large accounts, international missions
+* **2020–2022**: Front-End & WebGL Developer at Kogama (Stockholm)
+* **2023–Present**: Modern stack (Next.js, Tailwind, shadcn/ui) and AI-assisted development
+
+---
+
+## Selected Projects
+
+### Out Of Burn — 2025
+
+AI-assisted wellness and burnout-prevention mobile application featuring journaling, emotional tracking, and weekly analysis.
+
+**Tech stack**: React Native, Expo, Supabase, LLMs, RAG
+
+---
+
+### Real-Time Emoji Reaction Overlay
+
+Real-time emoji reaction overlay system for live video platforms (Twitch, TikTok-style). Includes admin dashboard, spectator interface, chat system, and AI-powered analytics.
+
+**Tech stack**: React, Next.js, WebSocket, Node.js
+
+---
+
+### Event Applications Suite (Livee)
+
+Set of professional event-management applications including event scanning, CRM, and global administration tools. Production systems currently undergoing a Next.js 15 refactor.
+
+**Tech stack**: React, Next.js, Tailwind CSS, shadcn/ui
+
+---
+
+### Chat System & Event Platform
+
+End-to-end chat and event management platform designed and built independently.
+
+**Tech stack**: React, Next.js, Node.js, MongoDB
+
+---
+
+### Kogama / ABOX Gaming Platform
+
+Development of in-game monetization components, 3D menus, model selectors, and WebGL performance optimizations. Migration toward Babylon.js and codebase standardization.
+
+**Tech stack**: React, WebGL, Babylon.js
+
+---
+
+### High-Performance Cartographic Data Visualization
+
+R&D projects focused on large-scale, high-performance cartographic data visualization and dynamic overlays.
+
+**Tech stack**: deck.gl, Mapbox, MapLibre
+
+---
+
+## Key Strengths
+
+* Primary expertise in full-stack JavaScript development
+* Strong secondary skills in UI/UX, WebGL, and real-time systems
+* Deep experience with enterprise and institutional clients
+* Full project ownership from concept to production
+* High productivity enabled by AI-assisted workflows
+
+---
+
+## Soft Skills
+
+* Creative problem-solving
+* Fast learner with strong technical curiosity
+* Team-oriented mindset
+* High attention to detail and code quality
+* Clear communication with technical and non-technical stakeholders
+* Autonomy, reliability, and accountability
+
+---
+
+## Key Figures
+
+* 19+ years of professional development
+* 11+ years of full-stack JavaScript
+* 20 years in video and event production
+* 15 years as a freelancer
+* 2 years of international experience (Stockholm)
+* 50+ enterprise and institutional clients

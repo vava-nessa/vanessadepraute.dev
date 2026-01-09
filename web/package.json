@@ -33,6 +33,7 @@
     "motion": "^12.23.26",
     "ogl": "^1.0.11",
     "react": "^19.0.0",
+    "react-activity-calendar": "^3.0.5",
     "react-dom": "^19.0.0",
     "react-i18next": "^16.5.1",
     "react-router-dom": "^7.0.0",

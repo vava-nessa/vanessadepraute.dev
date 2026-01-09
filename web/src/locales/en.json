@@ -123,5 +123,42 @@
       "mobileDeveloper": "Mobile Developer",
       "videoTechnician": "Video Technician"
     }
+  },
+  "githubCalendar": {
+    "title": "GitHub Activity",
+    "subtitle": "My contribution activity over the past year",
+    "loading": "Loading GitHub activity...",
+    "contributions": "contributions",
+    "in": "in",
+    "legend": {
+      "less": "Less",
+      "more": "More"
+    }
+  },
+  "faq": {
+    "title": "Curious Questions?",
+    "subtitle": "Everything you wanted to know about my work",
+    "items": [
+      {
+        "question": "Why did you create this portfolio?",
+        "answer": "This portfolio showcases my skills and vision as a **Full-Stack JavaScript and TypeScript developer**. My goal is to make technical concepts accessible to everyone, using a friendly and creative approach. Whether you're a developer, a startup founder, or even my grandma — I want you to understand what I do and why I love doing it!"
+      },
+      {
+        "question": "Have you always been a developer?",
+        "answer": "Yes and no! After my initial studies in development, I worked for companies like **Orange France, Free, and Safran** in various roles. These experiences helped me grow both technically and interpersonally. Eventually, I decided to go independent, which motivated me to go back to school and sharpen my skills. For the past years, I've been a **full-time freelance developer**, and I couldn't be happier!"
+      },
+      {
+        "question": "What does a typical day look like for you?",
+        "answer": "My day usually starts with a cup of green tea ☕ and catching up on the latest tech news. If I'm working with a team, there's often a quick **daily standup** to align on tasks. Then it's all about prioritizing — thinking through problems, researching solutions, and of course, **coding**. I push my work to shared repos, review code, and iterate. Oh, and there's always time for cuddling my cats between commits!"
+      },
+      {
+        "question": "What makes you different from other developers?",
+        "answer": "A developer is like a **digital architect** who structures applications to deliver the best user experience. There are many programming languages out there, each with its own strengths. My specialty? **JavaScript & TypeScript**. As a **Full-Stack developer**, I handle both frontend and backend, plus databases. This means I can deliver **complete, end-to-end solutions** — from sleek UIs to robust APIs."
+      },
+      {
+        "question": "Why do you have only one public GitHub repo?",
+        "answer": "Great question! This portfolio is currently my only **public project** on GitHub. Most of my other work is either confidential or belongs to clients. That said, I'm always on the lookout for opportunities to contribute to **open-source projects** and expand my public portfolio. Stay tuned — more is coming!"
+      }
+    ]
   }
 }

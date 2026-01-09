@@ -125,5 +125,42 @@
       "mobileDeveloper": "Développeur Mobile",
       "videoTechnician": "Technicien Vidéo"
     }
+  },
+  "githubCalendar": {
+    "title": "Activité GitHub",
+    "subtitle": "Mon activité de contributions sur l'année passée",
+    "loading": "Chargement de l'activité GitHub...",
+    "contributions": "contributions",
+    "in": "en",
+    "legend": {
+      "less": "Moins",
+      "more": "Plus"
+    }
+  },
+  "faq": {
+    "title": "Questions curieuses ?",
+    "subtitle": "Tout ce que vous vouliez savoir sur mon travail",
+    "items": [
+      {
+        "question": "Pourquoi ce portfolio ?",
+        "answer": "Ce portfolio présente mes compétences et ma vision en tant que **développeuse Full-Stack JavaScript et TypeScript**. Mon objectif est de rendre les concepts techniques accessibles à tous, avec une approche créative et conviviale. Que vous soyez développeur, fondateur de startup, ou même ma grand-mère — je veux que vous compreniez ce que je fais et pourquoi j'adore ça !"
+      },
+      {
+        "question": "Ai-je toujours été développeuse ?",
+        "answer": "Oui et non ! Après mes premières études en développement, j'ai travaillé pour des entreprises comme **Orange France, Free et Safran** à différents postes. Ces expériences m'ont permis de progresser techniquement et relationnellement. J'ai ensuite décidé de me lancer en indépendante, ce qui m'a motivée à retourner à l'école pour affiner mes compétences. Depuis plusieurs années, je suis **développeuse freelance à plein temps**, et je n'ai jamais été aussi épanouie !"
+      },
+      {
+        "question": "À quoi ressemble une journée type ?",
+        "answer": "Ma journée commence généralement par une tasse de thé vert ☕ et un tour d'horizon des dernières news tech. Si je travaille en équipe, il y a souvent un **daily standup** pour aligner les tâches. Ensuite, c'est la priorisation — réfléchir aux problèmes, chercher des solutions, et bien sûr, **coder**. Je pousse mon travail sur des repos partagés, je fais des revues de code, et j'itère. Ah, et il y a toujours du temps pour câliner mes chats entre deux commits !"
+      },
+      {
+        "question": "Qu'est-ce qui me différencie des autres développeurs ?",
+        "answer": "Un développeur est comme un **architecte numérique** qui structure les applications pour offrir la meilleure expérience utilisateur. Il existe de nombreux langages de programmation, chacun avec ses forces. Ma spécialité ? **JavaScript & TypeScript**. En tant que **développeuse Full-Stack**, je gère à la fois le frontend, le backend et les bases de données. Cela signifie que je peux livrer des **solutions complètes de bout en bout** — des interfaces élégantes aux APIs robustes."
+      },
+      {
+        "question": "Pourquoi n'ai-je qu'un seul dépôt Git public ?",
+        "answer": "Excellente question ! Ce portfolio est actuellement mon seul **projet public** sur GitHub. La plupart de mes autres travaux sont confidentiels ou appartiennent à des clients. Cela dit, je suis toujours à la recherche d'opportunités pour contribuer à des **projets open-source** et enrichir mon portfolio public. Restez à l'écoute — du nouveau arrive bientôt !"
+      }
+    ]
   }
 }

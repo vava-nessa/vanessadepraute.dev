@@ -23,6 +23,7 @@ import * as Sentry from "@sentry/react";
 import LightRays from "../components/LightRays/LightRays";
 import GitHubCalendar from "../components/GitHubCalendar/GitHubCalendar";
 import FAQ from "../components/FAQ";
+import Footer from "../components/Footer/Footer";
 
 function HomePage() {
   const { handleError } = useErrorHandler("HomePage");
@@ -392,6 +393,9 @@ function HomePage() {
                 </button>
               </div>
             )}
+
+            {/* Footer with social icons */}
+            <Footer />
           </div>
         </div>
       </div>

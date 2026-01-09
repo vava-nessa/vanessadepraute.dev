@@ -150,8 +150,17 @@
     @apply border-border outline-ring/50;
   }
 
+  /* Prevent double scrollbars - only html should control vertical scroll */
+  html {
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: "JetBrains Mono", monospace;
+    overflow: visible;
+    min-height: 100vh;
   }
 }

@@ -47,3 +47,16 @@
 .techstack-logo--nextjs {
   filter: invert(1) brightness(1.1);
 }
+
+/* Light mode adjustments */
+:root.light-mode .techstack-logo--nextjs {
+  filter: invert(0) brightness(0);
+}
+
+:root.light-mode .techstack-logo-wrapper img[alt*="React Native"] {
+  filter: brightness(0.3) saturate(1.5);
+}
+
+:root.light-mode .techstack-logo--supabase {
+  filter: brightness(0) saturate(100%);
+}

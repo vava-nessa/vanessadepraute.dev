@@ -60,8 +60,8 @@ h2 {
 :root.light-mode {
   --bg-primary: #fcf5ff;
   --bg-secondary: #f9f0ff;
-  --text-primary: #1f1f1f;
-  --text-secondary: #666666;
+  --text-primary: #333333;
+  --text-secondary: #333333;
   --border-color: rgba(139, 92, 246, 0.2);
   --color-primary: #ff3d9a;
   --color-secondary: #ff7cfd;
@@ -69,32 +69,32 @@ h2 {
 
 :root.light-mode .min-h-screen {
   background: #fcf5ff !important;
-  color: #1f1f1f !important;
+  color: #333333 !important;
 }
 
 :root.light-mode h1,
 :root.light-mode h2 {
-  color: #1f1f1f;
+  color: #333333;
 }
 
 :root.light-mode p {
-  color: #666666;
+  color: #333333;
 }
 
 :root.light-mode .text-neutral-400 {
-  color: #999999 !important;
+  color: #333333 !important;
 }
 
 :root.light-mode .text-neutral-300 {
-  color: #404040 !important;
+  color: #333333 !important;
 }
 
 :root.light-mode .text-neutral-500 {
-  color: #888888 !important;
+  color: #333333 !important;
 }
 
 :root.light-mode .text-white {
-  color: #1f1f1f !important;
+  color: #333333 !important;
 }
 
 :root.light-mode .wrapper {
@@ -102,23 +102,23 @@ h2 {
 }
 
 :root.light-mode .tech-extended-title {
-  color: #1f1f1f;
+  color: #333333;
 }
 
 :root.light-mode .tech-card {
   background: rgba(139, 92, 246, 0.1);
   border-color: rgba(139, 92, 246, 0.3);
-  color: #1f1f1f;
+  color: #333333;
 }
 
 :root.light-mode .tech-card:hover {
   background: rgba(139, 92, 246, 0.2);
   border-color: rgba(139, 92, 246, 0.5);
-  color: #1f1f1f;
+  color: #333333;
 }
 
 :root.light-mode .category-title {
-  color: #1f1f1f;
+  color: #333333;
 }
 
 :root.light-mode .text-violet-400 {
@@ -130,7 +130,7 @@ h2 {
 }
 
 :root.light-mode button:not(.language-switcher):not(.theme-switcher) {
-  color: #1f1f1f;
+  color: #333333;
   transition: all 0.3s ease;
 }
 

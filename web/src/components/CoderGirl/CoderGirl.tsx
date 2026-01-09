@@ -4,6 +4,8 @@ import girlImage from "../../assets/girl.webp";
 import girlLightImage from "../../assets/girlw.png";
 import { useTheme } from "../../contexts/ThemeContext";
 import TerminalDemo from "../../TerminalDemo";
+import { useErrorHandler } from "@/hooks/useErrorHandler";
+import { captureError, ErrorSeverity } from "@/utils/errorHandling";
 
 interface CoderGirlProps {
   // Propriétés optionnelles pour personnaliser le contenu
@@ -90,8 +92,7 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
   size = 1,
   containerClassName = "",
 }) => {
-  // État pour gérer les erreurs de rendu
-  const [renderError, setRenderError] = useState<Error | null>(null);
+  const { handleError, isError, getErrorMessage } = useErrorHandler("CoderGirl");
   const [containerRef, setContainerRef] = useState<HTMLDivElement | null>(null);
   const [containerWidth, setContainerWidth] = useState<number>(0);
   const { theme } = useTheme();
@@ -107,7 +108,7 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
       }
       return typeof size === "number" ? size : 1;
     } catch (error) {
-      console.error("Error calculating scale factor:", error);
+      captureError(error, { component: "CoderGirl", action: "calculate_scale_factor" }, ErrorSeverity.Warning);
       return 1;
     }
   };
@@ -118,7 +119,7 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
       const scaleFactor = getScaleFactor();
       return value * scaleFactor;
     } catch (error) {
-      console.error("Error scaling value:", error);
+      captureError(error, { component: "CoderGirl", action: "scale_value" }, ErrorSeverity.Warning);
       return value;
     }
   };
@@ -137,8 +138,7 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
         return () => observer.disconnect();
       }
     } catch (error) {
-      console.error("Error setting up resize observer:", error);
-      setRenderError(error instanceof Error ? error : new Error(String(error)));
+      handleError(error, { action: "setup_resize_observer" });
     }
   }, [containerRef, size]);
 
@@ -167,7 +167,7 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
         zIndex: 2,
       };
     } catch (error) {
-      console.error("Error generating container styles:", error);
+      captureError(error, { component: "CoderGirl", action: "generate_container_styles" }, ErrorSeverity.Warning);
       return {};
     }
   };
@@ -211,7 +211,7 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
         backfaceVisibility: "hidden",
       };
     } catch (error) {
-      console.error("Error generating screen styles:", error);
+      captureError(error, { component: "CoderGirl", action: "generate_screen_styles" }, ErrorSeverity.Warning);
       return {};
     }
   };
@@ -254,7 +254,7 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
         backfaceVisibility: "hidden",
       };
     } catch (error) {
-      console.error("Error generating screen background styles:", error);
+      captureError(error, { component: "CoderGirl", action: "generate_screen_background_styles" }, ErrorSeverity.Warning);
       return {};
     }
   };
@@ -298,7 +298,7 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
         pointerEvents: "none",
       };
     } catch (error) {
-      console.error("Error generating screen overlay styles:", error);
+      captureError(error, { component: "CoderGirl", action: "generate_screen_overlay_styles" }, ErrorSeverity.Warning);
       return {};
     }
   };
@@ -323,7 +323,7 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
         pointerEvents: "none",
       };
     } catch (error) {
-      console.error("Error generating image styles:", error);
+      captureError(error, { component: "CoderGirl", action: "generate_image_styles" }, ErrorSeverity.Warning);
       return {};
     }
   };
@@ -346,7 +346,7 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
         letterSpacing: "0.02em",
       };
     } catch (error) {
-      console.error("Error generating text styles:", error);
+      captureError(error, { component: "CoderGirl", action: "generate_text_styles" }, ErrorSeverity.Warning);
       return {};
     }
   };
@@ -360,17 +360,16 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
         </div>
       );
     } catch (error) {
-      console.error("Error rendering screen content:", error);
-      setRenderError(error instanceof Error ? error : new Error(String(error)));
+      handleError(error, { action: "render_screen_content" });
       return <div style={{ color: "red" }}>Error displaying content</div>;
     }
   };
 
   // Afficher un message d'erreur si le rendu échoue
-  if (renderError) {
+  if (isError) {
     return (
       <div style={{ color: "red", textAlign: "center" }}>
-        Component Error: {renderError.message}
+        Component Error: {getErrorMessage()}
       </div>
     );
   }
@@ -394,7 +393,7 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
         pointerEvents: "none",
       };
     } catch (error) {
-      console.error("Error generating steam styles:", error);
+      captureError(error, { component: "CoderGirl", action: "generate_steam_styles" }, ErrorSeverity.Warning);
       return {};
     }
   };
@@ -430,11 +429,10 @@ const CoderGirl: React.FC<CoderGirlProps> = ({
       </div>
     );
   } catch (error) {
-    console.error("Error rendering CoderGirl component:", error);
+    handleError(error, { action: "render_component" });
     return (
       <div style={{ color: "red", textAlign: "center" }}>
-        Component Error:{" "}
-        {error instanceof Error ? error.message : String(error)}
+        Component Error: {error instanceof Error ? error.message : String(error)}
       </div>
     );
   }

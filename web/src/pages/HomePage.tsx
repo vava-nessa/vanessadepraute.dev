@@ -16,13 +16,13 @@ import { ClickSpark } from "../components/ClickSpark";
 import { HandWrittenTitle } from "../components/ui/hand-writing-text";
 import Aurora from "../components/Aurora";
 import profilePicture from "../assets/profilepicture.webp";
-import namiPattern from "../assets/nami.webp";
 import { useErrorHandler } from "@/hooks/useErrorHandler";
 import * as Sentry from "@sentry/react";
 import LightRays from "../components/LightRays/LightRays";
 import GitHubCalendar from "../components/GitHubCalendar/GitHubCalendar";
 import FAQ from "../components/FAQ";
 import Footer from "../components/Footer/Footer";
+import { ErrorBoundary } from "../components/ErrorBoundary/ErrorBoundary";
 
 function HomePage() {
   const { handleError } = useErrorHandler("HomePage");
@@ -236,7 +236,9 @@ function HomePage() {
                 {/* CoderGirl on the right */}
                 <div id="coder-girl-container" className="flex-shrink-0 relative w-full lg:w-[500px] h-[500px] flex items-center justify-center">
                   <div id="coder-girl-wrapper" className="absolute inset-0 z-5 flex items-center justify-center">
-                    <CoderGirl size="100%" />
+                    <ErrorBoundary>
+                      <CoderGirl size="100%" />
+                    </ErrorBoundary>
                   </div>
                 </div>
               </div>
@@ -288,12 +290,16 @@ function HomePage() {
           </div>
 
           {/* TechStack Band */}
-          <TechStack />
+          <ErrorBoundary>
+            <TechStack />
+          </ErrorBoundary>
 
           {/* Social Proof & Contact */}
           <div id="social-proof-section" className="w-full flex flex-col items-center py-10">
             <div id="testimonials-container" className="flex justify-center mb-10">
-              <Testimonials />
+              <ErrorBoundary>
+                <Testimonials />
+              </ErrorBoundary>
             </div>
 
             <p id="expert-text" className="text-neutral-500 text-center my-8 uppercase tracking-widest font-medium">
@@ -312,33 +318,34 @@ function HomePage() {
               <Star delay={3000} color="rgb(180, 79, 39)" />
             </div>
 
-            {/* Dark Band Section with Pattern */}
-            <div
-              className="w-full bg-black py-20"
-              style={{
-                backgroundImage: `url(${namiPattern})`,
-                backgroundRepeat: 'repeat',
-                backgroundSize: 'auto'
-              }}
-            >
-              <div className="max-w-7xl mx-auto px-5">
-                {/* Contenu de la bande */}
-              </div>
-            </div>
-
             {/* Light Rays Section */}
             <div className="w-full relative" style={{ height: '100vh', minHeight: '600px' }}>
-              <LightRays
-                raysOrigin="top-center"
-                raysColor="#00ffff"
-                raysSpeed={1.5}
-                lightSpread={0.8}
-                rayLength={1.2}
-                followMouse={true}
-                mouseInfluence={0.1}
-                noiseAmount={0.1}
-                distortion={0.05}
-              />
+              <ErrorBoundary>
+                <LightRays
+                  raysOrigin="top-center"
+                  raysColor="#00ffff"
+                  raysSpeed={1.5}
+                  lightSpread={0.8}
+                  rayLength={1.2}
+                  followMouse={true}
+                  mouseInfluence={0.1}
+                  noiseAmount={0.1}
+                  distortion={0.05}
+                />
+              </ErrorBoundary>
+
+              {/* Projects TODO */}
+              <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
+                <div className="max-w-2xl mx-auto px-5 text-center">
+                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
+                    projets (todo)
+                  </h2>
+                  <ul className="text-neutral-300 text-lg md:text-xl space-y-4">
+                    <li>Likely</li>
+                    <li>Out Of burn</li>
+                  </ul>
+                </div>
+              </div>
             </div>
 
             {/* Booking Section */}
@@ -354,16 +361,22 @@ function HomePage() {
 
             {/* GitHub Calendar - Before Tech Stack */}
             <div id="github-calendar-section" className="w-full mb-20">
-              <GitHubCalendar username="vavanesssa" theme={isDarkMode ? "dark" : "light"} />
+              <ErrorBoundary>
+                <GitHubCalendar username="vavanesssa" theme={isDarkMode ? "dark" : "light"} />
+              </ErrorBoundary>
             </div>
 
             {/* Tech Stack Extended - Displayed directly */}
             <div id="tech-stack-extended-section" className="w-full max-w-4xl mx-auto mt-20 mb-20 px-4">
-              <TechStackExtended />
+              <ErrorBoundary>
+                <TechStackExtended />
+              </ErrorBoundary>
             </div>
 
             {/* FAQ Section */}
-            <FAQ />
+            <ErrorBoundary>
+              <FAQ />
+            </ErrorBoundary>
 
             {/* Sentry Test Error Button - Development Only */}
             {import.meta.env.DEV && (

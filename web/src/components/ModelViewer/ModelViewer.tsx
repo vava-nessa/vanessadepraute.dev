@@ -1,8 +1,10 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, Suspense } from "react";
 import { Canvas, useFrame, useThree, useLoader } from "@react-three/fiber";
 import { GLTFLoader } from "three-stdlib";
 import { OrbitControls, PerspectiveCamera } from "@react-three/drei";
 import * as THREE from "three";
+import { useErrorHandler } from "@/hooks/useErrorHandler";
+import { captureError, ErrorSeverity } from "@/utils/errorHandling";
 
 // Camera configuration
 const CAMERA_CONFIG = {
@@ -281,18 +283,62 @@ function Model({
   playAnimation: boolean;
   cameraConfig?: Partial<typeof CAMERA_CONFIG>;
 }) {
-  const gltf = useLoader(GLTFLoader, modelPath);
+  const { handleError } = useErrorHandler("ModelViewer.Model");
   const modelRef = useRef<THREE.Group>(null);
   const mixer = useRef<THREE.AnimationMixer | null>(null);
 
-  useEffect(() => {
-    if (gltf.scene) {
-      // Create a new animation mixer
-      mixer.current = new THREE.AnimationMixer(gltf.scene);
+  let gltf;
+  try {
+    gltf = useLoader(GLTFLoader, modelPath);
+  } catch (error) {
+    handleError(error, { action: "load_gltf_model", additionalData: { modelPath } });
+    throw error; // Re-throw to be caught by ErrorBoundary
+  }
 
-      // Check if the model has animations
-      if (gltf.animations && gltf.animations.length > 0) {
-        // Create an action from the first animation
+  useEffect(() => {
+    try {
+      if (gltf.scene) {
+        // Create a new animation mixer
+        mixer.current = new THREE.AnimationMixer(gltf.scene);
+
+        // Check if the model has animations
+        if (gltf.animations && gltf.animations.length > 0) {
+          // Create an action from the first animation
+          const action = mixer.current.clipAction(gltf.animations[0]);
+
+          if (playAnimation) {
+            action.play();
+          } else {
+            action.stop();
+          }
+        }
+      }
+    } catch (error) {
+      captureError(error, {
+        component: "ModelViewer.Model",
+        action: "setup_animation_mixer",
+        additionalData: { modelPath }
+      }, ErrorSeverity.Error);
+    }
+  }, [gltf, playAnimation, modelPath, handleError]);
+
+  // Update animations
+  useFrame((_, delta) => {
+    try {
+      if (mixer.current) {
+        mixer.current.update(delta);
+      }
+    } catch (error) {
+      captureError(error, {
+        component: "ModelViewer.Model",
+        action: "update_animation_frame"
+      }, ErrorSeverity.Warning);
+    }
+  });
+
+  useEffect(() => {
+    try {
+      if (mixer.current && gltf.animations && gltf.animations.length > 0) {
         const action = mixer.current.clipAction(gltf.animations[0]);
 
         if (playAnimation) {
@@ -301,25 +347,12 @@ function Model({
           action.stop();
         }
       }
-    }
-  }, [gltf, playAnimation]);
-
-  // Update animations
-  useFrame((_, delta) => {
-    if (mixer.current) {
-      mixer.current.update(delta);
-    }
-  });
-
-  useEffect(() => {
-    if (mixer.current && gltf.animations && gltf.animations.length > 0) {
-      const action = mixer.current.clipAction(gltf.animations[0]);
-
-      if (playAnimation) {
-        action.play();
-      } else {
-        action.stop();
-      }
+    } catch (error) {
+      captureError(error, {
+        component: "ModelViewer.Model",
+        action: "toggle_animation",
+        additionalData: { playAnimation }
+      }, ErrorSeverity.Warning);
     }
   }, [playAnimation, gltf.animations]);
 
@@ -340,20 +373,37 @@ export default function ModelViewer({
   lightConfig = LIGHT_CONFIG,
   enableOrbitControls = false,
 }: ModelViewerProps) {
+  const { handleError, isError, getErrorMessage } = useErrorHandler("ModelViewer");
   const mergedLightConfig = { ...LIGHT_CONFIG, ...lightConfig };
   const mergedCameraConfig = { ...CAMERA_CONFIG, ...cameraConfig };
   const canvasRef = useRef<HTMLDivElement>(null);
 
   // Handle click event separately from the canvas
   const handleClick = (e: React.MouseEvent) => {
-    // Prevent event from affecting Three.js camera controls
-    e.stopPropagation();
+    try {
+      // Prevent event from affecting Three.js camera controls
+      e.stopPropagation();
 
-    // Call the provided onClick function if it exists
-    if (onClick) {
-      onClick();
+      // Call the provided onClick function if it exists
+      if (onClick) {
+        onClick();
+      }
+    } catch (error) {
+      handleError(error, { action: "handle_click" });
     }
   };
+
+  // Error fallback
+  if (isError) {
+    return (
+      <div style={{ width, height, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ff6b6b', textAlign: 'center', padding: '20px' }}>
+        <div>
+          <div>Failed to load 3D model</div>
+          <div style={{ fontSize: '0.8em', marginTop: '8px' }}>{getErrorMessage()}</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -369,7 +419,11 @@ export default function ModelViewer({
           alpha: true,
         }}
         onCreated={({ gl }) => {
-          gl.setClearColor(0x000000, 0); // Transparent background
+          try {
+            gl.setClearColor(0x000000, 0); // Transparent background
+          } catch (error) {
+            captureError(error, { component: "ModelViewer", action: "canvas_created" }, ErrorSeverity.Warning);
+          }
         }}
       >
         {/* Camera setup using drei's PerspectiveCamera for more control */}
@@ -388,8 +442,8 @@ export default function ModelViewer({
         <CameraController cameraConfig={mergedCameraConfig} />
         {(mergedCameraConfig.enableAnimation ||
           mergedCameraConfig.oscillation?.enabled) && (
-          <AnimatedCamera cameraConfig={mergedCameraConfig} />
-        )}
+            <AnimatedCamera cameraConfig={mergedCameraConfig} />
+          )}
 
         {/* Lighting */}
         <ambientLight intensity={mergedLightConfig.ambient.intensity} />
@@ -417,8 +471,10 @@ export default function ModelViewer({
           decay={mergedLightConfig.point.decay}
         />
 
-        {/* Model */}
-        <Model modelPath={modelPath} playAnimation={playAnimation} />
+        {/* Model with Suspense for loading state */}
+        <Suspense fallback={null}>
+          <Model modelPath={modelPath} playAnimation={playAnimation} />
+        </Suspense>
 
         {/* Optional orbit controls if explicitly enabled */}
         {enableOrbitControls && (

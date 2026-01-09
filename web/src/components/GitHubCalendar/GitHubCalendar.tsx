@@ -163,7 +163,7 @@ export default function GitHubCalendar({ username, theme = "dark" }: GitHubCalen
           aria-label="Previous year"
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
 
@@ -176,28 +176,39 @@ export default function GitHubCalendar({ username, theme = "dark" }: GitHubCalen
           aria-label="Next year"
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M6 4L10 8L6 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M6 4L10 8L6 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </button>
       </div>
 
       <div className="github-calendar-wrapper">
         <div className={`github-calendar-content ${loading && !isInitialLoad ? 'loading' : ''}`}>
-          <ActivityCalendar
-            data={data}
-            theme={customTheme}
-            colorScheme={theme}
-            blockSize={12}
-            blockMargin={4}
-            fontSize={14}
-            labels={{
-              legend: {
-                less: t("githubCalendar.legend.less"),
-                more: t("githubCalendar.legend.more")
-              },
-              totalCount: `{{count}} ${t("githubCalendar.contributions")} ${t("githubCalendar.in")} {{year}}`
-            }}
-          />
+          {data.length === 0 ? (
+            <div className="github-calendar-empty">
+              <p className="text-neutral-400 text-center py-8">
+                {loading
+                  ? t("githubCalendar.loading")
+                  : t("githubCalendar.noData", "No contribution data available for this year")
+                }
+              </p>
+            </div>
+          ) : (
+            <ActivityCalendar
+              data={data}
+              theme={customTheme}
+              colorScheme={theme}
+              blockSize={12}
+              blockMargin={4}
+              fontSize={14}
+              labels={{
+                legend: {
+                  less: t("githubCalendar.legend.less"),
+                  more: t("githubCalendar.legend.more")
+                },
+                totalCount: `{{count}} ${t("githubCalendar.contributions")} ${t("githubCalendar.in")} {{year}}`
+              }}
+            />
+          )}
         </div>
       </div>
     </div>

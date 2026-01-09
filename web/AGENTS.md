@@ -56,6 +56,12 @@ Always read this file before starting any task in this repo.
 
 - **IMPORTANT**: Always run `pnpm build` at the end of each task to verify that the code compiles correctly and there are no type errors.
 
+## Git Workflow
+
+- **NEVER** commit or push changes automatically.
+- **ALWAYS** let the user review changes and commit/push manually.
+- You can suggest commit messages, but never execute `git commit` or `git push` without explicit user approval.
+
 ## Deployment
 
 - `../vercel.json` disables git deployments and sets a Basic-Auth header for all routes.

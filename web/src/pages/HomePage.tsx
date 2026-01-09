@@ -138,10 +138,11 @@ function HomePage() {
         {/* Aurora Background */}
         <div className="absolute top-0 left-0 w-full h-[800px] overflow-hidden pointer-events-none z-0">
           <Aurora
-            colorStops={isDarkMode ? ["#0c003d", "#5c0075"] : ["#e9d5ff", "#fae8ff"]}
+            colorStops={isDarkMode ? ["#0c003d", "#5c0075", "#0c003d"] : ["#ffc0cb", "#ffb6c1", "#ffc0cb"]}
             amplitude={0.5}
             blend={0.75}
             speed={2.5}
+            lightMode={!isDarkMode}
           />
         </div>
 

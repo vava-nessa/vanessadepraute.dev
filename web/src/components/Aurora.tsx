@@ -18,6 +18,7 @@ uniform float uAmplitude;
 uniform vec3 uColorStops[3];
 uniform vec2 uResolution;
 uniform float uBlend;
+uniform float uLightMode;
 
 out vec4 fragColor;
 
@@ -103,7 +104,15 @@ void main() {
   float midPoint = 0.20;
   float auroraAlpha = smoothstep(midPoint - uBlend * 0.5, midPoint + uBlend * 0.5, intensity);
   
-  vec3 auroraColor = intensity * rampColor;
+  // En mode light, on inverse l'intensité pour dégrader vers blanc au lieu de noir
+  vec3 auroraColor;
+  if (uLightMode > 0.5) {
+    // Mode light: mélanger avec du blanc quand l'intensité est faible
+    auroraColor = mix(vec3(1.0), rampColor, intensity);
+  } else {
+    // Mode dark: mélanger avec du noir (comportement original)
+    auroraColor = intensity * rampColor;
+  }
   
   fragColor = vec4(auroraColor * auroraAlpha, auroraAlpha);
 }
@@ -115,10 +124,11 @@ interface AuroraProps {
     blend?: number;
     time?: number;
     speed?: number;
+    lightMode?: boolean;
 }
 
 export default function Aurora(props: AuroraProps) {
-    const { colorStops = ['#5227FF', '#7cff67', '#5227FF'], amplitude = 1.0, blend = 0.5 } = props;
+    const { colorStops = ['#5227FF', '#7cff67', '#5227FF'], amplitude = 1.0, blend = 0.5, lightMode = false } = props;
     const propsRef = useRef<AuroraProps>(props);
     propsRef.current = props;
 
@@ -170,7 +180,8 @@ export default function Aurora(props: AuroraProps) {
                 uAmplitude: { value: amplitude },
                 uColorStops: { value: colorStopsArray },
                 uResolution: { value: [ctn.offsetWidth, ctn.offsetHeight] },
-                uBlend: { value: blend }
+                uBlend: { value: blend },
+                uLightMode: { value: lightMode ? 1.0 : 0.0 }
             }
         });
 
@@ -180,10 +191,11 @@ export default function Aurora(props: AuroraProps) {
         let animateId = 0;
         const update = (t: number) => {
             animateId = requestAnimationFrame(update);
-            const { time = t * 0.01, speed = 1.0 } = propsRef.current;
+            const { time = t * 0.01, speed = 1.0, lightMode: currentLightMode = false } = propsRef.current;
             program!.uniforms.uTime.value = time * speed * 0.1;
             program!.uniforms.uAmplitude.value = propsRef.current.amplitude ?? 1.0;
             program!.uniforms.uBlend.value = propsRef.current.blend ?? blend;
+            program!.uniforms.uLightMode.value = currentLightMode ? 1.0 : 0.0;
             const stops = propsRef.current.colorStops ?? colorStops;
             program!.uniforms.uColorStops.value = stops.map(hex => {
                 const c = new Color(hex);

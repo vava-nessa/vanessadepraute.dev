@@ -13,7 +13,6 @@ import Star from "../components/Star/Star.tsx";
 import TextType from "../components/TextType";
 import ContactButton from "../components/ContactButton";
 import { ClickSpark } from "../components/ClickSpark";
-import { Accordion } from "../components/ui/Accordion.tsx";
 import { HandWrittenTitle } from "../components/ui/hand-writing-text";
 import Aurora from "../components/Aurora";
 import profilePicture from "../assets/profilepicture.webp";
@@ -357,11 +356,9 @@ function HomePage() {
               <GitHubCalendar username="vavanesssa" theme={isDarkMode ? "dark" : "light"} />
             </div>
 
-            {/* Tech Stack Extended Accordion - At the end */}
-            <div id="tech-stack-accordion" className="w-full max-w-4xl mx-auto mt-20 mb-20 px-4">
-              <Accordion title={t("techStack.title")} defaultOpen={false}>
-                <TechStackExtended />
-              </Accordion>
+            {/* Tech Stack Extended - Displayed directly */}
+            <div id="tech-stack-extended-section" className="w-full max-w-4xl mx-auto mt-20 mb-20 px-4">
+              <TechStackExtended />
             </div>
 
             {/* FAQ Section */}

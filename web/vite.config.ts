@@ -16,8 +16,8 @@ export default defineConfig({
       "@": path.resolve(path.dirname(fileURLToPath(import.meta.url)), "./src"),
     },
   },
-  // Ajout de l'option pour inclure les fichiers .glb comme assets
-  assetsInclude: ["**/*.glb"], // Indique à Vite de traiter les .glb comme des assets
+  // Ajout de l'option pour inclure les fichiers .glb et .svg comme assets
+  assetsInclude: ["**/*.glb", "**/*.svg"], // Indique à Vite de traiter les .glb et .svg comme des assets
 
   // Configuration supplémentaire pour les assets .glb
   build: {

@@ -1,5 +1,6 @@
 import "./TechStackExtended.css";
 import { useTranslation } from "react-i18next";
+import TechIcon from "./TechIcon";
 
 interface TechCategory {
   title: string;
@@ -275,7 +276,8 @@ const TechStackExtended = () => {
             <div className="tech-grid">
               {category.items.map((tech, techIndex) => (
                 <div key={techIndex} className="tech-card">
-                  {tech}
+                  <TechIcon techName={tech} size={72} />
+                  <span className="tech-name">{tech}</span>
                 </div>
               ))}
             </div>

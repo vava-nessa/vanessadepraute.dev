@@ -1,0 +1,27 @@
+/* TechIcon styles with original brand colors - no wrapper */
+
+.tech-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.tech-icon svg {
+    width: 100%;
+    height: 100%;
+    /* Don't override fill - let the original brand colors show */
+}
+
+/* Fallback icon styles with gradient - no wrapper */
+.tech-icon-fallback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.tech-icon-fallback svg {
+    width: 100%;
+    height: 100%;
+}

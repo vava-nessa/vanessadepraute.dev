@@ -95,6 +95,9 @@ importers:
       remark-gfm:
         specifier: ^4.0.1
         version: 4.0.1
+      simple-icons:
+        specifier: ^16.4.0
+        version: 16.4.0
       tailwind-merge:
         specifier: ^3.1.0
         version: 3.1.0
@@ -2338,6 +2341,10 @@ packages:
   shebang-regex@3.0.0:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
+
+  simple-icons@16.4.0:
+    resolution: {integrity: sha512-8CKtCvx1Zq3L0CBsR4RR1MjGCXkXbzdspwl2yCxs8oWkstbzj2+DatRKDee/tuj3Ffd/2CDzwEky9RgG2yggew==}
+    engines: {node: '>=0.12.18'}
 
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
@@ -4966,6 +4973,8 @@ snapshots:
       shebang-regex: 3.0.0
 
   shebang-regex@3.0.0: {}
+
+  simple-icons@16.4.0: {}
 
   source-map-js@1.2.1: {}
 

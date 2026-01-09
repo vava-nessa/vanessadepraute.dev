@@ -142,24 +142,24 @@
     "subtitle": "Tout ce que vous vouliez savoir sur mon travail",
     "items": [
       {
-        "question": "Pourquoi ce portfolio ?",
-        "answer": "Ce portfolio présente mes compétences et ma vision en tant que **développeuse Full-Stack JavaScript et TypeScript**. Mon objectif est de rendre les concepts techniques accessibles à tous, avec une approche créative et conviviale. Que vous soyez développeur, fondateur de startup, ou même ma grand-mère — je veux que vous compreniez ce que je fais et pourquoi j'adore ça !"
+        "question": "Depuis combien de temps êtes-vous dans la tech ?",
+        "answer": "Je suis dans la tech depuis **plus de 19 ans**, professionnellement depuis 2006 ! J'ai commencé par la production vidéo et l'événementiel en 2005, puis je me suis formée au développement web en 2006. Depuis, j'ai accumulé **plus de 11 ans d'expérience en JavaScript full-stack**, travaillé avec **plus de 50 clients entreprises**, et passé 2 ans comme développeuse WebGL chez **Kogama/ABOX à Stockholm**. Ça fait un sacré parcours !"
       },
       {
-        "question": "Ai-je toujours été développeuse ?",
-        "answer": "Oui et non ! Après mes premières études en développement, j'ai travaillé pour des entreprises comme **Orange France, Free et Safran** à différents postes. Ces expériences m'ont permis de progresser techniquement et relationnellement. J'ai ensuite décidé de me lancer en indépendante, ce qui m'a motivée à retourner à l'école pour affiner mes compétences. Depuis plusieurs années, je suis **développeuse freelance à plein temps**, et je n'ai jamais été aussi épanouie !"
+        "question": "Quelle est votre expertise principale ?",
+        "answer": "Je suis **Développeuse Full-Stack JavaScript Senior** avec une expertise approfondie des technologies web modernes. Mes compétences principales incluent **React, Next.js, Node.js et TypeScript**. Mais j'ai aussi de solides compétences secondaires en **design UI/UX, développement WebGL, systèmes temps réel**, et technologies vidéo/streaming. Je suis particulièrement passionnée par le **développement assisté par IA** — ça a complètement transformé ma façon de travailler !"
       },
       {
-        "question": "À quoi ressemble une journée type ?",
-        "answer": "Ma journée commence généralement par une tasse de thé vert ☕ et un tour d'horizon des dernières news tech. Si je travaille en équipe, il y a souvent un **daily standup** pour aligner les tâches. Ensuite, c'est la priorisation — réfléchir aux problèmes, chercher des solutions, et bien sûr, **coder**. Je pousse mon travail sur des repos partagés, je fais des revues de code, et j'itère. Ah, et il y a toujours du temps pour câliner mes chats entre deux commits !"
+        "question": "Où êtes-vous basée et comment travaillez-vous ?",
+        "answer": "Je suis basée à **Paris, France** (Saint-Maur-des-Fossés, Île-de-France). Je suis **freelance depuis plus de 15 ans**, ce qui me permet de travailler avec des clients partout ! Que ce soit en collaboration à distance avec des équipes internationales ou en présentiel à Paris — je suis flexible. Je parle **français nativement** et j'ai un **anglais professionnel** (niveau B2)."
       },
       {
-        "question": "Qu'est-ce qui me différencie des autres développeurs ?",
-        "answer": "Un développeur est comme un **architecte numérique** qui structure les applications pour offrir la meilleure expérience utilisateur. Il existe de nombreux langages de programmation, chacun avec ses forces. Ma spécialité ? **JavaScript & TypeScript**. En tant que **développeuse Full-Stack**, je gère à la fois le frontend, le backend et les bases de données. Cela signifie que je peux livrer des **solutions complètes de bout en bout** — des interfaces élégantes aux APIs robustes."
+        "question": "Sur quels types de projets travaillez-vous ?",
+        "answer": "J'adore la variété ! J'ai construit des **dashboards temps réel, des CRMs, des interfaces vidéo live, des plateformes e-commerce**, et des applications métier complexes. En ce moment, je travaille sur **Out Of Burn** — ma propre application de bien-être IA pour la prévention du burnout. J'ai aussi fait de la R&D sur la **visualisation cartographique haute performance** avec deck.gl et Mapbox. Des startups aux grandes entreprises françaises — je gère tout !"
       },
       {
-        "question": "Pourquoi n'ai-je qu'un seul dépôt Git public ?",
-        "answer": "Excellente question ! Ce portfolio est actuellement mon seul **projet public** sur GitHub. La plupart de mes autres travaux sont confidentiels ou appartiennent à des clients. Cela dit, je suis toujours à la recherche d'opportunités pour contribuer à des **projets open-source** et enrichir mon portfolio public. Restez à l'écoute — du nouveau arrive bientôt !"
+        "question": "Comment utilisez-vous l'IA dans votre développement ?",
+        "answer": "L'IA est devenue une partie essentielle de ma façon de travailler ! J'utilise des outils comme **GitHub Copilot, Cursor, Claude Code** et d'autres au quotidien. Je maîtrise aussi l'écosystème IA plus large — **LangChain, bases de données vectorielles (Pinecone, pgvector)**, et différents fournisseurs de LLM comme OpenAI, Anthropic et Mistral. Cela me permet non seulement de coder plus vite, mais aussi d'intégrer des **fonctionnalités IA** dans les applications que je crée."
       }
     ]
   }

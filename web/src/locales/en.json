@@ -140,24 +140,24 @@
     "subtitle": "Everything you wanted to know about my work",
     "items": [
       {
-        "question": "Why did you create this portfolio?",
-        "answer": "This portfolio showcases my skills and vision as a **Full-Stack JavaScript and TypeScript developer**. My goal is to make technical concepts accessible to everyone, using a friendly and creative approach. Whether you're a developer, a startup founder, or even my grandma — I want you to understand what I do and why I love doing it!"
+        "question": "How long have you been in tech?",
+        "answer": "I've been in tech for **19+ years**, professionally since 2006! I started with video production and event management back in 2005, then taught myself web development in 2006. Since then, I've accumulated **11+ years of full-stack JavaScript experience**, worked with **50+ enterprise clients**, and even spent 2 years as a WebGL developer at **Kogama/ABOX in Stockholm**. It's been quite a journey!"
       },
       {
-        "question": "Have you always been a developer?",
-        "answer": "Yes and no! After my initial studies in development, I worked for companies like **Orange France, Free, and Safran** in various roles. These experiences helped me grow both technically and interpersonally. Eventually, I decided to go independent, which motivated me to go back to school and sharpen my skills. For the past years, I've been a **full-time freelance developer**, and I couldn't be happier!"
+        "question": "What's your main expertise?",
+        "answer": "I'm a **Senior Full-Stack JavaScript Developer** with deep expertise in modern web technologies. My core skills include **React, Next.js, Node.js, and TypeScript**. But I also have strong secondary skills in **UI/UX design, WebGL development, real-time systems**, and video/streaming technologies. I'm particularly excited about **AI-assisted development** — it's completely transformed my workflow!"
       },
       {
-        "question": "What does a typical day look like for you?",
-        "answer": "My day usually starts with a cup of green tea ☕ and catching up on the latest tech news. If I'm working with a team, there's often a quick **daily standup** to align on tasks. Then it's all about prioritizing — thinking through problems, researching solutions, and of course, **coding**. I push my work to shared repos, review code, and iterate. Oh, and there's always time for cuddling my cats between commits!"
+        "question": "Where are you based and what's your work setup?",
+        "answer": "I'm based in **Paris, France** (Saint-Maur-des-Fossés, Île-de-France). I've been a **freelancer for 15+ years**, which means I can work with clients anywhere! Whether it's remote collaboration with international teams or on-site work in Paris — I'm flexible. I speak **French natively** and have **professional English proficiency** (B2 level)."
       },
       {
-        "question": "What makes you different from other developers?",
-        "answer": "A developer is like a **digital architect** who structures applications to deliver the best user experience. There are many programming languages out there, each with its own strengths. My specialty? **JavaScript & TypeScript**. As a **Full-Stack developer**, I handle both frontend and backend, plus databases. This means I can deliver **complete, end-to-end solutions** — from sleek UIs to robust APIs."
+        "question": "What kinds of projects do you work on?",
+        "answer": "I love variety! I've built **real-time dashboards, CRMs, live video interfaces, e-commerce platforms**, and complex business applications. Right now, I'm working on **Out Of Burn** — my own AI-powered wellness app for burnout prevention. I've also done R&D on **high-performance cartographic visualization** with deck.gl and Mapbox. From startups to enterprise clients like large French companies — I handle it all!"
       },
       {
-        "question": "Why do you have only one public GitHub repo?",
-        "answer": "Great question! This portfolio is currently my only **public project** on GitHub. Most of my other work is either confidential or belongs to clients. That said, I'm always on the lookout for opportunities to contribute to **open-source projects** and expand my public portfolio. Stay tuned — more is coming!"
+        "question": "How do you use AI in your development workflow?",
+        "answer": "AI has become an essential part of how I work! I use tools like **GitHub Copilot, Cursor, Claude Code**, and others daily. I'm also experienced with the broader AI ecosystem — **LangChain, vector databases (Pinecone, pgvector)**, and various LLM providers like OpenAI, Anthropic, and Mistral. This lets me not only code faster but also build **AI-powered features** into the applications I create."
       }
     ]
   }

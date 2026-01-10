@@ -160,6 +160,19 @@ function HomePage() {
       extraScale={1.8}
     >
       <ControlsBar>
+        <button
+          onClick={() => {
+            const techSection = document.getElementById('tech-stack-extended');
+            if (techSection) {
+              techSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }}
+          className="px-3 py-1.5 bg-brand-primary/20 hover:bg-brand-primary/30 text-brand-primary border border-brand-primary/50 rounded text-xs font-medium transition-all duration-200"
+          title="Scroll to Tech Stack"
+        >
+          ↓ Tech
+        </button>
+        <div className="controls-separator" />
         <LanguageSwitcher />
         <div className="controls-separator" />
         <AnimatedThemeToggler />

@@ -22,8 +22,7 @@ const TechStackExtended = () => {
         "Promises",
         "Spread/Rest",
         "Dynamic Import",
-        "Generators",
-        "Memoization",
+        "Zod",
       ],
     },
     {
@@ -32,9 +31,9 @@ const TechStackExtended = () => {
       items: [
         "React",
         "NextJS",
-        "Redux Saga",
-        "Redux Thunk",
+        "Zustand",
         "Recoil",
+        "Jotai",
         "Custom Hooks",
         "Context API",
         "React Query",
@@ -49,15 +48,16 @@ const TechStackExtended = () => {
         "Vite",
         "Figma",
         "Framer Motion",
+        "GSAP",
         "ShadCN/UI",
         "Storybook",
         "Prettier",
+        "Biome",
         "VueJS",
         "Styled Components",
         "Material UI",
         "Ant Design",
         "Chakra UI",
-        "Adobe XD",
         "Illustrator",
         "Photoshop",
       ],
@@ -68,8 +68,6 @@ const TechStackExtended = () => {
       items: [
         "CSS3",
         "SASS/SCSS",
-        "LESS",
-        "Bootstrap",
         "Flexbox",
         "BEM",
         "Atomic Design",
@@ -81,10 +79,9 @@ const TechStackExtended = () => {
       icon: "🔧",
       items: [
         "Webpack",
-        "Parcel",
-        "Gulp",
-        "Snowpack",
         "Vite",
+        "Turborepo",
+        "pnpm",
         "Storybook",
       ],
     },
@@ -106,24 +103,33 @@ const TechStackExtended = () => {
         "HTML5",
         "Canvas",
         "SVG Animation",
-        "BabylonJS",
         "WebGL",
+        "Three.js",
+        "React Three Fiber",
       ],
     },
     {
       title: t("techStack.categories.backendInfra"),
       icon: "⚙️",
       items: [
+        "Node.js",
+        "Bun",
+        "Deno",
+        "NestJS",
+        "Fastify",
+        "Hono",
+        "Express",
         "PostgreSQL",
         "MySQL",
         "MongoDB",
+        "Supabase",
         "Prisma",
+        "Drizzle ORM",
         "Docker",
         "Redis",
         "Stripe",
         "tRPC",
         "GraphQL",
-        "Express",
       ],
     },
     {
@@ -131,6 +137,8 @@ const TechStackExtended = () => {
       icon: "☁️",
       items: [
         "Vercel",
+        "Vercel Edge Functions",
+        "Cloudflare Workers",
         "GitHub",
         "GitLab",
         "Bitbucket",
@@ -151,7 +159,6 @@ const TechStackExtended = () => {
         "Expo",
         "EAS",
         "Firebase",
-        "Ionic",
       ],
     },
     {
@@ -183,7 +190,6 @@ const TechStackExtended = () => {
       items: [
         "WordPress",
         "Adobe Commerce",
-        "Magento",
       ],
     },
     {
@@ -223,7 +229,6 @@ const TechStackExtended = () => {
         "Continue",
         "Replit",
         "Codeium",
-        "Tabnine",
         "Warp",
         "Claude Code",
         "v0.dev",
@@ -263,7 +268,7 @@ const TechStackExtended = () => {
   ];
 
   return (
-    <div className="tech-extended-container">
+    <div id="tech-stack-extended" className="tech-extended-container">
       <h2 className="tech-extended-title">{t("techStack.title")}</h2>
 
       <div className="tech-categories">

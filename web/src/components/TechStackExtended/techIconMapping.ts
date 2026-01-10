@@ -11,15 +11,14 @@ export const techIconMapping: Record<string, string> = {
     "Promises": "javascript",
     "Spread/Rest": "javascript",
     "Dynamic Import": "javascript",
-    "Generators": "javascript",
-    "Memoization": "javascript",
+    "Zod": "zod",
 
     // React Ecosystem
     "React": "react",
     "NextJS": "nextdotjs",
-    "Redux Saga": "redux",
-    "Redux Thunk": "redux",
+    "Zustand": "zustand",  // Custom icon
     "Recoil": "recoil",
+    "Jotai": "jotai",  // Custom icon
     "Custom Hooks": "react",
     "Context API": "react",
     "React Query": "reactquery",
@@ -30,23 +29,22 @@ export const techIconMapping: Record<string, string> = {
     "Vite": "vite",
     "Figma": "figma",
     "Framer Motion": "framer",
+    "GSAP": "greensock",
     "ShadCN/UI": "shadcnui",
     "Storybook": "storybook",
     "Prettier": "prettier",
+    "Biome": "biome",
     "VueJS": "vuedotjs",
     "Styled Components": "styledcomponents",
     "Material UI": "mui",
     "Ant Design": "antdesign",
     "Chakra UI": "chakraui",
-    "Adobe XD": "adobexd",
-    "Illustrator": "adobeillustrator",
-    "Photoshop": "adobephotoshop",
+    "Illustrator": "illustrator",  // Custom Illustrator icon
+    "Photoshop": "photoshop",  // Custom Photoshop icon
 
     // CSS & Styling
     "CSS3": "css",
     "SASS/SCSS": "sass",
-    "LESS": "less",
-    "Bootstrap": "bootstrap",
     "Flexbox": "css",
     "BEM": "bem",
     "Atomic Design": "atomicdesign",
@@ -54,37 +52,47 @@ export const techIconMapping: Record<string, string> = {
 
     // Build Tools
     "Webpack": "webpack",
-    "Parcel": "parcel",
-    "Gulp": "gulp",
-    "Snowpack": "snowpack",
+    "Turborepo": "turborepo",
+    "pnpm": "pnpm",
 
     // HTML5 & Graphics
     "HTML5": "html5",
     "Canvas": "html5",
     "SVG Animation": "svg",
-    "BabylonJS": "babylondotjs",
     "WebGL": "webgl",
+    "Three.js": "threedotjs",
+    "React Three Fiber": "threedotjs",
 
     // Backend & Infrastructure
+    "Node.js": "nodedotjs",
+    "Bun": "bun",
+    "Deno": "deno",
+    "NestJS": "nestjs",
+    "Fastify": "fastify",
+    "Hono": "hono",
+    "Express": "express",
     "PostgreSQL": "postgresql",
     "MySQL": "mysql",
     "MongoDB": "mongodb",
+    "Supabase": "supabase",
     "Prisma": "prisma",
+    "Drizzle ORM": "drizzle",
     "Docker": "docker",
     "Redis": "redis",
     "Stripe": "stripe",
     "tRPC": "trpc",
     "GraphQL": "graphql",
-    "Express": "express",
 
     // DevOps & Cloud
     "Vercel": "vercel",
+    "Vercel Edge Functions": "vercel",
+    "Cloudflare Workers": "cloudflareworkers",
     "GitHub": "github",
     "GitLab": "gitlab",
     "Bitbucket": "bitbucket",
     "GitHub Actions": "githubactions",
     "Cloudflare": "cloudflare",
-    "AWS": "amazonwebservices",
+    "AWS": "amazonaws",
     "Terraform": "terraform",
     "Kubernetes": "kubernetes",
     "Datadog": "datadog",
@@ -95,11 +103,10 @@ export const techIconMapping: Record<string, string> = {
     "Expo": "expo",
     "EAS": "expo",
     "Firebase": "firebase",
-    "Ionic": "ionic",
 
     // Testing
     "Jest": "jest",
-    "Playwright": "playwright",
+    "Playwright": "playwright",  // Custom icon
     "Vitest": "vitest",
     "React Testing Library": "testinglibrary",
     "Testing Library": "testinglibrary",
@@ -113,43 +120,41 @@ export const techIconMapping: Record<string, string> = {
 
     // CMS & E-commerce
     "WordPress": "wordpress",
-    "Adobe Commerce": "adobecommerce",
-    "Magento": "magento",
+    "Adobe Commerce": "woocommerce",
 
     // Version Control
     "Git": "git",
 
     // LLM & AI
-    "OpenAI": "openai",
+    "OpenAI": "openai",  // Custom icon
     "Anthropic": "anthropic",
     "Mistral AI": "mistralai",
-    "DeepSeek": "deepseek",
-    "Cohere": "cohere",
+    "DeepSeek": "deepseek",  // Custom icon
+    "Cohere": "cohere",  // Custom icon
     "Google Gemini": "googlegemini",
     "xAI": "x",
     "Perplexity": "perplexity",
     "Claude Code": "anthropic",
-    "Groq": "groq",
-    "Together AI": "togetherdotai",
+    "Groq": "groq",  // Custom icon
+    "Together AI": "togetherdotai",  // Custom icon
 
     // AI Dev Tools
     "GitHub Copilot": "githubcopilot",
     "Cursor": "cursor",
     "Continue": "continue",
     "Replit": "replit",
-    "Codeium": "codeium",
-    "Tabnine": "tabnine",
+    "Codeium": "codeium",  // Custom icon
     "Warp": "warp",
     "v0.dev": "vercel",
-    "Cody": "sourcegraph",
+    "Cody": "sourcegraph",  // Custom icon
 
     // AI Infrastructure
-    "Pinecone": "pinecone",
-    "Weaviate": "weaviate",
+    "Pinecone": "pinecone",  // Custom icon
+    "Weaviate": "weaviate",  // Custom icon
     "Qdrant": "qdrant",
-    "Chroma": "chroma",
+    "Chroma": "chromatic",
     "LangChain": "langchain",
-    "LlamaIndex": "llamaindex",
+    "LlamaIndex": "llamaindex",  // Custom icon
     "Hugging Face": "huggingface",
     "pgvector": "postgresql",
     "Milvus": "milvus",
@@ -157,11 +162,11 @@ export const techIconMapping: Record<string, string> = {
 
     // Open Source AI
     "Meta LLaMA": "meta",
-    "Stability AI": "stabilityai",
+    "Stability AI": "stabilityai",  // Custom icon
     "OpenRouter": "openrouter",
     "Ollama": "ollama",
-    "vLLM": "vllm",
+    "vLLM": "python",  // Using Python as ML framework fallback
     "Mistral 7B": "mistralai",
     "Solar": "solana",
-    "Phi": "phi",
+    "Phi": "microsoft",
 };

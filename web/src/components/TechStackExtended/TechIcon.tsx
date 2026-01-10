@@ -7,12 +7,41 @@ interface TechIconProps {
     size?: number;
 }
 
+// Custom icons that we host locally
+const customIcons: Record<string, string> = {
+    "openai": "/icons/openai.svg",
+    "playwright": "/icons/playwright.png",
+    "adobe": "/icons/adobe.svg",
+    "illustrator": "/icons/illustrator.svg",
+    "photoshop": "/icons/photoshop.svg",
+    "zustand": "/icons/zustand.png",
+    "jotai": "/icons/jotai.png",
+    "deepseek": "/icons/deepseek.png",
+    "cohere": "/icons/cohere.png",
+    "groq": "/icons/groq.svg",
+    "togetherdotai": "/icons/together-ai.png",
+    "pinecone": "/icons/pinecone.png",
+    "weaviate": "/icons/weaviate.png",
+    "codeium": "/icons/codeium.png",
+    "stabilityai": "/icons/stability-ai.png",
+    "llamaindex": "/icons/llamaindex.png",
+    "sourcegraph": "/icons/cody.svg",
+    "x": "/icons/xai.png",
+    "continue": "/icons/continue.png",
+    "qdrant": "/icons/qdrant.svg",
+    "amazonaws": "/icons/aws.svg",
+    "atomicdesign": "/icons/atomic-design.png",
+    "phi": "/icons/phi.png",
+    "woocommerce": "/icons/adobe-commerce.svg",
+};
+
 /**
- * TechIcon component displays SVG logos from simple-icons
+ * TechIcon component displays SVG logos from simple-icons or custom icons
  * with original brand colors and fallback handling
  */
 const TechIcon = ({ techName, size = 24 }: TechIconProps) => {
     const [svgContent, setSvgContent] = useState<string | null>(null);
+    const [imageUrl, setImageUrl] = useState<string | null>(null);
     const [error, setError] = useState(false);
 
     useEffect(() => {
@@ -24,18 +53,47 @@ const TechIcon = ({ techName, size = 24 }: TechIconProps) => {
                 return;
             }
 
+            // Check if we have a custom icon first
+            if (customIcons[slug]) {
+                const iconPath = customIcons[slug];
+                if (iconPath.endsWith('.png') || iconPath.endsWith('.jpg') || iconPath.endsWith('.jpeg')) {
+                    // For raster images, use img element with error handling
+                    const img = new Image();
+                    img.onload = () => setImageUrl(iconPath);
+                    img.onerror = () => {
+                        console.warn(`Failed to load image for ${techName}: ${iconPath}`);
+                        setError(true);
+                    };
+                    img.src = iconPath;
+                } else {
+                    // For SVG, fetch and validate
+                    try {
+                        const response = await fetch(iconPath);
+                        const contentType = response.headers.get('content-type');
+                        const text = await response.text();
+
+                        // Validate it's actually SVG and not HTML
+                        if (text.trim().startsWith('<svg') || contentType?.includes('svg')) {
+                            setSvgContent(text);
+                        } else {
+                            console.warn(`Invalid SVG for ${techName}: got ${contentType || 'unknown type'}`);
+                            setError(true);
+                        }
+                    } catch (err) {
+                        console.warn(`Failed to load custom icon for ${techName}`, err);
+                        setError(true);
+                    }
+                }
+                return;
+            }
+
+            // Fall back to simple-icons
             try {
-                // Dynamically import the icon from simple-icons using the JS API
                 const iconModule = await import(`simple-icons`);
-
-                // Convert slug to the correct format (e.g., "javascript" -> "siJavascript")
                 const iconKey = `si${slug.charAt(0).toUpperCase()}${slug.slice(1).replace(/-/g, '')}`;
-
-                // Get the icon from the module
                 const icon = (iconModule as any)[iconKey];
 
                 if (icon && icon.svg && icon.hex) {
-                    // Replace the fill color with the original brand color
                     const coloredSvg = icon.svg.replace(
                         /fill="[^"]*"/g,
                         `fill="#${icon.hex}"`
@@ -57,44 +115,60 @@ const TechIcon = ({ techName, size = 24 }: TechIconProps) => {
         loadIcon();
     }, [techName]);
 
-    if (error || !svgContent) {
-        // Fallback: display a generic icon with a gradient
+    if (error || (!svgContent && !imageUrl)) {
+        // Fallback: display a small neutral icon with tooltip on hover
         return (
-            <div className="tech-icon-fallback" style={{ width: size, height: size }}>
+            <div
+                className="tech-icon-fallback"
+                style={{ width: size, height: size, position: 'relative' }}
+                title={`Icon not available: ${techName}`}
+            >
                 <svg
                     viewBox="0 0 24 24"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
+                    style={{ width: '100%', height: '100%' }}
                 >
-                    <defs>
-                        <linearGradient id="fallback-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style={{ stopColor: '#8b5cf6', stopOpacity: 1 }} />
-                            <stop offset="100%" style={{ stopColor: '#ec4899', stopOpacity: 1 }} />
-                        </linearGradient>
-                    </defs>
                     <rect
-                        x="3"
-                        y="3"
-                        width="18"
-                        height="18"
-                        rx="2"
-                        ry="2"
-                        stroke="url(#fallback-gradient)"
-                        strokeWidth="2"
-                        fill="none"
+                        x="4"
+                        y="4"
+                        width="16"
+                        height="16"
+                        rx="3"
+                        fill="#e5e7eb"
+                        stroke="#d1d5db"
+                        strokeWidth="1"
                     />
-                    <line x1="9" y1="9" x2="15" y2="15" stroke="url(#fallback-gradient)" strokeWidth="2" />
-                    <line x1="15" y1="9" x2="9" y2="15" stroke="url(#fallback-gradient)" strokeWidth="2" />
+                    <path
+                        d="M12 8v4m0 4h.01"
+                        stroke="#9ca3af"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                    />
                 </svg>
             </div>
         );
     }
 
+    // If we have an image URL (PNG), render as img
+    if (imageUrl) {
+        return (
+            <div className="tech-icon" style={{ width: size, height: size }}>
+                <img
+                    src={imageUrl}
+                    alt={techName}
+                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                />
+            </div>
+        );
+    }
+
+    // Otherwise render SVG content
     return (
         <div
             className="tech-icon tech-icon-colored"
             style={{ width: size, height: size }}
-            dangerouslySetInnerHTML={{ __html: svgContent }}
+            dangerouslySetInnerHTML={{ __html: svgContent! }}
         />
     );
 };

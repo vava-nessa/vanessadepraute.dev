@@ -260,7 +260,7 @@ function HomePage() {
                     const match = lastParagraph.match(/\*\*(.*?)\*\*/);
                     const title = match ? match[1] : null;
 
-                    if (title) {
+                    if (title && match && typeof match.index === 'number') {
                       return (
                         <div id="lets-talk-centered" className="w-full flex flex-col justify-center items-center py-6 mt-8">
                           {lastParagraph.substring(0, match.index).trim() && (

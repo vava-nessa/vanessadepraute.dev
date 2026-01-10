@@ -267,7 +267,7 @@ function DebugDataUpdater({
     if (controls) {
       // Target
       if ('target' in controls) {
-        // @ts-ignore
+        // @ts-expect-error
         const t = controls.target as THREE.Vector3;
         target = [t.x, t.y, t.z];
       }
@@ -275,17 +275,17 @@ function DebugDataUpdater({
       // Spherical Coordinates
       // @ts-ignore
       if (typeof controls.getAzimuthalAngle === 'function') {
-        // @ts-ignore
+        // @ts-expect-error
         azimuth = controls.getAzimuthalAngle();
       }
       // @ts-ignore
       if (typeof controls.getPolarAngle === 'function') {
-        // @ts-ignore
+        // @ts-expect-error
         polar = controls.getPolarAngle();
       }
       // @ts-ignore
       if (typeof controls.getDistance === 'function') {
-        // @ts-ignore
+        // @ts-expect-error
         distance = controls.getDistance();
       }
     }
@@ -316,7 +316,6 @@ function DebugDataUpdater({
   return null;
 }
 
-// Mouse follower - rotates model with mouse
 // Mouse follower - rotates model with mouse
 function MouseFollower({
   modelRef,
@@ -360,15 +359,10 @@ function MouseFollower({
 }
 
 // Camera controller component
-function CameraController({
-  cameraConfig,
-  enableZoom,
-}: {
+function CameraController({ }: {
   cameraConfig: typeof CAMERA_CONFIG;
   enableZoom: boolean;
 }) {
-  const { camera } = useThree();
-
   useFrame(() => {
     // Only update if not using orbit controls (handled by parent logic)
     // Here we could implement custom camera smoothing or constraints if needed
@@ -384,7 +378,6 @@ function Model({
   playAnimation,
   autoFit,
   autoFitMargin,
-  cameraConfig,
   modelRef,
 }: {
   modelPath: string;
@@ -411,7 +404,7 @@ function Model({
   }, [playAnimation, gltf.animations, gltf.scene]);
 
   // Update animation
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (mixer.current) {
       mixer.current.update(delta);
     }
@@ -421,7 +414,6 @@ function Model({
   useEffect(() => {
     if (autoFit && gltf.scene) {
       const box = new THREE.Box3().setFromObject(gltf.scene);
-      const size = box.getSize(new THREE.Vector3());
       const center = box.getCenter(new THREE.Vector3());
 
       // Center the model
@@ -549,7 +541,7 @@ export default function ModelViewer({
       navigator.clipboard.writeText(config);
       setCopyFeedback("COPIED!");
       setTimeout(() => setCopyFeedback(null), 1000);
-    } catch (err) {
+    } catch (_) {
       setCopyFeedback("ERROR");
       setTimeout(() => setCopyFeedback(null), 1000);
     }

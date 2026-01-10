@@ -13,60 +13,21 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [theme, setTheme] = useState<Theme>("dark");
+  // Always force dark mode
+  const [theme] = useState<Theme>("dark");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    try {
-      // Always start with dark mode, but respect if user explicitly switched to light
-      const savedTheme = localStorage.getItem("theme") as Theme | null;
-      // Only use saved theme if user explicitly set it to light, otherwise force dark
-      if (savedTheme === "light") {
-        setTheme("light");
-      } else {
-        // Force dark mode by default, ignoring system preference
-        setTheme("dark");
-      }
-      setMounted(true);
-    } catch (error) {
-      captureError(error, {
-        component: "ThemeProvider",
-        action: "initialize_theme",
-      });
-      // Fallback to dark mode if there's an error
-      setTheme("dark");
-      setMounted(true);
-    }
+    setMounted(true);
+    // Force dark mode class immediately
+    const root = document.documentElement;
+    root.classList.add("dark-mode");
+    root.classList.remove("light-mode");
+    localStorage.setItem("theme", "dark");
   }, []);
 
-  useEffect(() => {
-    if (!mounted) return;
-
-    try {
-      // Apply theme to document
-      const root = document.documentElement;
-      if (theme === "light") {
-        root.classList.add("light-mode");
-        root.classList.remove("dark-mode");
-      } else {
-        root.classList.add("dark-mode");
-        root.classList.remove("light-mode");
-      }
-
-      // Save to localStorage
-      localStorage.setItem("theme", theme);
-    } catch (error) {
-      captureError(error, {
-        component: "ThemeProvider",
-        action: "apply_theme",
-        additionalData: { theme },
-      });
-    }
-  }, [theme, mounted]);
-
-  const toggleTheme = () => {
-    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
-  };
+  // No-op toggle since we enforce dark mode
+  const toggleTheme = () => { };
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>

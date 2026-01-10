@@ -379,15 +379,7 @@ function HomePage() {
             </div>
 
             {/* Booking Section */}
-            {false && (
-              <div id="booking-section" className="w-full max-w-4xl mx-auto mb-20 px-4">
-                <iframe
-                  src="https://cal.com/vanessa-depraute-g3wudh/15min?user=vanessa-depraute-g3wudh"
-                  className="w-full h-[600px] border border-neutral-800 rounded-2xl shadow-2xl bg-neutral-900/50"
-                  title="Embedded content"
-                />
-              </div>
-            )}
+
 
             {/* GitHub Calendar - Before Tech Stack */}
             <div id="github-calendar-section" className="w-full mb-20">
@@ -406,7 +398,7 @@ function HomePage() {
                     width="100%"
                     height="100%"
                     enableOrbitControls={true}
-                    enableZoom={true}
+                    enableZoom={false}
                     autoFit={false}
                     debug={debugMode}
                     onClick={handleModelClick}

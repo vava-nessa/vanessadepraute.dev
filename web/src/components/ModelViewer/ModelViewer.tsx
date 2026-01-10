@@ -316,7 +316,123 @@ function DebugDataUpdater({
   return null;
 }
 
-// ... (MouseFollower and CameraController remain unchanged)
+// Mouse follower - rotates model with mouse
+// Mouse follower - rotates model with mouse
+function MouseFollower({
+  modelRef,
+  config,
+}: {
+  modelRef: React.RefObject<THREE.Group | null>;
+  config: typeof CAMERA_CONFIG;
+}) {
+  const mouse = useRef({ x: 0, y: 0 });
+  const targetMouse = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      // Normalize mouse to -1 to 1 based on window size
+      targetMouse.current.x = (event.clientX / window.innerWidth) * 2 - 1;
+      targetMouse.current.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
+
+  useFrame(() => {
+    if (!modelRef.current) return;
+
+    // Smooth mouse interpolation towards the global target
+    mouse.current.x += (targetMouse.current.x - mouse.current.x) * config.mouseFollowSpeed;
+    mouse.current.y += (targetMouse.current.y - mouse.current.y) * config.mouseFollowSpeed;
+
+    if (config.mouseFollowAxis === "x" || config.mouseFollowAxis === "both") {
+      modelRef.current.rotation.x = -mouse.current.y * config.mouseFollowRange;
+    }
+    if (config.mouseFollowAxis === "y" || config.mouseFollowAxis === "both") {
+      modelRef.current.rotation.y = mouse.current.x * config.mouseFollowRange;
+    }
+  });
+
+  return null;
+}
+
+// Camera controller component
+function CameraController({
+  cameraConfig,
+  enableZoom,
+}: {
+  cameraConfig: typeof CAMERA_CONFIG;
+  enableZoom: boolean;
+}) {
+  const { camera } = useThree();
+
+  useFrame(() => {
+    // Only update if not using orbit controls (handled by parent logic)
+    // Here we could implement custom camera smoothing or constraints if needed
+    // For now, we rely on the declarative PerspectiveCamera props in the parent
+  });
+
+  return null;
+}
+
+// Model component that handles loading and animations
+function Model({
+  modelPath,
+  playAnimation,
+  autoFit,
+  autoFitMargin,
+  cameraConfig,
+  modelRef,
+}: {
+  modelPath: string;
+  playAnimation: boolean;
+  autoFit: boolean;
+  autoFitMargin: number;
+  cameraConfig: typeof CAMERA_CONFIG;
+  modelRef: React.RefObject<THREE.Group | null>;
+}) {
+  const gltf = useLoader(GLTFLoader, modelPath);
+  const mixer = useRef<THREE.AnimationMixer | null>(null);
+
+  // Handle animations
+  useEffect(() => {
+    if (playAnimation && gltf.animations.length) {
+      mixer.current = new THREE.AnimationMixer(gltf.scene);
+      gltf.animations.forEach((clip) => {
+        mixer.current?.clipAction(clip).play();
+      });
+    }
+    return () => {
+      mixer.current?.stopAllAction();
+    };
+  }, [playAnimation, gltf.animations, gltf.scene]);
+
+  // Update animation
+  useFrame((state, delta) => {
+    if (mixer.current) {
+      mixer.current.update(delta);
+    }
+  });
+
+  // Handle auto-fit
+  useEffect(() => {
+    if (autoFit && gltf.scene) {
+      const box = new THREE.Box3().setFromObject(gltf.scene);
+      const size = box.getSize(new THREE.Vector3());
+      const center = box.getCenter(new THREE.Vector3());
+
+      // Center the model
+      gltf.scene.position.x += (gltf.scene.position.x - center.x);
+      gltf.scene.position.y += (gltf.scene.position.y - center.y);
+      gltf.scene.position.z += (gltf.scene.position.z - center.z);
+    }
+  }, [autoFit, gltf.scene, autoFitMargin]);
+
+  return <primitive object={gltf.scene} ref={modelRef} />;
+}
 
 export default function ModelViewer({
   modelPath,

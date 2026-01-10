@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { captureError } from "@/utils/errorHandling";
 
 type Theme = "light" | "dark";
 
@@ -15,10 +14,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   // Always force dark mode
   const [theme] = useState<Theme>("dark");
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     // Force dark mode class immediately
     const root = document.documentElement;
     root.classList.add("dark-mode");

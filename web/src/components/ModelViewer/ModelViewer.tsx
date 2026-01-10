@@ -265,28 +265,25 @@ function DebugDataUpdater({
     let distance = 0;
 
     if (controls) {
+      // Cast controls to any to access specific methods that might vary by control type
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const ctrl = controls as any;
+
       // Target
-      if ('target' in controls) {
-        // @ts-expect-error
-        const t = controls.target as THREE.Vector3;
+      if ('target' in ctrl) {
+        const t = ctrl.target as THREE.Vector3;
         target = [t.x, t.y, t.z];
       }
 
       // Spherical Coordinates
-      // @ts-ignore
-      if (typeof controls.getAzimuthalAngle === 'function') {
-        // @ts-expect-error
-        azimuth = controls.getAzimuthalAngle();
+      if (typeof ctrl.getAzimuthalAngle === 'function') {
+        azimuth = ctrl.getAzimuthalAngle();
       }
-      // @ts-ignore
-      if (typeof controls.getPolarAngle === 'function') {
-        // @ts-expect-error
-        polar = controls.getPolarAngle();
+      if (typeof ctrl.getPolarAngle === 'function') {
+        polar = ctrl.getPolarAngle();
       }
-      // @ts-ignore
-      if (typeof controls.getDistance === 'function') {
-        // @ts-expect-error
-        distance = controls.getDistance();
+      if (typeof ctrl.getDistance === 'function') {
+        distance = ctrl.getDistance();
       }
     }
 
@@ -359,7 +356,7 @@ function MouseFollower({
 }
 
 // Camera controller component
-function CameraController({ }: {
+function CameraController(_props: {
   cameraConfig: typeof CAMERA_CONFIG;
   enableZoom: boolean;
 }) {

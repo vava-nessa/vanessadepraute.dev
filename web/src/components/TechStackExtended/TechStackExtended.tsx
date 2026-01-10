@@ -17,11 +17,6 @@ const TechStackExtended = () => {
       items: [
         "JavaScript",
         "TypeScript",
-        "ES10+",
-        "Async/Await",
-        "Promises",
-        "Spread/Rest",
-        "Dynamic Import",
         "Zod",
       ],
     },
@@ -263,6 +258,14 @@ const TechStackExtended = () => {
         "Mistral 7B",
         "Solar",
         "Phi",
+      ],
+    },
+    {
+      title: t("techStack.categories.other"),
+      icon: "🎬",
+      items: [
+        "DaVinci Resolve",
+        "Ableton",
       ],
     },
   ];

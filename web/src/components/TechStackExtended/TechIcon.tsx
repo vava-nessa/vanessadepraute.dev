@@ -30,9 +30,11 @@ const customIcons: Record<string, string> = {
     "continue": "/icons/continue.png",
     "qdrant": "/icons/qdrant.svg",
     "amazonaws": "/icons/aws.svg",
-    "atomicdesign": "/icons/atomic-design.png",
+    "atomicdesign": "/icons/atomic-design.svg",
     "phi": "/icons/phi.png",
     "woocommerce": "/icons/adobe-commerce.svg",
+    "davinciresol": "/icons/davinci-resolve.png",
+    "ableton": "/icons/ableton.png",
 };
 
 /**

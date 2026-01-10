@@ -168,5 +168,9 @@ export const techIconMapping: Record<string, string> = {
     "vLLM": "python",  // Using Python as ML framework fallback
     "Mistral 7B": "mistralai",
     "Solar": "solana",
-    "Phi": "microsoft",
+    "Phi": "phi",  // Custom icon
+
+    // Other
+    "DaVinci Resolve": "davinciresol",  // Custom icon
+    "Ableton": "ableton",  // Custom icon
 };

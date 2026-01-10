@@ -400,11 +400,11 @@ function HomePage() {
             </div>
 
             {/* IBM Terminal Section */}
-            <div id="ibm-terminal-section" className="w-full mb-20 flex justify-center">
-              <div className="w-[300px] h-[300px]">
+            <div id="ibm-terminal-section" className="w-full mb-20">
+              <div className="w-full h-[400px]">
                 <ErrorBoundary>
                   <ModelViewer
-                    modelPath="/isomatrix_glitch.glb"
+                    modelPath="/cherry_blossom.glb"
                     playAnimation={true}
                     width="100%"
                     height="100%"
@@ -418,7 +418,7 @@ function HomePage() {
                       rotation: [-2.93, -0.45, -3.05],
                       lookAt: [-0.22, 0.32, -0.88],
                       fov: 18.00,
-                      zoom: 1.00,
+                      zoom: 0.7,
                       autoRotate: false,
                       oscillation: { enabled: false, amplitude: 0, period: 0, axis: "y" },
                       followMouse: true,

@@ -78,7 +78,8 @@
       "llmAI": "🧠 LLM & IA Coding",
       "aiDevTools": "⚡ Outils IA Dev",
       "aiInfra": "🧬 Infra IA / Vector",
-      "openSourceAI": "🤖 IA Open-Source"
+      "openSourceAI": "🤖 IA Open-Source",
+      "other": "🎬 Autre"
     }
   },
   "footer": {

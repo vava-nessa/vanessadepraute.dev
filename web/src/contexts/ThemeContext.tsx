@@ -12,19 +12,24 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  // Always force dark mode
-  const [theme] = useState<Theme>("dark");
+  // Always start in dark mode
+  const [theme, setTheme] = useState<Theme>("dark");
 
   useEffect(() => {
-    // Force dark mode class immediately
     const root = document.documentElement;
-    root.classList.add("dark-mode");
-    root.classList.remove("light-mode");
-    localStorage.setItem("theme", "dark");
-  }, []);
+    if (theme === "dark") {
+      root.classList.add("dark-mode");
+      root.classList.remove("light-mode");
+    } else {
+      root.classList.add("light-mode");
+      root.classList.remove("dark-mode");
+    }
+    localStorage.setItem("theme", theme);
+  }, [theme]);
 
-  // No-op toggle since we enforce dark mode
-  const toggleTheme = () => { };
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>

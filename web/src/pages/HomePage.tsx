@@ -177,7 +177,7 @@ function HomePage() {
         </div>
 
         <div id="app-content-wrapper" className="relative z-10">
-          <div id="app-wrapper" className="wrapper w-full flex flex-col gap-20 px-5 pt-2 pb-5">
+          <div id="app-wrapper" className="wrapper w-full flex flex-col px-5 pb-5">
             {/* Header Section */}
             <div id="header-section" className="w-full max-w-[1200px] mx-auto pt-4 md:pt-6 px-5">
               <div id="header-content" className="flex flex-col lg:flex-row items-center gap-8 mb-8">
@@ -208,9 +208,9 @@ function HomePage() {
                   </p>
 
                   {/* Title */}
-                  <h1 id="header-title" className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white m-0 tracking-tight flex items-center gap-3">
-                    <span className="text-brand-primary font-mono flex-shrink-0" aria-hidden="true">➜</span>
-                    <span className="text-brand-primary font-mono flex-shrink-0" aria-hidden="true">~</span>
+                  <h1 id="header-title" className={`text-2xl md:text-3xl lg:text-4xl font-extrabold m-0 tracking-tight flex items-center gap-3 ${isDarkMode ? 'text-[#ccff66]' : 'text-white'}`}>
+                    <span className={`${isDarkMode ? 'text-[#ccff66]' : 'text-brand-primary'} font-mono flex-shrink-0`} aria-hidden="true">➜</span>
+                    <span className={`${isDarkMode ? 'text-[#ccff66]' : 'text-brand-primary'} font-mono flex-shrink-0`} aria-hidden="true">~</span>
                     <TextType
                       key={i18n.language}
                       text={shuffledRoles}
@@ -221,6 +221,7 @@ function HomePage() {
                       showCursor={true}
                       cursorCharacter="_"
                       variableSpeed={{ min: 10, max: 105 }}
+                      className={isDarkMode ? 'text-[#ccff66]' : ''}
                     />
                   </h1>
                 </div>
@@ -231,24 +232,14 @@ function HomePage() {
             <div id="bio-section" className="w-full max-w-[1200px] mx-auto px-5">
               <div id="bio-content" className="flex flex-col lg:flex-row gap-12 items-center lg:items-start mb-12">
                 {/* Bio text on the left */}
-                <div id="bio-text-container" className="flex-1">
+                <div id="bio-text-container" className="flex-1 mt-8 lg:mt-16">
                   {(t("bio.paragraphs", { returnObjects: true }) as string[]).map((paragraph, index, arr) => {
                     const isLastParagraph = index === arr.length - 1;
                     const hasBold = paragraph.includes("**");
 
                     if (isLastParagraph && hasBold) {
-                      // Extract the text BEFORE the bold part to show it as a normal paragraph
-                      const beforeBold = paragraph.split("**")[0].trim();
-
-                      return beforeBold ? (
-                        <p
-                          key={index}
-                          className="text-neutral-300 text-sm md:text-base leading-relaxed font-light mb-6"
-                          dangerouslySetInnerHTML={{
-                            __html: beforeBold.replace(/\*\*(.*?)\*\*/g, '<strong class="text-brand-primary font-semibold">$1</strong>')
-                          }}
-                        />
-                      ) : null;
+                      // Don't render the last paragraph here as it will be displayed centered below
+                      return null;
                     }
 
                     return (
@@ -261,6 +252,32 @@ function HomePage() {
                       />
                     );
                   })}
+
+                  {/* Centered Let's Talk inside left column */}
+                  {(() => {
+                    const paragraphs = t("bio.paragraphs", { returnObjects: true }) as string[];
+                    const lastParagraph = paragraphs[paragraphs.length - 1];
+                    const match = lastParagraph.match(/\*\*(.*?)\*\*/);
+                    const title = match ? match[1] : null;
+
+                    if (title) {
+                      return (
+                        <div id="lets-talk-centered" className="w-full flex flex-col justify-center items-center py-6 mt-8">
+                          {lastParagraph.substring(0, match.index).trim() && (
+                            <p className="text-neutral-300 text-sm md:text-base leading-relaxed font-light mb-2 z-10 text-center">
+                              {lastParagraph.substring(0, match.index).trim()}
+                            </p>
+                          )}
+                          <div className="relative w-full max-w-lg" style={{ height: '160px' }}>
+                            <div className="absolute inset-0 flex items-center justify-center" style={{ transform: 'scale(0.6)', transformOrigin: 'center center' }}>
+                              <HandWrittenTitle title={title} subtitle="" textSize="text-4xl md:text-5xl font-bold" />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
                 </div>
 
                 {/* CoderGirl on the right */}
@@ -273,26 +290,7 @@ function HomePage() {
                 </div>
               </div>
 
-              {/* Centered Let's Talk / Parlons-en section */}
-              {(() => {
-                const paragraphs = t("bio.paragraphs", { returnObjects: true }) as string[];
-                const lastParagraph = paragraphs[paragraphs.length - 1];
-                const match = lastParagraph.match(/\*\*(.*?)\*\*/);
-                const title = match ? match[1] : null;
 
-                if (title) {
-                  return (
-                    <div id="lets-talk-centered" className="w-full flex justify-center items-center py-10">
-                      <div className="relative w-full max-w-lg" style={{ height: '160px' }}>
-                        <div className="absolute inset-0 flex items-center justify-center" style={{ transform: 'scale(0.6)', transformOrigin: 'center center' }}>
-                          <HandWrittenTitle title={title} subtitle="" textSize="text-4xl md:text-5xl font-bold" />
-                        </div>
-                      </div>
-                    </div>
-                  );
-                }
-                return null;
-              })()}
             </div>
 
             {/* Out Of Burn Project Section */}

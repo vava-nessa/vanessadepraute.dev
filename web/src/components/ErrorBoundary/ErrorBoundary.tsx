@@ -1,10 +1,10 @@
-import { ReactNode, JSX } from "react";
+import { ReactNode, JSX, useState } from "react";
 import * as Sentry from "@sentry/react";
-import { useTranslation } from "react-i18next";
+import { Copy, Check, RotateCcw } from "lucide-react";
 
 function ErrorFallback({
   error,
-  resetError,
+  resetError
 }: {
   error: unknown;
   componentStack: string;
@@ -12,47 +12,58 @@ function ErrorFallback({
   resetError: () => void;
 }): JSX.Element {
   const errorObj = error instanceof Error ? error : new Error(String(error));
-  const { t } = useTranslation();
+  const [copyFeedback, setCopyFeedback] = useState(false);
+
+  const handleRetry = () => {
+    resetError();
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(`${errorObj.message}\n${errorObj.stack}`);
+    setCopyFeedback(true);
+    setTimeout(() => setCopyFeedback(false), 2000);
+  };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="mb-4 text-4xl font-bold text-foreground">
-          {t("error.title", "Something went wrong")}
-        </h1>
-        <p className="mb-6 text-muted-foreground">
-          {t(
-            "error.description",
-            "We're sorry, but something unexpected happened. The error has been reported and we'll fix it as soon as possible."
-          )}
-        </p>
-        {import.meta.env.DEV && (
-          <details className="mb-6 rounded-lg bg-muted p-4 text-left">
-            <summary className="cursor-pointer font-semibold">
-              Error details
-            </summary>
-            <pre className="mt-2 overflow-auto text-sm">
-              {errorObj.message}
-              {"\n\n"}
-              {errorObj.stack}
-            </pre>
-          </details>
-        )}
-        <div className="flex gap-4 justify-center">
+    <div
+      className="w-full h-full flex flex-col p-4 border border-red-900/50 rounded-xl text-white font-mono text-xs relative z-50 overflow-y-auto scrollbar-thin scrollbar-thumb-red-900 scrollbar-track-transparent"
+      style={{ animation: "error-pulse 3s infinite ease-in-out" }}
+    >
+      <style>{`
+        @keyframes error-pulse {
+          0%, 100% { background-color: rgba(69, 10, 10, 0.95); }
+          50% { background-color: rgba(30, 0, 0, 0.95); }
+        }
+      `}</style>
+
+      <div className="flex justify-between items-start gap-2 mb-2 border-b border-white/20 pb-2 shrink-0">
+        <div className="font-bold leading-tight pt-1 break-all">
+          <span className="text-red-400">Error:</span> {errorObj.name}
+        </div>
+        <div className="flex gap-2 shrink-0">
           <button
-            onClick={resetError}
-            className="rounded-lg bg-primary px-6 py-2 font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+            onClick={handleCopy}
+            className="p-1.5 hover:bg-white/10 rounded transition-colors text-white/70 hover:text-white"
+            title="Copy error details"
           >
-            {t("error.tryAgain", "Try again")}
+            {copyFeedback ? <Check size={14} /> : <Copy size={14} />}
           </button>
           <button
-            onClick={() => (window.location.href = "/")}
-            className="rounded-lg bg-secondary px-6 py-2 font-semibold text-secondary-foreground hover:bg-secondary/90 transition-colors"
+            onClick={handleRetry}
+            className="p-1.5 hover:bg-white/10 rounded transition-colors text-white/70 hover:text-white"
+            title="Retry"
           >
-            {t("error.goHome", "Go home")}
+            <RotateCcw size={14} />
           </button>
         </div>
       </div>
+
+      {import.meta.env.DEV && (
+        <pre className="whitespace-pre-wrap break-words text-[10px] opacity-90">
+          <strong className="block mb-2 text-white">{errorObj.message}</strong>
+          {errorObj.stack}
+        </pre>
+      )}
     </div>
   );
 }

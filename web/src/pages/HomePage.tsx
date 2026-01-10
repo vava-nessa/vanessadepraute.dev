@@ -401,7 +401,7 @@ function HomePage() {
               <div className="w-[300px] h-[300px]">
                 <ErrorBoundary>
                   <ModelViewer
-                    modelPath="/ibm_3278_terminal.glb"
+                    modelPath="/isomatrix_glitch.glb"
                     playAnimation={true}
                     width="100%"
                     height="100%"
@@ -411,11 +411,17 @@ function HomePage() {
                     debug={debugMode}
                     onClick={handleModelClick}
                     cameraConfig={{
-                      position: [124.39, 63.56, -66.43],
-                      rotation: [-2.48, 0.98, 2.56],
+                      position: [7.06, 7.13, -8.56],
+                      rotation: [-2.45, 0.57, 2.72],
+                      fov: 18,
+                      zoom: 1,
                       lookAt: [0, 5, 0],
                       autoRotate: false,
-                      oscillation: { enabled: false, amplitude: 0, period: 0, axis: "y" }
+                      oscillation: { enabled: false, amplitude: 0, period: 0, axis: "y" },
+                      followMouse: true,
+                      mouseFollowSpeed: 0.2,
+                      mouseFollowRange: 0.45,
+                      mouseFollowAxis: 'both'
                     }}
                   />
                 </ErrorBoundary>

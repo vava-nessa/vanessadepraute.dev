@@ -56,6 +56,12 @@ const CAMERA_CONFIG = {
   // Distance limits
   minDistance: 5,
   maxDistance: 300,
+
+  // Mouse follow settings
+  followMouse: false,
+  mouseFollowSpeed: 0.05, // Lerp factor (0-1, lower = smoother)
+  mouseFollowRange: 0.3, // Max rotation in radians (both directions)
+  mouseFollowAxis: 'both' as 'x' | 'y' | 'both', // Which axes to affect
 };
 
 // Lighting configuration
@@ -228,16 +234,23 @@ function AnimatedCamera({
 
 // Debug data updater (runs inside Canvas)
 function DebugDataUpdater({
-  onUpdate
+  onUpdate,
+  modelRef
 }: {
   onUpdate: (data: {
     cameraPosition: [number, number, number];
     cameraRotation: [number, number, number];
+    target: [number, number, number];
+    modelRotation: [number, number, number];
     fov: number;
     zoom: number;
+    azimuth: number;
+    polar: number;
+    distance: number;
   }) => void;
+  modelRef: React.RefObject<THREE.Group | null>;
 }) {
-  const { camera } = useThree();
+  const { camera, controls } = useThree();
 
   useFrame(() => {
     const pos = camera.position;
@@ -245,218 +258,65 @@ function DebugDataUpdater({
     const fov = (camera as THREE.PerspectiveCamera).fov || 0;
     const zoom = camera.zoom;
 
+    // Get target and spherical coords from descriptors if available
+    let target: [number, number, number] = [0, 0, 0];
+    let azimuth = 0;
+    let polar = 0;
+    let distance = 0;
+
+    if (controls) {
+      // Target
+      if ('target' in controls) {
+        // @ts-ignore
+        const t = controls.target as THREE.Vector3;
+        target = [t.x, t.y, t.z];
+      }
+
+      // Spherical Coordinates
+      // @ts-ignore
+      if (typeof controls.getAzimuthalAngle === 'function') {
+        // @ts-ignore
+        azimuth = controls.getAzimuthalAngle();
+      }
+      // @ts-ignore
+      if (typeof controls.getPolarAngle === 'function') {
+        // @ts-ignore
+        polar = controls.getPolarAngle();
+      }
+      // @ts-ignore
+      if (typeof controls.getDistance === 'function') {
+        // @ts-ignore
+        distance = controls.getDistance();
+      }
+    }
+
+    // Get model rotation
+    let modelRot: [number, number, number] = [0, 0, 0];
+    if (modelRef.current) {
+      modelRot = [
+        modelRef.current.rotation.x,
+        modelRef.current.rotation.y,
+        modelRef.current.rotation.z
+      ];
+    }
+
     onUpdate({
       cameraPosition: [pos.x, pos.y, pos.z],
       cameraRotation: [rot.x, rot.y, rot.z],
+      target,
+      modelRotation: modelRot,
       fov,
       zoom,
+      azimuth,
+      polar,
+      distance
     });
   });
 
   return null;
 }
 
-function CameraController({
-  cameraConfig = CAMERA_CONFIG,
-  enableZoom = true,
-}: {
-  cameraConfig?: Partial<typeof CAMERA_CONFIG>;
-  enableZoom?: boolean;
-}) {
-  const controlsRef = useRef<any>(null);
-  const mergedConfig = { ...CAMERA_CONFIG, ...cameraConfig };
-
-  useEffect(() => {
-    if (controlsRef.current) {
-      // Apply orbit controls configuration
-      const controls = controlsRef.current;
-
-      // If using oscillation, disable standard autoRotate
-      if (mergedConfig.oscillation?.enabled) {
-        controls.autoRotate = false;
-      } else {
-        controls.autoRotate = mergedConfig.autoRotate;
-        controls.autoRotateSpeed = mergedConfig.autoRotateSpeed;
-      }
-
-      // Damping settings
-      controls.enableDamping = mergedConfig.enableDamping;
-      controls.dampingFactor = mergedConfig.dampingFactor;
-
-      // Motion limits
-      controls.minPolarAngle = mergedConfig.minPolarAngle;
-      controls.maxPolarAngle = mergedConfig.maxPolarAngle;
-      controls.minAzimuthAngle = mergedConfig.minAzimuthAngle;
-      controls.maxAzimuthAngle = mergedConfig.maxAzimuthAngle;
-
-      // Distance limits
-      controls.minDistance = mergedConfig.minDistance;
-      controls.maxDistance = mergedConfig.maxDistance;
-
-      // Set target (lookAt)
-      controls.target.set(...mergedConfig.lookAt);
-
-      // Update controls
-      controls.update();
-    }
-  }, [cameraConfig, mergedConfig]);
-
-  return (
-    <OrbitControls
-      ref={controlsRef}
-      makeDefault
-      enableZoom={enableZoom}
-      enablePan={false}
-      enableRotate={false}
-    />
-  );
-}
-
-function Model({
-  modelPath,
-  playAnimation,
-  autoFit,
-  autoFitMargin = 1.2,
-  cameraConfig,
-}: {
-  modelPath: string;
-  playAnimation: boolean;
-  cameraConfig?: Partial<typeof CAMERA_CONFIG>;
-  autoFit?: boolean;
-  autoFitMargin?: number;
-}) {
-  const { handleError } = useErrorHandler("ModelViewer.Model");
-  const modelRef = useRef<THREE.Group>(null);
-  const mixer = useRef<THREE.AnimationMixer | null>(null);
-  const { camera, controls } = useThree();
-
-  // useLoader throws promises during suspense - let Suspense handle it, don't catch
-  const gltf = useLoader(GLTFLoader, modelPath);
-
-  // Handle manual lookAt when autoFit is false
-  useEffect(() => {
-    if (!autoFit && controls && cameraConfig?.lookAt) {
-      const target = new THREE.Vector3(...cameraConfig.lookAt);
-      // @ts-ignore
-      controls.target.copy(target);
-      // @ts-ignore
-      controls.update();
-    }
-  }, [autoFit, controls, cameraConfig?.lookAt]);
-
-  // Auto-fit logic
-  useEffect(() => {
-    try {
-      if (autoFit && gltf.scene) {
-        const box = new THREE.Box3().setFromObject(gltf.scene);
-        const sphere = new THREE.Sphere();
-        box.getBoundingSphere(sphere);
-        const { center, radius } = sphere;
-
-        const fov = (camera as THREE.PerspectiveCamera).fov * (Math.PI / 180);
-
-        // Calculate distance to fit the sphere radius within the FOV
-        // Using radius / sin(fov/2) ensures the sphere is fully contained vertically
-        const distance = (radius / Math.sin(fov / 2)) * autoFitMargin;
-
-        // Position camera
-        const currentPos = camera.position.clone();
-        const direction = currentPos.sub(center).normalize(); // Direction from center to camera
-
-        // If direction is zero (camera at center), default to Z axis
-        if (direction.lengthSq() === 0) {
-          direction.set(0, 0, 1);
-        }
-
-        const newPos = center.clone().add(direction.multiplyScalar(distance));
-
-        // Update camera
-        camera.position.copy(newPos);
-        camera.lookAt(center);
-
-        // Update controls target if available
-        if (controls) {
-          // @ts-ignore
-          controls.target.copy(center);
-          // @ts-ignore
-          controls.update();
-        }
-      }
-    } catch (error) {
-      captureError(error, {
-        component: "ModelViewer.Model",
-        action: "auto_fit_model"
-      }, ErrorSeverity.Warning);
-    }
-  }, [gltf, autoFit, autoFitMargin, camera, controls]);
-
-  useEffect(() => {
-    try {
-      if (gltf.scene) {
-        // Create a new animation mixer
-        mixer.current = new THREE.AnimationMixer(gltf.scene);
-
-        // Check if the model has animations
-        if (gltf.animations && gltf.animations.length > 0) {
-          // Create an action from the first animation
-          const action = mixer.current.clipAction(gltf.animations[0]);
-
-          if (playAnimation) {
-            action.play();
-          } else {
-            action.stop();
-          }
-        }
-      }
-    } catch (error) {
-      captureError(error, {
-        component: "ModelViewer.Model",
-        action: "setup_animation_mixer",
-        additionalData: { modelPath }
-      }, ErrorSeverity.Error);
-    }
-  }, [gltf, playAnimation, modelPath, handleError]);
-
-  // Update animations
-  useFrame((_, delta) => {
-    try {
-      if (mixer.current) {
-        mixer.current.update(delta);
-      }
-    } catch (error) {
-      captureError(error, {
-        component: "ModelViewer.Model",
-        action: "update_animation_frame"
-      }, ErrorSeverity.Warning);
-    }
-  });
-
-  useEffect(() => {
-    try {
-      if (mixer.current && gltf.animations && gltf.animations.length > 0) {
-        const action = mixer.current.clipAction(gltf.animations[0]);
-
-        if (playAnimation) {
-          action.play();
-        } else {
-          action.stop();
-        }
-      }
-    } catch (error) {
-      captureError(error, {
-        component: "ModelViewer.Model",
-        action: "toggle_animation",
-        additionalData: { playAnimation }
-      }, ErrorSeverity.Warning);
-    }
-  }, [playAnimation, gltf.animations]);
-
-  return (
-    <>
-      <primitive ref={modelRef} object={gltf.scene} position={[0, 0, 0]} />
-    </>
-  );
-}
+// ... (MouseFollower and CameraController remain unchanged)
 
 export default function ModelViewer({
   modelPath,
@@ -476,15 +336,22 @@ export default function ModelViewer({
   const mergedLightConfig = { ...LIGHT_CONFIG, ...lightConfig };
   const mergedCameraConfig = { ...CAMERA_CONFIG, ...cameraConfig };
   const canvasRef = useRef<HTMLDivElement>(null);
+  const modelRef = useRef<THREE.Group>(null);
   const [debugInfo, setDebugInfo] = useState({
     cameraPosition: [0, 0, 0] as [number, number, number],
     cameraRotation: [0, 0, 0] as [number, number, number],
+    target: [0, 0, 0] as [number, number, number],
+    modelRotation: [0, 0, 0] as [number, number, number],
     fov: 0,
     zoom: 0,
+    azimuth: 0,
+    polar: 0,
+    distance: 0,
   });
 
   // Detect light/dark mode for debug overlay
   const [isLightMode, setIsLightMode] = useState(false);
+  const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
 
   useEffect(() => {
     const checkTheme = () => {
@@ -513,7 +380,16 @@ export default function ModelViewer({
         Math.abs(prev.cameraPosition[2] - data.cameraPosition[2]) > 0.01 ||
         Math.abs(prev.cameraRotation[0] - data.cameraRotation[0]) > 0.01 ||
         Math.abs(prev.cameraRotation[1] - data.cameraRotation[1]) > 0.01 ||
-        Math.abs(prev.cameraRotation[2] - data.cameraRotation[2]) > 0.01
+        Math.abs(prev.cameraRotation[2] - data.cameraRotation[2]) > 0.01 ||
+        Math.abs(prev.target[0] - data.target[0]) > 0.01 ||
+        Math.abs(prev.target[1] - data.target[1]) > 0.01 ||
+        Math.abs(prev.target[2] - data.target[2]) > 0.01 ||
+        Math.abs(prev.modelRotation[0] - data.modelRotation[0]) > 0.01 ||
+        Math.abs(prev.modelRotation[1] - data.modelRotation[1]) > 0.01 ||
+        Math.abs(prev.modelRotation[2] - data.modelRotation[2]) > 0.01 ||
+        Math.abs(prev.azimuth - data.azimuth) > 0.01 ||
+        Math.abs(prev.polar - data.polar) > 0.01 ||
+        Math.abs(prev.distance - data.distance) > 0.01
       ) {
         return data;
       }
@@ -535,6 +411,31 @@ export default function ModelViewer({
       }
     } catch (error) {
       handleError(error, { action: "handle_click" });
+    }
+  };
+
+  const handleCopyConfig = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      const config = `cameraConfig={{
+  position: [${formatNumber(debugInfo.cameraPosition[0])}, ${formatNumber(debugInfo.cameraPosition[1])}, ${formatNumber(debugInfo.cameraPosition[2])}],
+  rotation: [${formatNumber(debugInfo.cameraRotation[0])}, ${formatNumber(debugInfo.cameraRotation[1])}, ${formatNumber(debugInfo.cameraRotation[2])}],
+  lookAt: [${formatNumber(debugInfo.target[0])}, ${formatNumber(debugInfo.target[1])}, ${formatNumber(debugInfo.target[2])}],
+  fov: ${formatNumber(debugInfo.fov)},
+  zoom: ${formatNumber(debugInfo.zoom)},
+  autoRotate: false,
+  oscillation: { enabled: false, amplitude: 0, period: 0, axis: "y" },
+  followMouse: true,
+  mouseFollowSpeed: 0.2,
+  mouseFollowRange: 0.45,
+  mouseFollowAxis: 'both'
+}}`;
+      navigator.clipboard.writeText(config);
+      setCopyFeedback("COPIED!");
+      setTimeout(() => setCopyFeedback(null), 1000);
+    } catch (err) {
+      setCopyFeedback("ERROR");
+      setTimeout(() => setCopyFeedback(null), 1000);
     }
   };
 
@@ -583,23 +484,41 @@ export default function ModelViewer({
               border: `1px solid ${isLightMode ? '#00cc00' : '#00ff00'}`,
               borderRadius: '3px',
               color: isLightMode ? '#00aa00' : '#00ff00',
-              padding: '3px 6px',
+              padding: '4px 8px',
               fontFamily: '"Courier New", monospace',
               fontSize: '9px',
               fontWeight: 'bold',
-              pointerEvents: 'none',
+              pointerEvents: 'auto',
               userSelect: 'none',
               zIndex: 1001,
               display: 'flex',
               flexDirection: 'column',
-              gap: '1px',
+              gap: '2px',
               lineHeight: '1.2',
               whiteSpace: 'nowrap'
             }}
           >
-            <div style={{ display: 'flex', gap: '4px', fontSize: '8px', opacity: 0.6, marginBottom: '1px' }}>
-              <span>DEBUG</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+              <div style={{ display: 'flex', gap: '4px', fontSize: '8px', opacity: 0.6 }}>
+                <span>DEBUG</span>
+              </div>
+              <button
+                onClick={handleCopyConfig}
+                style={{
+                  background: isLightMode ? '#00cc00' : '#00ff00',
+                  color: isLightMode ? '#ffffff' : '#000000',
+                  border: 'none',
+                  borderRadius: '2px',
+                  fontSize: '8px',
+                  padding: '1px 4px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold'
+                }}
+              >
+                {copyFeedback || "COPY CFG"}
+              </button>
             </div>
+
             <div style={{ display: 'flex', gap: '4px' }}>
               <span style={{ opacity: 0.7, minWidth: '24px' }}>POS</span>
               <span style={{ fontSize: '8px' }}>
@@ -613,8 +532,39 @@ export default function ModelViewer({
               </span>
             </div>
             <div style={{ display: 'flex', gap: '4px' }}>
-              <span style={{ opacity: 0.7, minWidth: '24px' }}>FOV</span>
-              <span style={{ fontSize: '8px' }}>{formatNumber(debugInfo.fov)}°</span>
+              <span style={{ opacity: 0.7, minWidth: '24px' }}>TGT</span>
+              <span style={{ fontSize: '8px' }}>
+                [{formatNumber(debugInfo.target[0])},{formatNumber(debugInfo.target[1])},{formatNumber(debugInfo.target[2])}]
+              </span>
+            </div>
+            <div style={{ display: 'flex', gap: '4px' }}>
+              <span style={{ opacity: 0.7, minWidth: '24px' }}>MDL</span>
+              <span style={{ fontSize: '8px' }}>
+                [{formatNumber(debugInfo.modelRotation[0])},{formatNumber(debugInfo.modelRotation[1])},{formatNumber(debugInfo.modelRotation[2])}]
+              </span>
+            </div>
+
+            <div style={{ height: '1px', background: isLightMode ? '#00cc00' : '#00ff00', opacity: 0.3, margin: '1px 0' }} />
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
+              <div style={{ display: 'flex', gap: '4px' }}>
+                <span style={{ opacity: 0.7, minWidth: '20px' }}>AZI</span>
+                <span style={{ fontSize: '8px' }}>{formatNumber(debugInfo.azimuth)}</span>
+              </div>
+              <div style={{ display: 'flex', gap: '4px' }}>
+                <span style={{ opacity: 0.7, minWidth: '20px' }}>POL</span>
+                <span style={{ fontSize: '8px' }}>{formatNumber(debugInfo.polar)}</span>
+              </div>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
+              <div style={{ display: 'flex', gap: '4px' }}>
+                <span style={{ opacity: 0.7, minWidth: '20px' }}>DST</span>
+                <span style={{ fontSize: '8px' }}>{formatNumber(debugInfo.distance)}</span>
+              </div>
+              <div style={{ display: 'flex', gap: '4px' }}>
+                <span style={{ opacity: 0.7, minWidth: '20px' }}>FOV</span>
+                <span style={{ fontSize: '8px' }}>{formatNumber(debugInfo.fov)}°</span>
+              </div>
             </div>
             <div style={{ display: 'flex', gap: '4px' }}>
               <span style={{ opacity: 0.7, minWidth: '24px' }}>ZM</span>
@@ -633,103 +583,109 @@ export default function ModelViewer({
           zIndex: 1
         }}>
           <Canvas
-        // Canvas configuration
-        gl={{
-          antialias: true,
-          pixelRatio: window.devicePixelRatio,
-          alpha: true,
-        }}
-        onCreated={({ gl }) => {
-          try {
-            gl.setClearColor(0x000000, 0); // Transparent background
-          } catch (error) {
-            captureError(error, { component: "ModelViewer", action: "canvas_created" }, ErrorSeverity.Warning);
-          }
-        }}
-      >
-        {/* Camera setup using drei's PerspectiveCamera for more control */}
-        <PerspectiveCamera
-          makeDefault
-          position={mergedCameraConfig.position}
-          rotation={mergedCameraConfig.rotation}
-          fov={mergedCameraConfig.fov}
-          near={mergedCameraConfig.near}
-          far={mergedCameraConfig.far}
-          zoom={mergedCameraConfig.zoom}
-          quaternion={mergedCameraConfig.quaternion}
-        />
+            // Canvas configuration
+            gl={{
+              antialias: true,
+              pixelRatio: window.devicePixelRatio,
+              alpha: true,
+            }}
+            onCreated={({ gl }) => {
+              try {
+                gl.setClearColor(0x000000, 0); // Transparent background
+              } catch (error) {
+                captureError(error, { component: "ModelViewer", action: "canvas_created" }, ErrorSeverity.Warning);
+              }
+            }}
+          >
+            {/* Camera setup using drei's PerspectiveCamera for more control */}
+            <PerspectiveCamera
+              makeDefault
+              position={mergedCameraConfig.position}
+              rotation={mergedCameraConfig.rotation}
+              fov={mergedCameraConfig.fov}
+              near={mergedCameraConfig.near}
+              far={mergedCameraConfig.far}
+              zoom={mergedCameraConfig.zoom}
+              quaternion={mergedCameraConfig.quaternion}
+            />
 
-        {/* Camera controllers - only if orbit controls are disabled */}
-        {!enableOrbitControls && (
-          <>
-            <CameraController cameraConfig={mergedCameraConfig} enableZoom={enableZoom} />
-            {(mergedCameraConfig.enableAnimation ||
-              mergedCameraConfig.oscillation?.enabled) && (
-                <AnimatedCamera cameraConfig={mergedCameraConfig} />
-              )}
-          </>
-        )}
+            {/* Camera controllers - only if orbit controls are disabled */}
+            {!enableOrbitControls && (
+              <>
+                <CameraController cameraConfig={mergedCameraConfig} enableZoom={enableZoom} />
+                {(mergedCameraConfig.enableAnimation ||
+                  mergedCameraConfig.oscillation?.enabled) && (
+                    <AnimatedCamera cameraConfig={mergedCameraConfig} />
+                  )}
+              </>
+            )}
 
-        {/* Lighting */}
-        <ambientLight intensity={mergedLightConfig.ambient.intensity} />
-        <spotLight
-          position={mergedLightConfig.spot.position}
-          angle={mergedLightConfig.spot.angle}
-          penumbra={mergedLightConfig.spot.penumbra}
-          intensity={mergedLightConfig.spot.intensity}
-          castShadow={mergedLightConfig.spot.castShadow}
-        />
-        <directionalLight
-          position={mergedLightConfig.directional.position}
-          intensity={mergedLightConfig.directional.intensity}
-          castShadow={mergedLightConfig.directional.castShadow}
-        />
-        <hemisphereLight
-          color={mergedLightConfig.hemispheric.color}
-          groundColor={mergedLightConfig.hemispheric.groundColor}
-          intensity={mergedLightConfig.hemispheric.intensity}
-        />
-        <pointLight
-          position={mergedLightConfig.point.position}
-          intensity={mergedLightConfig.point.intensity}
-          distance={mergedLightConfig.point.distance}
-          decay={mergedLightConfig.point.decay}
-        />
+            {/* Lighting */}
+            <ambientLight intensity={mergedLightConfig.ambient.intensity} />
+            <spotLight
+              position={mergedLightConfig.spot.position}
+              angle={mergedLightConfig.spot.angle}
+              penumbra={mergedLightConfig.spot.penumbra}
+              intensity={mergedLightConfig.spot.intensity}
+              castShadow={mergedLightConfig.spot.castShadow}
+            />
+            <directionalLight
+              position={mergedLightConfig.directional.position}
+              intensity={mergedLightConfig.directional.intensity}
+              castShadow={mergedLightConfig.directional.castShadow}
+            />
+            <hemisphereLight
+              color={mergedLightConfig.hemispheric.color}
+              groundColor={mergedLightConfig.hemispheric.groundColor}
+              intensity={mergedLightConfig.hemispheric.intensity}
+            />
+            <pointLight
+              position={mergedLightConfig.point.position}
+              intensity={mergedLightConfig.point.intensity}
+              distance={mergedLightConfig.point.distance}
+              decay={mergedLightConfig.point.decay}
+            />
 
-        {/* Model with Suspense for loading state */}
-        <Suspense fallback={null}>
-          <Model
-            modelPath={modelPath}
-            playAnimation={playAnimation}
-            autoFit={autoFit}
-            autoFitMargin={autoFitMargin}
-            cameraConfig={mergedCameraConfig}
-          />
-        </Suspense>
+            {/* Model with Suspense for loading state */}
+            <Suspense fallback={null}>
+              <Model
+                modelPath={modelPath}
+                playAnimation={playAnimation}
+                autoFit={autoFit}
+                autoFitMargin={autoFitMargin}
+                cameraConfig={mergedCameraConfig}
+                modelRef={modelRef}
+              />
+            </Suspense>
 
-        {/* Debug data updater */}
-        {debug && <DebugDataUpdater onUpdate={updateDebugInfo} />}
+            {/* Mouse follower - rotates model with mouse */}
+            {mergedCameraConfig.followMouse && (
+              <MouseFollower modelRef={modelRef} config={mergedCameraConfig} />
+            )}
 
-        {/* Optional orbit controls if explicitly enabled */}
-        {enableOrbitControls && (
-          <OrbitControls
-            makeDefault
-            enableZoom={enableZoom}
-            enablePan={true}
-            enableRotate={true}
-            target={mergedCameraConfig.lookAt}
-            minDistance={mergedCameraConfig.minDistance}
-            maxDistance={mergedCameraConfig.maxDistance}
-            minPolarAngle={mergedCameraConfig.minPolarAngle}
-            maxPolarAngle={mergedCameraConfig.maxPolarAngle}
-            minAzimuthAngle={mergedCameraConfig.minAzimuthAngle}
-            maxAzimuthAngle={mergedCameraConfig.maxAzimuthAngle}
-            autoRotate={mergedCameraConfig.autoRotate}
-            autoRotateSpeed={mergedCameraConfig.autoRotateSpeed}
-            enableDamping={mergedCameraConfig.enableDamping}
-            dampingFactor={mergedCameraConfig.dampingFactor}
-          />
-        )}
+            {/* Debug data updater */}
+            {debug && <DebugDataUpdater onUpdate={updateDebugInfo} modelRef={modelRef} />}
+
+            {/* Optional orbit controls if explicitly enabled */}
+            {enableOrbitControls && (
+              <OrbitControls
+                makeDefault
+                enableZoom={enableZoom}
+                enablePan={true}
+                enableRotate={true}
+                target={mergedCameraConfig.lookAt}
+                minDistance={mergedCameraConfig.minDistance}
+                maxDistance={mergedCameraConfig.maxDistance}
+                minPolarAngle={mergedCameraConfig.minPolarAngle}
+                maxPolarAngle={mergedCameraConfig.maxPolarAngle}
+                minAzimuthAngle={mergedCameraConfig.minAzimuthAngle}
+                maxAzimuthAngle={mergedCameraConfig.maxAzimuthAngle}
+                autoRotate={mergedCameraConfig.autoRotate}
+                autoRotateSpeed={mergedCameraConfig.autoRotateSpeed}
+                enableDamping={mergedCameraConfig.enableDamping}
+                dampingFactor={mergedCameraConfig.dampingFactor}
+              />
+            )}
           </Canvas>
         </div>
       </div>

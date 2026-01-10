@@ -23,7 +23,7 @@ const customIcons: Record<string, string> = {
     "pinecone": "/icons/pinecone.png",
     "weaviate": "/icons/weaviate.png",
     "codeium": "/icons/codeium.png",
-    "stabilityai": "/icons/stability-ai.png",
+    "stabilityai": "/icons/stability-ai.webp",
     "llamaindex": "/icons/llamaindex.png",
     "sourcegraph": "/icons/cody.svg",
     "x": "/icons/xai.png",
@@ -58,7 +58,7 @@ const TechIcon = ({ techName, size = 24 }: TechIconProps) => {
             // Check if we have a custom icon first
             if (customIcons[slug]) {
                 const iconPath = customIcons[slug];
-                if (iconPath.endsWith('.png') || iconPath.endsWith('.jpg') || iconPath.endsWith('.jpeg')) {
+                if (iconPath.endsWith('.png') || iconPath.endsWith('.jpg') || iconPath.endsWith('.jpeg') || iconPath.endsWith('.webp')) {
                     // For raster images, use img element with error handling
                     const img = new Image();
                     img.onload = () => setImageUrl(iconPath);

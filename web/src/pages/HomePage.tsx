@@ -19,7 +19,6 @@ import profilePicture from "../assets/profilepicture.webp";
 import { useErrorHandler } from "@/hooks/useErrorHandler";
 import * as Sentry from "@sentry/react";
 import LightRays from "../components/LightRays/LightRays";
-import GitHubCalendar from "../components/GitHubCalendar/GitHubCalendar";
 import FAQ from "../components/FAQ";
 import Footer from "../components/Footer/Footer";
 import { ErrorBoundary } from "../components/ErrorBoundary/ErrorBoundary";
@@ -391,34 +390,26 @@ function HomePage() {
 
             {/* Booking Section */}
 
-
-            {/* GitHub Calendar - Before Tech Stack */}
-            <div id="github-calendar-section" className="w-full mb-20">
-              <ErrorBoundary>
-                <GitHubCalendar username="vavanesssa" theme={isDarkMode ? "dark" : "light"} />
-              </ErrorBoundary>
-            </div>
-
-            {/* IBM Terminal Section */}
-            <div id="ibm-terminal-section" className="w-full mb-20">
+            {/* Toon Cat Section */}
+            <div id="toon-cat-section" className="w-full mb-20">
               <div className="w-full h-[400px]">
                 <ErrorBoundary>
                   <ModelViewer
-                    modelPath="/cherry_blossom.glb"
+                    modelPath="/toon_cat_free.glb"
                     playAnimation={true}
                     width="100%"
                     height="100%"
                     enableOrbitControls={true}
-                    enableZoom={false}
+                    enableZoom={true}
                     autoFit={false}
                     debug={debugMode}
                     onClick={handleModelClick}
                     cameraConfig={{
-                      position: [-5.11, 2.48, -10.84],
-                      rotation: [-2.93, -0.45, -3.05],
-                      lookAt: [-0.22, 0.32, -0.88],
-                      fov: 18.00,
-                      zoom: 0.7,
+                      position: [300.53, 302.69, 270.93],
+                      rotation: [-0.49, 0.81, 0.37],
+                      lookAt: [83.20, 205.91, 88.17],
+                      fov: 20.00,
+                      zoom: 0.20,
                       autoRotate: false,
                       oscillation: { enabled: false, amplitude: 0, period: 0, axis: "y" },
                       followMouse: true,

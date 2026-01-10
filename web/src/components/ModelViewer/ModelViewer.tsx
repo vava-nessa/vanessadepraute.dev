@@ -13,7 +13,7 @@ const CAMERA_CONFIG = {
   rotation: [100, 100, 100] as [number, number, number],
   fov: 18,
   near: 0.1,
-  far: 500,
+  far: 2000,
   lookAt: [5, 0, 0] as [number, number, number],
 
   // Additional properties
@@ -376,6 +376,7 @@ function Model({
   autoFit,
   autoFitMargin,
   modelRef,
+  onModelLoaded,
 }: {
   modelPath: string;
   playAnimation: boolean;
@@ -383,9 +384,17 @@ function Model({
   autoFitMargin: number;
   cameraConfig: typeof CAMERA_CONFIG;
   modelRef: React.RefObject<THREE.Group | null>;
+  onModelLoaded?: () => void;
 }) {
   const gltf = useLoader(GLTFLoader, modelPath);
   const mixer = useRef<THREE.AnimationMixer | null>(null);
+
+  // Notify parent that model is loaded
+  useEffect(() => {
+    if (gltf.scene && onModelLoaded) {
+      onModelLoaded();
+    }
+  }, [gltf.scene, onModelLoaded]);
 
   // Handle animations
   useEffect(() => {
@@ -457,6 +466,44 @@ export default function ModelViewer({
   // Detect light/dark mode for debug overlay
   const [isLightMode, setIsLightMode] = useState(false);
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
+
+  // Temporarily enable controls on mount, then disable them
+  const [controlsActive, setControlsActive] = useState(false);
+  const [modelLoaded, setModelLoaded] = useState(false);
+
+  // Handle model loaded callback
+  const handleModelLoaded = () => {
+    setModelLoaded(true);
+  };
+
+  // Sequence: Wait for model -> wait 500ms -> enable controls -> wait 100ms -> disable controls
+  useEffect(() => {
+    if (modelLoaded && enableOrbitControls && !debug) {
+      // Wait 500ms after model is loaded
+      const timer1 = setTimeout(() => {
+        // Enable controls
+        setControlsActive(true);
+
+        // Wait 100ms then disable
+        const timer2 = setTimeout(() => {
+          setControlsActive(false);
+        }, 100);
+
+        return () => clearTimeout(timer2);
+      }, 500);
+
+      return () => clearTimeout(timer1);
+    }
+  }, [modelLoaded, enableOrbitControls, debug]);
+
+  // Keep controls enabled when debug mode is active
+  useEffect(() => {
+    if (debug && enableOrbitControls) {
+      setControlsActive(true);
+    } else if (!debug && enableOrbitControls && modelLoaded) {
+      setControlsActive(false);
+    }
+  }, [debug, enableOrbitControls, modelLoaded]);
 
   useEffect(() => {
     const checkTheme = () => {
@@ -760,6 +807,7 @@ export default function ModelViewer({
                 autoFitMargin={autoFitMargin}
                 cameraConfig={mergedCameraConfig}
                 modelRef={modelRef}
+                onModelLoaded={handleModelLoaded}
               />
             </Suspense>
 
@@ -772,7 +820,7 @@ export default function ModelViewer({
             {debug && <DebugDataUpdater onUpdate={updateDebugInfo} modelRef={modelRef} />}
 
             {/* Optional orbit controls if explicitly enabled */}
-            {enableOrbitControls && (
+            {controlsActive && (
               <OrbitControls
                 makeDefault
                 enableZoom={enableZoom}

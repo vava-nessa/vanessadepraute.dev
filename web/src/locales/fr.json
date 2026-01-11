@@ -57,6 +57,65 @@
     "title": "Je travaille actuellement sur mon propre projet appelé **Out Of Burn** : une application de coaching bien-être pour **web, iOS et Android** conçue pour aider les gens à se remettre du burnout et à le prévenir.",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
   },
+  "projects": {
+    "title": "Projets Phares",
+    "subtitle": "Travaux récents et projets en cours",
+    "items": [
+      {
+        "name": "Out Of Burn",
+        "year": "2025",
+        "status": "En Développement",
+        "description": "Application mobile de bien-être et prévention du burnout assistée par IA, avec journaling, suivi émotionnel et analyse hebdomadaire alimentée par LLMs et RAG.",
+        "techStack": [
+          "React Native",
+          "Expo",
+          "Supabase",
+          "LLMs",
+          "RAG"
+        ],
+        "highlights": [
+          "Multiplateforme",
+          "Propulsé par IA",
+          "Bien-être"
+        ]
+      },
+      {
+        "name": "Likely",
+        "year": "2024",
+        "status": "En Développement",
+        "description": "Système d'overlay de réactions emoji en temps réel pour plateformes de vidéo live (style Twitch, TikTok). Inclut dashboard admin, interface spectateur, système de chat et analytics IA.",
+        "techStack": [
+          "React",
+          "Next.js",
+          "WebSocket",
+          "Node.js",
+          "Analytics IA"
+        ],
+        "highlights": [
+          "Temps réel",
+          "Streaming live",
+          "Analytics IA"
+        ]
+      },
+      {
+        "name": "Suite Applications Événementielles",
+        "year": "2018-Présent",
+        "status": "Production",
+        "description": "Applications professionnelles de gestion d'événements incluant scanning d'événements, CRM et outils d'administration globale. Systèmes en production actuellement en cours de refonte Next.js 15.",
+        "techStack": [
+          "React",
+          "Next.js",
+          "Tailwind CSS",
+          "shadcn/ui"
+        ],
+        "highlights": [
+          "Niveau entreprise",
+          "Gestion événements",
+          "Production"
+        ]
+      }
+    ]
+  },
   "expert": "Expert en TS + JS + React + UI/UX Design",
   "techStack": {
     "title": "Stack Technologique Complète & Expertise",

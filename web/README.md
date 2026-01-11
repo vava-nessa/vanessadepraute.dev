@@ -129,6 +129,51 @@ logMessage("User completed action", ErrorSeverity.Info, { userId: "123" });
 
 Error UI messages are in `src/locales/{en,fr}.json` under the `errors` key.
 
+## Projects Section
+
+The homepage features a dedicated projects section showcasing featured work.
+
+### Architecture
+
+- **Component**: `src/components/ProjectCard/ProjectCard.tsx` - Reusable project card with Apple Card design
+- **Data**: Project information stored in `src/locales/{en,fr}.json` under the `projects` key
+- **Integration**: Rendered in `HomePage.tsx` within the LightRays section
+
+### Project Data Structure
+
+```json
+{
+  "projects": {
+    "title": "Featured Projects",
+    "subtitle": "Recent work and ongoing projects",
+    "items": [
+      {
+        "name": "Project Name",
+        "year": "2025",
+        "status": "In Development",
+        "description": "Project description...",
+        "techStack": ["React", "Next.js", "..."],
+        "highlights": ["Feature 1", "Feature 2", "..."]
+      }
+    ]
+  }
+}
+```
+
+### Features
+
+- **Dark/Light Mode**: Automatic theme detection and styling
+- **Responsive Design**: 3-column desktop, 2-column tablet, 1-column mobile
+- **Status Badges**: Color-coded badges (In Development, Production, etc.)
+- **Tech Stack Tags**: Display technologies used in each project
+- **Glassmorphism**: Apple Card-inspired design with backdrop blur
+
+### Adding a New Project
+
+1. Add project data to `src/locales/en.json` and `src/locales/fr.json` under `projects.items`
+2. Include all required fields: `name`, `year`, `status`, `description`, `techStack`, `highlights`
+3. The component will automatically render the new project
+
 ## Notes
 
 - Use pnpm only (this repo has a `pnpm-lock.yaml`).

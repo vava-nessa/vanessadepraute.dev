@@ -23,6 +23,7 @@ import FAQ from "../components/FAQ";
 import Footer from "../components/Footer/Footer";
 import { ErrorBoundary } from "../components/ErrorBoundary/ErrorBoundary";
 import ModelViewer from "../components/ModelViewer/ModelViewer";
+import ProjectCard from "../components/ProjectCard/ProjectCard";
 
 function HomePage() {
   const { handleError } = useErrorHandler("HomePage");
@@ -374,16 +375,38 @@ function HomePage() {
                 />
               </ErrorBoundary>
 
-              {/* Projects TODO */}
-              <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-                <div className="max-w-2xl mx-auto px-5 text-center">
-                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
-                    projets (todo)
-                  </h2>
-                  <ul className="text-neutral-300 text-lg md:text-xl space-y-4">
-                    <li>Likely</li>
-                    <li>Out Of burn</li>
-                  </ul>
+              {/* Projects Section */}
+              <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-auto">
+                <div className="w-full max-w-6xl mx-auto px-5">
+                  <div className="text-center mb-12">
+                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+                      {t("projects.title")}
+                    </h2>
+                    <p className="text-neutral-400 text-lg">
+                      {t("projects.subtitle")}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {(t("projects.items", { returnObjects: true }) as Array<{
+                      name: string;
+                      year: string;
+                      status: string;
+                      description: string;
+                      techStack: string[];
+                      highlights: string[];
+                    }>).map((project, index) => (
+                      <ProjectCard
+                        key={index}
+                        name={project.name}
+                        year={project.year}
+                        status={project.status}
+                        description={project.description}
+                        techStack={project.techStack}
+                        highlights={project.highlights}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>

@@ -48,9 +48,14 @@ Always read this file before starting any task in this repo.
 
 ## Documentation
 
-- **ALWAYS** document new features directly in `README.md`.
+- **ALWAYS** document new features directly in `README.md` **at the end of implementing the feature**.
 - **NEVER** create separate `.md` files for documentation unless the user explicitly requests it.
 - Keep documentation concise but complete with usage examples.
+- Documentation should include:
+  - Architecture/file locations
+  - Usage examples or code snippets
+  - Key features
+  - How to add/modify (if applicable)
 
 ## Testing
 

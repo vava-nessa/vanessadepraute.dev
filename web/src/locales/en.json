@@ -55,6 +55,65 @@
     "title": "I'm currently working on my own project called **Out Of Burn**: a wellness coaching app for **web, iOS, and Android** designed to help people recover from and prevent burnout.",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
   },
+  "projects": {
+    "title": "Featured Projects",
+    "subtitle": "Recent work and ongoing projects",
+    "items": [
+      {
+        "name": "Out Of Burn",
+        "year": "2025",
+        "status": "In Development",
+        "description": "AI-assisted wellness and burnout-prevention mobile application featuring journaling, emotional tracking, and weekly analysis powered by LLMs and RAG.",
+        "techStack": [
+          "React Native",
+          "Expo",
+          "Supabase",
+          "LLMs",
+          "RAG"
+        ],
+        "highlights": [
+          "Cross-platform",
+          "AI-powered",
+          "Wellness focus"
+        ]
+      },
+      {
+        "name": "Likely",
+        "year": "2024",
+        "status": "In Development",
+        "description": "Real-time emoji reaction overlay system for live video platforms (Twitch, TikTok-style). Includes admin dashboard, spectator interface, chat system, and AI-powered analytics.",
+        "techStack": [
+          "React",
+          "Next.js",
+          "WebSocket",
+          "Node.js",
+          "AI Analytics"
+        ],
+        "highlights": [
+          "Real-time",
+          "Live streaming",
+          "AI analytics"
+        ]
+      },
+      {
+        "name": "Event Applications Suite",
+        "year": "2018-Present",
+        "status": "Production",
+        "description": "Professional event-management applications including event scanning, CRM, and global administration tools. Production systems currently undergoing a Next.js 15 refactor.",
+        "techStack": [
+          "React",
+          "Next.js",
+          "Tailwind CSS",
+          "shadcn/ui"
+        ],
+        "highlights": [
+          "Enterprise-grade",
+          "Event management",
+          "Production"
+        ]
+      }
+    ]
+  },
   "expert": "Expert in TS + JS + React + UI/UX Design",
   "techStack": {
     "title": "Full Tech Stack & Expertise",

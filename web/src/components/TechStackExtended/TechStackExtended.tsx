@@ -41,6 +41,7 @@ const TechStackExtended = () => {
       items: [
         "Tailwind CSS",
         "Vite",
+        "Webpack",
         "Figma",
         "Framer Motion",
         "GSAP",
@@ -55,6 +56,8 @@ const TechStackExtended = () => {
         "Chakra UI",
         "Illustrator",
         "Photoshop",
+        "Turborepo",
+        "pnpm",
       ],
     },
     {
@@ -67,28 +70,6 @@ const TechStackExtended = () => {
         "BEM",
         "Atomic Design",
         "Responsive Design",
-      ],
-    },
-    {
-      title: t("techStack.categories.buildTools"),
-      icon: "🔧",
-      items: [
-        "Webpack",
-        "Vite",
-        "Turborepo",
-        "pnpm",
-        "Storybook",
-      ],
-    },
-    {
-      title: t("techStack.categories.designSystems"),
-      icon: "🎭",
-      items: [
-        "Material UI",
-        "Ant Design",
-        "Chakra UI",
-        "ShadCN/UI",
-        "Storybook",
       ],
     },
     {
@@ -131,13 +112,14 @@ const TechStackExtended = () => {
       title: t("techStack.categories.devopsCloud"),
       icon: "☁️",
       items: [
-        "Vercel",
-        "Vercel Edge Functions",
-        "Cloudflare Workers",
+        "Git",
         "GitHub",
         "GitLab",
         "Bitbucket",
         "GitHub Actions",
+        "Vercel",
+        "Vercel Edge Functions",
+        "Cloudflare Workers",
         "Cloudflare",
         "AWS",
         "Terraform",
@@ -175,7 +157,6 @@ const TechStackExtended = () => {
         "Jira",
         "Trello",
         "Notion",
-        "Bitbucket",
         "Agile/Scrum",
       ],
     },
@@ -185,17 +166,6 @@ const TechStackExtended = () => {
       items: [
         "WordPress",
         "Adobe Commerce",
-      ],
-    },
-    {
-      title: t("techStack.categories.versionControl"),
-      icon: "🔧",
-      items: [
-        "Git",
-        "GitHub",
-        "GitLab",
-        "Bitbucket",
-        "GitHub Actions",
       ],
     },
     {
@@ -225,7 +195,6 @@ const TechStackExtended = () => {
         "Replit",
         "Codeium",
         "Warp",
-        "Claude Code",
         "v0.dev",
         "Cody",
       ],

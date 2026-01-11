@@ -128,6 +128,7 @@ const MetaBalls: React.FC<MetaBallsProps> = ({
   enableTransparency = false
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isInteracting, setIsInteracting] = React.useState(false);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -232,9 +233,19 @@ const MetaBalls: React.FC<MetaBallsProps> = ({
       if (!enableMouseInteraction) return;
       pointerInside = false;
     }
+    function onPointerDown() {
+      setIsInteracting(true);
+      pointerInside = true;
+    }
+    function onPointerUp() {
+      setIsInteracting(false);
+    }
     container.addEventListener('pointermove', onPointerMove);
     container.addEventListener('pointerenter', onPointerEnter);
     container.addEventListener('pointerleave', onPointerLeave);
+    container.addEventListener('pointerdown', onPointerDown);
+    container.addEventListener('pointerup', onPointerUp);
+    container.addEventListener('pointercancel', onPointerUp);
 
     const startTime = performance.now();
     let animationFrameId: number;
@@ -280,6 +291,9 @@ const MetaBalls: React.FC<MetaBallsProps> = ({
       container.removeEventListener('pointermove', onPointerMove);
       container.removeEventListener('pointerenter', onPointerEnter);
       container.removeEventListener('pointerleave', onPointerLeave);
+      container.removeEventListener('pointerdown', onPointerDown);
+      container.removeEventListener('pointerup', onPointerUp);
+      container.removeEventListener('pointercancel', onPointerUp);
       container.removeChild(gl.canvas);
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
@@ -296,7 +310,19 @@ const MetaBalls: React.FC<MetaBallsProps> = ({
     enableTransparency
   ]);
 
-  return <div ref={containerRef} className="w-full h-full relative" />;
+  return (
+    <div
+      ref={containerRef}
+      className="w-full h-full relative transition-all duration-200"
+      style={{
+        touchAction: 'none',
+        userSelect: 'none',
+        WebkitUserSelect: 'none',
+        boxShadow: isInteracting ? `inset 0 0 0 2px ${color}` : 'none',
+        cursor: isInteracting ? 'grabbing' : 'grab'
+      }}
+    />
+  );
 };
 
 export default MetaBalls;

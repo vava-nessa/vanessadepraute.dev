@@ -17,16 +17,19 @@ import { HandWrittenTitle } from "../components/ui/hand-writing-text";
 import Aurora from "../components/Aurora";
 import profilePicture from "../assets/profilepicture.webp";
 import { useErrorHandler } from "@/hooks/useErrorHandler";
-import * as Sentry from "@sentry/react";
+// import * as Sentry from "@sentry/react";
 import LightRays from "../components/LightRays/LightRays";
 import FAQ from "../components/FAQ";
 import Footer from "../components/Footer/Footer";
 import { ErrorBoundary } from "../components/ErrorBoundary/ErrorBoundary";
 import ModelViewer from "../components/ModelViewer/ModelViewer";
 import ProjectCard from "../components/ProjectCard/ProjectCard";
+import { useContactModal } from "@/contexts/ContactModalContext";
+import outOfBurnImage from "../assets/out_of_burn_ui.png";
 
 function HomePage() {
   const { handleError } = useErrorHandler("HomePage");
+  const { openModal } = useContactModal();
   const { t, i18n } = useTranslation();
   const { lang } = useParams();
   const [isDarkMode, setIsDarkMode] = useState(true);
@@ -282,7 +285,11 @@ function HomePage() {
                             </p>
                           )}
                           <div className="relative w-full max-w-lg" style={{ height: '160px' }}>
-                            <div className="absolute inset-0 flex items-center justify-center" style={{ transform: 'scale(0.6)', transformOrigin: 'center center' }}>
+                            <div
+                              className="absolute inset-0 flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-300"
+                              style={{ transform: 'scale(0.6)', transformOrigin: 'center center' }}
+                              onClick={openModal}
+                            >
                               <HandWrittenTitle title={title} subtitle="" textSize="text-4xl md:text-5xl font-bold" />
                             </div>
                           </div>
@@ -310,8 +317,12 @@ function HomePage() {
             <div id="out-of-burn-section" className="w-full max-w-[1200px] mx-auto px-5 py-20">
               <div className="flex flex-col lg:flex-row gap-8 items-center lg:items-start">
                 {/* Image placeholder on the left */}
-                <div className="flex-shrink-0 w-full lg:w-[400px] h-[400px]">
-                  <div className="w-full h-full bg-black rounded-3xl" style={{ borderRadius: '24px' }} />
+                <div className="flex-shrink-0 w-full lg:w-[400px] h-[600px] flex items-center justify-center">
+                  <img
+                    src={outOfBurnImage}
+                    alt="Out Of Burn App Interface"
+                    className="w-full h-full object-contain filter drop-shadow-2xl"
+                  />
                 </div>
 
                 {/* Text content on the right */}
@@ -458,6 +469,8 @@ function HomePage() {
             </ErrorBoundary>
 
             {/* Sentry Test Error Button - Development Only */}
+            {/* Sentry Test Error Button - Removed for Production */
+            /*
             {import.meta.env.DEV && (
               <div className="w-full flex justify-center gap-4 pb-10">
                 <button
@@ -483,6 +496,7 @@ function HomePage() {
                 </button>
               </div>
             )}
+            */}
 
             {/* Footer with social icons */}
             <Footer />

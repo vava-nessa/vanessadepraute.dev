@@ -55,13 +55,16 @@
   },
   "outOfBurn": {
     "title": "Je travaille actuellement sur mon propre projet appelé **Out Of Burn** : une application de coaching bien-être pour **web, iOS et Android** conçue pour aider les gens à se remettre du burnout et à le prévenir.",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    "description": "Application mobile de bien-être et prévention du burnout assistée par IA, avec journaling, suivi émotionnel et analyse hebdomadaire alimentée par LLMs et RAG. Conçue pour vous aider à récupérer, vous reconstruire et maintenir votre équilibre."
   },
   "projects": {
     "title": "Projets Phares",
     "subtitle": "Travaux récents et projets en cours",
     "items": [
       {
+        "id": "outOfBurn",
+        "link": "https://outofburn.app",
+        "github": "",
         "name": "Out Of Burn",
         "year": "2025",
         "status": "En Développement",
@@ -80,6 +83,9 @@
         ]
       },
       {
+        "id": "likely",
+        "link": "",
+        "github": "",
         "name": "Likely",
         "year": "2024",
         "status": "En Développement",
@@ -98,6 +104,9 @@
         ]
       },
       {
+        "id": "eventApps",
+        "link": "",
+        "github": "",
         "name": "Suite Applications Événementielles",
         "year": "2018-Présent",
         "status": "Production",
@@ -222,5 +231,16 @@
         "answer": "L'IA est devenue une partie essentielle de ma façon de travailler ! J'utilise des outils comme **GitHub Copilot, Cursor, Claude Code** et d'autres au quotidien. Je maîtrise aussi l'écosystème IA plus large — **LangChain, bases de données vectorielles (Pinecone, pgvector)**, et différents fournisseurs de LLM comme OpenAI, Anthropic et Mistral. Cela me permet non seulement de coder plus vite, mais aussi d'intégrer des **fonctionnalités IA** dans les applications que je crée."
       }
     ]
+  },
+  "contactModal": {
+    "title": "Discutons-en",
+    "subtitle": "Parlez-moi de votre projet",
+    "namePlaceholder": "Votre Nom",
+    "emailPlaceholder": "votre@email.com",
+    "messagePlaceholder": "Bonjour, je suis intéressé par...",
+    "sendButton": "Envoyer",
+    "sending": "Envoi...",
+    "sent": "Message Envoyé !",
+    "socials": "Ou connectez-vous directement :"
   }
 }

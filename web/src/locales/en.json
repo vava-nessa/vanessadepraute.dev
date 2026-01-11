@@ -53,13 +53,16 @@
   },
   "outOfBurn": {
     "title": "I'm currently working on my own project called **Out Of Burn**: a wellness coaching app for **web, iOS, and Android** designed to help people recover from and prevent burnout.",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+    "description": "AI-assisted wellness and burnout-prevention mobile application featuring journaling, emotional tracking, and weekly analysis powered by LLMs and RAG. Designed to help you recover, rebuild, and maintain your balance."
   },
   "projects": {
     "title": "Featured Projects",
     "subtitle": "Recent work and ongoing projects",
     "items": [
       {
+        "id": "outOfBurn",
+        "link": "https://outofburn.app",
+        "github": "",
         "name": "Out Of Burn",
         "year": "2025",
         "status": "In Development",
@@ -78,6 +81,9 @@
         ]
       },
       {
+        "id": "likely",
+        "link": "",
+        "github": "",
         "name": "Likely",
         "year": "2024",
         "status": "In Development",
@@ -96,6 +102,9 @@
         ]
       },
       {
+        "id": "eventApps",
+        "link": "",
+        "github": "",
         "name": "Event Applications Suite",
         "year": "2018-Present",
         "status": "Production",
@@ -220,5 +229,16 @@
         "answer": "AI has become an essential part of how I work! I use tools like **GitHub Copilot, Cursor, Claude Code**, and others daily. I'm also experienced with the broader AI ecosystem — **LangChain, vector databases (Pinecone, pgvector)**, and various LLM providers like OpenAI, Anthropic, and Mistral. This lets me not only code faster but also build **AI-powered features** into the applications I create."
       }
     ]
+  },
+  "contactModal": {
+    "title": "Let's Talk",
+    "subtitle": "Tell me about your project",
+    "namePlaceholder": "Your Name",
+    "emailPlaceholder": "your@email.com",
+    "messagePlaceholder": "Hello, I'm interested in...",
+    "sendButton": "Send Message",
+    "sending": "Sending...",
+    "sent": "Message Sent!",
+    "socials": "Or connect with me directly:"
   }
 }

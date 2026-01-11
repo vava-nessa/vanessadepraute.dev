@@ -7,7 +7,7 @@ const Footer = () => {
     <footer className="footer">
       <div className="footer-icons">
         <a
-          href="https://google.com"
+          href="https://www.linkedin.com/in/vanessa-depraute-310b801ba/"
           target="_blank"
           rel="noopener noreferrer"
           className="footer-icon-link"
@@ -17,7 +17,7 @@ const Footer = () => {
           <span className="footer-icon-label">LINKEDIN</span>
         </a>
         <a
-          href="https://google.com"
+          href="https://github.com/vavanesssa"
           target="_blank"
           rel="noopener noreferrer"
           className="footer-icon-link"
@@ -27,7 +27,7 @@ const Footer = () => {
           <span className="footer-icon-label">GITHUB</span>
         </a>
         <a
-          href="https://google.com"
+          href="https://wa.me/33661666397"
           target="_blank"
           rel="noopener noreferrer"
           className="footer-icon-link"
@@ -37,7 +37,7 @@ const Footer = () => {
           <span className="footer-icon-label">WHATSAPP</span>
         </a>
         <a
-          href="mailto:example@example.com"
+          href="mailto:vanessadepraute@gmail.com"
           className="footer-icon-link"
           aria-label="Email"
         >

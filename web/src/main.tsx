@@ -7,6 +7,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import "./i18n/config.ts";
 import { ThemeProvider } from "./contexts/ThemeContext";
+import { ContactModalProvider } from "./contexts/ContactModalContext";
 import * as Sentry from "@sentry/react";
 import { ErrorBoundary } from "./components/ErrorBoundary/ErrorBoundary";
 
@@ -35,9 +36,11 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ErrorBoundary>
       <ThemeProvider>
-        <RouterProvider router={routes} />
-        <Analytics />
-        <SpeedInsights />
+        <ContactModalProvider>
+          <RouterProvider router={routes} />
+          <Analytics />
+          <SpeedInsights />
+        </ContactModalProvider>
       </ThemeProvider>
     </ErrorBoundary>
   </StrictMode>

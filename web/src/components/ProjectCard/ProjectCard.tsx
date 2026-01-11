@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./ProjectCard.css";
+import { ExternalLink, Github } from "lucide-react";
 
 interface ProjectCardProps {
     name: string;
@@ -8,9 +9,12 @@ interface ProjectCardProps {
     description: string;
     techStack: string[];
     highlights: string[];
+    image?: string;
+    link?: string;
+    github?: string;
 }
 
-const ProjectCard = ({ name, year, status, description, techStack, highlights }: ProjectCardProps) => {
+const ProjectCard = ({ name, year, status, description, techStack, highlights, image, link, github }: ProjectCardProps) => {
     const [isDarkMode, setIsDarkMode] = useState(true);
 
     useEffect(() => {
@@ -32,6 +36,11 @@ const ProjectCard = ({ name, year, status, description, techStack, highlights }:
 
     return (
         <div className={`project-card ${isDarkMode ? 'dark' : 'light'}`}>
+            {image && (
+                <div className="project-image-container">
+                    <img src={image} alt={name} className="project-image" />
+                </div>
+            )}
             <div className="project-header">
                 <div className="project-title-row">
                     <h3 className="project-name">{name}</h3>
@@ -62,6 +71,23 @@ const ProjectCard = ({ name, year, status, description, techStack, highlights }:
                     ))}
                 </div>
             </div>
+
+            {(link || github) && (
+                <div className="project-links">
+                    {link && (
+                        <a href={link} target="_blank" rel="noopener noreferrer" className="project-link">
+                            <ExternalLink size={16} />
+                            <span>View Project</span>
+                        </a>
+                    )}
+                    {github && (
+                        <a href={github} target="_blank" rel="noopener noreferrer" className="project-link">
+                            <Github size={16} />
+                            <span>Source Code</span>
+                        </a>
+                    )}
+                </div>
+            )}
         </div>
     );
 };

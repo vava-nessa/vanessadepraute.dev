@@ -148,6 +148,9 @@ The homepage features a dedicated projects section showcasing featured work.
     "subtitle": "Recent work and ongoing projects",
     "items": [
       {
+        "id": "projectId",
+        "link": "https://example.com",
+        "github": "https://github.com/user/repo",
         "name": "Project Name",
         "year": "2025",
         "status": "In Development",
@@ -167,12 +170,20 @@ The homepage features a dedicated projects section showcasing featured work.
 - **Status Badges**: Color-coded badges (In Development, Production, etc.)
 - **Tech Stack Tags**: Display technologies used in each project
 - **Glassmorphism**: Apple Card-inspired design with backdrop blur
+- **Project Images**: Optional image display with zoom hover effect
+- **Project Links**: "View Project" and "Source Code" buttons with icons (Lucide React)
+- **Hover Effects**: Card lift animation and image zoom on hover
 
 ### Adding a New Project
 
 1. Add project data to `src/locales/en.json` and `src/locales/fr.json` under `projects.items`
 2. Include all required fields: `name`, `year`, `status`, `description`, `techStack`, `highlights`
-3. The component will automatically render the new project
+3. (Optional) Add `id`, `link`, and `github` fields:
+   - `id`: Unique identifier used to map to images in `HomePage.tsx` (e.g., `"outOfBurn"`)
+   - `link`: External project URL (displays "View Project" button)
+   - `github`: GitHub repository URL (displays "Source Code" button)
+4. If adding an image, import it in `HomePage.tsx` and add to the `projectImages` mapping
+5. The component will automatically render the new project with all features
 
 ## Notes
 

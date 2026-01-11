@@ -27,39 +27,39 @@
 - [x] Replace black box in `HomePage.tsx` (lines 313-315) with real image (`out_of_burn_ui.png`)
 - [ ] Add screenshots/mockups for "Out Of Burn" (Additional views if needed)
 - [ ] Add logo/branding visual
-- [ ] Consider adding visuals to Projects section cards to replace text-only look
+- [x] Consider adding visuals to Projects section cards to replace text-only look
 
 ### 4. Enhance SEO & Meta Tags 🔍
 **Important**: Missing critical SEO elements.
-- [ ] Add Meta Tags to `index.html`
-    - [ ] `og:type` (website)
-    - [ ] `og:url`
-    - [ ] `og:title`
-    - [ ] `og:description`
-    - [ ] `og:image`
-    - [ ] Twitter Card metadata (`twitter:card`, `twitter:site`, etc.)
-- [ ] Add Structured Data (JSON-LD) for Person schema in `index.html` head
-- [ ] Create and add OG image (1200x630px) to `/public`
+- [x] Add Meta Tags to `index.html`
+    - [x] `og:type` (website)
+    - [x] `og:url`
+    - [x] `og:title`
+    - [x] `og:description`
+    - [x] `og:image` (using `/avatar.png`)
+    - [x] Twitter Card metadata (`twitter:card`, `twitter:site`, etc.)
+- [x] Add Structured Data (JSON-LD) for Person schema in `index.html` head
+- [x] Create and add OG image (1200x630px) to `/public` (using existing `/avatar.png`)
 - [ ] Implement dynamic meta tags per language route (using `react-helmet-async` or similar if needed for dynamic head updates)
 
 ### 5. Improve Projects Section Presentation 📊
 **Note**: Enhance engagement by adding visuals to the projects list.
-- [ ] Update Data Structure in `en.json` & `fr.json`
-    - [ ] Add `image` field to project items
-    - [ ] Add `link` field (demo/github) to project items
-- [ ] Update `ProjectCard.tsx` component
-    - [ ] Render project image/icon
-    - [ ] Render "View Project" or GitHub links
-    - [ ] Add hover effects (lift animation, overlay)
+- [x] Update Data Structure in `en.json` & `fr.json`
+    - [x] Add `image` field to project items (via `id` mapping)
+    - [x] Add `link` field (demo/github) to project items
+- [x] Update `ProjectCard.tsx` component
+    - [x] Render project image/icon
+    - [x] Render "View Project" or GitHub links
+    - [x] Add hover effects (lift animation, overlay)
 - [ ] (Optional) Add Filters (by status, tech, year)
 
 ### 6. Add Analytics & Performance Monitoring 📈
 **Note**: Track visitor behavior.
-- [ ] Verify Vercel Analytics setup in `main.tsx` (Confirm `<Analytics />` present)
+- [x] Verify Vercel Analytics setup in `main.tsx` (Confirm `<Analytics />` present)
 - [ ] (Optional) Add Google Analytics 4
     - [ ] Create generic `AnalyticsProvider` component
     - [ ] Implement tracking for custom events (e.g., Contact button clicks)
-- [ ] Perform Web Vitals tracking (LCP, CLS, FID checks)
+- [x] Perform Web Vitals tracking (LCP, CLS, FID checks) (Included in Vercel Analytics)
 
 ### 7. Optimize Performance & Loading ⚡
 **Tip**: Ensure fast load times.

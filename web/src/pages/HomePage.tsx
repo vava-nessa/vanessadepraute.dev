@@ -27,6 +27,10 @@ import ProjectCard from "../components/ProjectCard/ProjectCard";
 import { useContactModal } from "@/contexts/ContactModalContext";
 import outOfBurnImage from "../assets/out_of_burn_ui.png";
 
+const projectImages: Record<string, string> = {
+  outOfBurn: outOfBurnImage,
+};
+
 function HomePage() {
   const { handleError } = useErrorHandler("HomePage");
   const { openModal } = useContactModal();
@@ -163,19 +167,6 @@ function HomePage() {
       extraScale={1.8}
     >
       <ControlsBar>
-        <button
-          onClick={() => {
-            const techSection = document.getElementById('tech-stack-extended');
-            if (techSection) {
-              techSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-          }}
-          className="px-3 py-1.5 bg-brand-primary/20 hover:bg-brand-primary/30 text-brand-primary border border-brand-primary/50 rounded text-xs font-medium transition-all duration-200"
-          title="Scroll to Tech Stack"
-        >
-          ↓ Tech
-        </button>
-        <div className="controls-separator" />
         <LanguageSwitcher />
         <div className="controls-separator" />
         <AnimatedThemeToggler />
@@ -194,8 +185,19 @@ function HomePage() {
 
         <div id="app-content-wrapper" className="relative z-10">
           <div id="app-wrapper" className="wrapper w-full flex flex-col px-5 pb-5">
+            {/* Construction Warning Banner - Only in Production */}
+            {import.meta.env.PROD && (
+              <div className="w-full max-w-[1200px] mx-auto pt-4 px-5">
+                <div className="bg-red-500/10 border border-red-500 rounded-lg px-4 py-3 mb-4">
+                  <p className="text-red-500 text-center text-sm md:text-base font-medium">
+                    ⚠️ Website under construction / not finished yet
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Header Section */}
-            <div id="header-section" className="w-full max-w-[1200px] mx-auto pt-4 md:pt-6 px-5">
+            <div id="header-section" className="w-full max-w-[1200px] mx-auto px-5">
               <div id="header-content" className="flex flex-col lg:flex-row items-center gap-8 mb-8">
                 {/* Avatar on the left */}
                 <div id="header-avatar-container" className="flex-shrink-0">
@@ -400,6 +402,9 @@ function HomePage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {(t("projects.items", { returnObjects: true }) as Array<{
+                      id: string;
+                      link: string;
+                      github: string;
                       name: string;
                       year: string;
                       status: string;
@@ -415,6 +420,9 @@ function HomePage() {
                         description={project.description}
                         techStack={project.techStack}
                         highlights={project.highlights}
+                        image={project.id ? projectImages[project.id] : undefined}
+                        link={project.link}
+                        github={project.github}
                       />
                     ))}
                   </div>

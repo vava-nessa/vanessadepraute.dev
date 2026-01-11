@@ -16,3 +16,12 @@ interface ViewTransition {
 interface Document {
   startViewTransition(updateCallback: () => Promise<void> | void): ViewTransition;
 }
+
+interface Window {
+  brandColors: {
+    primary: string;
+    secondary: string;
+    getPrimary: () => string;
+    getSecondary: () => string;
+  };
+}

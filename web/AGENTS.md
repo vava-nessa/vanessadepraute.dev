@@ -13,6 +13,12 @@ Always read this file before starting any task in this repo.
 - This repo can host multiple apps; this file documents the website in this folder.
 - Paths below are relative to this `web/` folder unless they start with `../`.
 
+## Design System & Styling
+
+- **Brand Colors**: The primary and secondary colors are defined in `src/index.css` as `--color-primary` and `--color-secondary`.
+- **Single Source of Truth**: NEVER hardcode hex values for these colors. ALWAYS use the CSS variables (e.g., `var(--color-primary)` in CSS or read the computed style in JS/TS).
+- **Modification**: To change the brand colors, modify ONLY `src/index.css`. The change will propagate everywhere.
+
 ## Workflows
 
 When you need to do something specific, **ALWAYS** use the predefined workflows:

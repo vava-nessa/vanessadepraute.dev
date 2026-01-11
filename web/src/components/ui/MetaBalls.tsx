@@ -15,6 +15,7 @@ type MetaBallsProps = {
 };
 
 function parseHexColor(hex: string): [number, number, number] {
+  if (!hex) return [0, 0, 0];
   const c = hex.replace('#', '');
   const r = parseInt(c.substring(0, 2), 16) / 255;
   const g = parseInt(c.substring(2, 4), 16) / 255;

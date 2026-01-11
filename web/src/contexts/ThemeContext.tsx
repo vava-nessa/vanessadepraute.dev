@@ -27,6 +27,22 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.setItem("theme", theme);
   }, [theme]);
 
+  // Expose brand colors globally
+  useEffect(() => {
+    const getPrimary = () => getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
+    const getSecondary = () => getComputedStyle(document.documentElement).getPropertyValue('--color-secondary').trim();
+
+    window.brandColors = {
+      primary: getPrimary(),
+      secondary: getSecondary(),
+      getPrimary,
+      getSecondary
+    };
+
+    // Optional: Log to console to confirm availability
+    // console.log("Brand colors accessible via window.brandColors:", window.brandColors);
+  }, []);
+
   const toggleTheme = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };

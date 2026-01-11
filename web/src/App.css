@@ -50,11 +50,8 @@ h2 {
   font-weight: normal;
 }
 
-/* Color Variables */
-:root {
-  --color-primary: #ff3d9a;
-  --color-secondary: #ff7cfd;
-}
+/* Color Variables removed - centralized in index.css */
+
 
 /* Light Mode Styles */
 :root.light-mode {
@@ -63,8 +60,6 @@ h2 {
   --text-primary: #333333;
   --text-secondary: #333333;
   --border-color: rgba(139, 92, 246, 0.2);
-  --color-primary: #ff3d9a;
-  --color-secondary: #ff7cfd;
 }
 
 :root.light-mode .min-h-screen {

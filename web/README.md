@@ -29,6 +29,8 @@ pnpm dev
 - i18n: `src/i18n/config.ts` + `src/locales/en.json` and `src/locales/fr.json`.
 - Theme: `src/contexts/ThemeContext.tsx` toggles `dark-mode` / `light-mode` on `documentElement`.
 - Styling: Tailwind v4 + custom CSS (`src/index.css`, `src/App.css`, and component CSS files).
+  - **Brand Colors**: defined in `src/index.css` as `--color-primary` and `--color-secondary`.
+  - **Single Source of Truth**: These CSS variables are the ONLY source of truth for brand colors. Do not hardcode hex values in components or CSS. Change them in `index.css` to update the entire app.
 - Assets:
   - `public/` for static files served as-is.
   - `src/assets/` for bundled assets imported by components.

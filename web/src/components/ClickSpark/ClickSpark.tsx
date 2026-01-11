@@ -23,7 +23,7 @@ interface Spark {
 }
 
 // Primary brand color for sparks
-const SPARK_COLOR = '#ff3d9a'; // Primary pink
+
 
 const ClickSpark: React.FC<ClickSparkProps> = ({
   sparkColor = '#fff',
@@ -169,7 +169,7 @@ const ClickSpark: React.FC<ClickSparkProps> = ({
       // Store custom duration, radius, size and color per spark batch
       customDuration: randomDuration,
       customRadius: randomSparkRadius,
-      customColor: SPARK_COLOR,
+      customColor: sparkColor,
       customSize: randomSparkSize
     }));
 

@@ -160,9 +160,28 @@ function HomePage() {
     }
   };
 
+  // Initialize with empty string to avoid "flash of wrong color" - will be populated by effect
+  const [primaryColor, setPrimaryColor] = useState('');
+
+  useEffect(() => {
+    const updateColor = () => {
+      const color = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
+      if (color) {
+        setPrimaryColor(color);
+      }
+    };
+
+    updateColor();
+    // Re-check on theme change (though it should be constant, this is safer)
+    const observer = new MutationObserver(updateColor);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style'] });
+    return () => observer.disconnect();
+  }, []);
+
+
   return (
     <ClickSpark
-      sparkColor="#ff3d9a"
+      sparkColor={primaryColor}
       sparkSize={14}
       sparkRadius={30}
       sparkCount={3}
@@ -487,8 +506,8 @@ function HomePage() {
             <div className={`w-full h-[400px] my-20 rounded-2xl overflow-hidden ${isDarkMode ? 'bg-transparent' : 'bg-white'}`}>
               <ErrorBoundary>
                 <MetaBalls
-                  color="#ff3d9a"
-                  cursorBallColor="#ff3d9a"
+                  color={primaryColor}
+                  cursorBallColor={primaryColor}
                   speed={0.8}
                   animationSize={39}
                   ballCount={22}

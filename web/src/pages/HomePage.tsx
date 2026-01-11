@@ -8,6 +8,7 @@ import TechStackExtended from "../components/TechStackExtended/TechStackExtended
 import LanguageSwitcher from "../components/LanguageSwitcher/LanguageSwitcher.tsx";
 import ControlsBar from "../components/ControlsBar/ControlsBar.tsx";
 import { AnimatedThemeToggler } from "../components/ui/animated-theme-toggler";
+import { AnimatedSoundToggler } from "../components/ui/animated-sound-toggler";
 import { Testimonials } from "../components/Testimonials/Testimonials.tsx";
 import Star from "../components/Star/Star.tsx";
 import TextType from "../components/TextType";
@@ -171,6 +172,8 @@ function HomePage() {
         <LanguageSwitcher />
         <div className="controls-separator" />
         <AnimatedThemeToggler />
+        <div className="controls-separator" />
+        <AnimatedSoundToggler />
       </ControlsBar>
       <div id="app-main" className="min-h-screen w-full bg-black text-white overflow-x-hidden">
         {/* Aurora Background */}

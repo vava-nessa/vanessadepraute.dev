@@ -10,7 +10,7 @@
 .animated-theme-toggler {
   background: none;
   border: none;
-  padding: 8px;
+  padding: 10px;
   color: white;
   cursor: pointer;
   display: flex;
@@ -34,6 +34,6 @@
 
 @media (max-width: 640px) {
   .animated-theme-toggler {
-    padding: 6px;
+    padding: 10px;
   }
 }

@@ -11,3 +11,4 @@ Then read `web/AGENTS.md` for the full project context.
 When you need to do something specific, **ALWAYS** use the predefined workflows:
 - **AI workflows**: `.agent/workflows/`
 - **Fix build workflow**: `.agent/workflows/fixb.md`
+- **Build Error Checking**: When the user asks to check build errors, fix build issues, or test the build, **ALWAYS** use the `fixb` workflow instead of running `pnpm build` directly.

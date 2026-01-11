@@ -66,6 +66,7 @@ When you need to do something specific, **ALWAYS** use the predefined workflows:
 ## Testing
 
 - **Testing**: Run `pnpm build` only when you are unsure about type safety or when explicitly requested. Do not run it after every small change to save time.
+- **Build Error Checking**: When the user asks to check build errors, fix build issues, or test the build, **ALWAYS** use the `fixb` workflow (`../.agent/workflows/fixb.md`) instead of running `pnpm build` directly.
 
 ## Git Workflow
 

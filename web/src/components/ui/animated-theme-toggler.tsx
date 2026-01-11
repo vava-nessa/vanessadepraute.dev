@@ -83,7 +83,7 @@ export const AnimatedThemeToggler = ({ className }: AnimatedThemeTogglerProps) =
             transition={{ duration: 0.165 }}
             className="text-brand-primary"
           >
-            <Sun size={20} />
+            <Sun size={24} />
           </motion.span>
         ) : (
           <motion.span
@@ -94,7 +94,7 @@ export const AnimatedThemeToggler = ({ className }: AnimatedThemeTogglerProps) =
             transition={{ duration: 0.165 }}
             className="text-brand-primary"
           >
-            <Moon size={20} />
+            <Moon size={24} />
           </motion.span>
         )}
       </AnimatePresence>

@@ -185,6 +185,11 @@
     "switchToEnglish": "Passer en anglais",
     "toggleLanguage": "Changer de langue"
   },
+  "sound": {
+    "mute": "Couper le son",
+    "unmute": "Activer le son",
+    "toggleSound": "Basculer le son"
+  },
   "testimonials": {
     "designations": {
       "uiUxDesigner": "Designer UI/UX",

@@ -1,12 +1,12 @@
 .language-switcher {
   background: none;
   border: none;
-  padding: 8px 12px;
+  padding: 10px 16px;
   color: var(--color-primary);
   cursor: pointer;
   display: flex;
   align-items: center;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 500;
   transition: all 0.2s ease;
   white-space: nowrap;
@@ -26,7 +26,7 @@
 
 @media (max-width: 640px) {
   .language-switcher {
-    font-size: 0.85rem;
-    padding: 6px 10px;
+    font-size: 1.1rem;
+    padding: 10px 14px;
   }
 }

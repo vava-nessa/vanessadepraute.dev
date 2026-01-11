@@ -183,6 +183,11 @@
     "switchToEnglish": "Switch to English",
     "toggleLanguage": "Toggle language"
   },
+  "sound": {
+    "mute": "Mute sound",
+    "unmute": "Unmute sound",
+    "toggleSound": "Toggle sound"
+  },
   "testimonials": {
     "designations": {
       "uiUxDesigner": "UI/UX Designer",

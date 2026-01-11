@@ -1,0 +1,30 @@
+.animated-sound-toggler {
+    background: none;
+    border: none;
+    padding: 10px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+}
+
+.animated-sound-toggler:hover {
+    opacity: 0.7;
+}
+
+.animated-sound-toggler:active {
+    transform: scale(0.95);
+}
+
+/* Light mode overrides */
+:root.light-mode .animated-sound-toggler {
+    color: #333;
+}
+
+@media (max-width: 640px) {
+    .animated-sound-toggler {
+        padding: 10px;
+    }
+}

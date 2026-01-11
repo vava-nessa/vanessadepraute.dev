@@ -1,5 +1,9 @@
 # AGENTS
 
+**IMPORTANT**: Always read this file before starting any task in this folder.
+
+**Note**: This file provides comprehensive instructions for all AI assistants (Claude, Gemini, ChatGPT, Cursor, Copilot, etc.).
+
 Always read this file before starting any task in this repo.
 
 ## Non-negotiables

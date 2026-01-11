@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import "../App.css";
@@ -22,7 +22,8 @@ import LightRays from "../components/LightRays/LightRays";
 import FAQ from "../components/FAQ";
 import Footer from "../components/Footer/Footer";
 import { ErrorBoundary } from "../components/ErrorBoundary/ErrorBoundary";
-import ModelViewer from "../components/ModelViewer/ModelViewer";
+// Lazy load ModelViewer (heavy 3D component)
+const ModelViewer = lazy(() => import("../components/ModelViewer/ModelViewer"));
 import ProjectCard from "../components/ProjectCard/ProjectCard";
 import { useContactModal } from "@/contexts/ContactModalContext";
 import outOfBurnImage from "../assets/out_of_burn_ui.png";
@@ -436,30 +437,32 @@ function HomePage() {
             <div id="toon-cat-section" className="w-full mb-20">
               <div className="w-full h-[400px]">
                 <ErrorBoundary>
-                  <ModelViewer
-                    modelPath="/toon_cat_free.glb"
-                    playAnimation={true}
-                    width="100%"
-                    height="100%"
-                    enableOrbitControls={true}
-                    enableZoom={true}
-                    autoFit={false}
-                    debug={debugMode}
-                    onClick={handleModelClick}
-                    cameraConfig={{
-                      position: [300.53, 302.69, 270.93],
-                      rotation: [-0.49, 0.81, 0.37],
-                      lookAt: [83.20, 205.91, 88.17],
-                      fov: 20.00,
-                      zoom: 0.20,
-                      autoRotate: false,
-                      oscillation: { enabled: false, amplitude: 0, period: 0, axis: "y" },
-                      followMouse: true,
-                      mouseFollowSpeed: 0.2,
-                      mouseFollowRange: 0.45,
-                      mouseFollowAxis: 'both'
-                    }}
-                  />
+                  <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-neutral-400">Loading 3D model...</div>}>
+                    <ModelViewer
+                      modelPath="/toon_cat_free.glb"
+                      playAnimation={true}
+                      width="100%"
+                      height="100%"
+                      enableOrbitControls={true}
+                      enableZoom={true}
+                      autoFit={false}
+                      debug={debugMode}
+                      onClick={handleModelClick}
+                      cameraConfig={{
+                        position: [300.53, 302.69, 270.93],
+                        rotation: [-0.49, 0.81, 0.37],
+                        lookAt: [83.20, 205.91, 88.17],
+                        fov: 20.00,
+                        zoom: 0.20,
+                        autoRotate: false,
+                        oscillation: { enabled: false, amplitude: 0, period: 0, axis: "y" },
+                        followMouse: true,
+                        mouseFollowSpeed: 0.2,
+                        mouseFollowRange: 0.45,
+                        mouseFollowAxis: 'both'
+                      }}
+                    />
+                  </Suspense>
                 </ErrorBoundary>
               </div>
             </div>

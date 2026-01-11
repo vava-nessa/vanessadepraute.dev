@@ -318,7 +318,6 @@ const MetaBalls: React.FC<MetaBallsProps> = ({
         touchAction: 'none',
         userSelect: 'none',
         WebkitUserSelect: 'none',
-        boxShadow: isInteracting ? `inset 0 0 0 2px ${color}` : 'none',
         cursor: isInteracting ? 'grabbing' : 'grab'
       }}
     />

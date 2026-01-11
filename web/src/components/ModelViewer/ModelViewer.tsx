@@ -339,34 +339,48 @@ function MouseFollower({
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Request permission for iOS devices and set up gyroscope
+  // Request permission for iOS devices regarding DeviceOrientation
   useEffect(() => {
     if (!isMobile) return;
 
     const requestPermission = async () => {
-      // Check if DeviceOrientationEvent is available
-      if (typeof DeviceOrientationEvent === 'undefined') {
-        console.warn('DeviceOrientation is not supported on this device');
-        return;
-      }
+      // Check if DeviceOrientationEvent is defined
+      if (typeof DeviceOrientationEvent === 'undefined') return;
 
-      // For iOS 13+ devices, we need to request permission
-      if (
-        typeof (DeviceOrientationEvent as any).requestPermission === 'function'
-      ) {
-        try {
-          const permission = await (DeviceOrientationEvent as any).requestPermission();
-          setPermissionGranted(permission === 'granted');
-        } catch (error) {
-          console.warn('DeviceOrientation permission denied:', error);
-        }
+      // For iOS 13+ devices, we need to request permission via user interaction
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const requestPermissionFn = (DeviceOrientationEvent as any).requestPermission;
+
+      if (typeof requestPermissionFn === 'function') {
+        // We need a user interaction
+        const handleInteraction = async () => {
+          try {
+            const permission = await requestPermissionFn();
+            if (permission === 'granted') {
+              setPermissionGranted(true);
+            }
+          } catch (error) {
+            console.warn('DeviceOrientation permission error:', error);
+          } finally {
+            // Remove listeners after attempt
+            window.removeEventListener('click', handleInteraction);
+            window.removeEventListener('touchend', handleInteraction);
+          }
+        };
+
+        window.addEventListener('click', handleInteraction);
+        window.addEventListener('touchend', handleInteraction);
+
+        return () => {
+          window.removeEventListener('click', handleInteraction);
+          window.removeEventListener('touchend', handleInteraction);
+        };
       } else {
-        // For non-iOS or older iOS, permission is granted by default
+        // Non-iOS 13+ devices usually don't need explicit permission
         setPermissionGranted(true);
       }
     };
 
-    // Auto-request permission (or wait for user interaction on iOS)
     requestPermission();
   }, [isMobile]);
 

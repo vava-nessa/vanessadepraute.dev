@@ -5,3 +5,9 @@ Then read `web/AGENTS.md` for the full project context.
 
 - **CRITICAL**: It is very important to read the README files and strictly follow their indications.
 - **ALWAYS** read the README and **ALWAYS** use pnpm only.
+
+## Workflows
+
+When you need to do something specific, **ALWAYS** use the predefined workflows:
+- **AI workflows**: `.agent/workflows/`
+- **Fix build workflow**: `.agent/workflows/fixb.md`

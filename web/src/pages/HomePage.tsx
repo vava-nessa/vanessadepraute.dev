@@ -198,7 +198,7 @@ function HomePage() {
             )}
 
             {/* Header Section */}
-            <div id="header-section" className="w-full max-w-[1200px] mx-auto px-5">
+            <div id="header-section" className="w-full max-w-[1200px] mx-auto px-5 pt-12">
               <div id="header-content" className="flex flex-col lg:flex-row items-center gap-8 mb-8">
                 {/* Avatar on the left */}
                 <div id="header-avatar-container" className="flex-shrink-0">

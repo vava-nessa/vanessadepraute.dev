@@ -227,6 +227,26 @@
       {
         "question": "How do you use AI in your development workflow?",
         "answer": "AI has become an essential part of how I work! I use tools like **GitHub Copilot, Cursor, Claude Code**, and others daily. I'm also experienced with the broader AI ecosystem — **LangChain, vector databases (Pinecone, pgvector)**, and various LLM providers like OpenAI, Anthropic, and Mistral. This lets me not only code faster but also build **AI-powered features** into the applications I create."
+      },
+      {
+        "question": "What's your preferred tech stack?",
+        "answer": "I love working with **React, Next.js, TypeScript, and Tailwind CSS** for frontend. For backend, I use **Node.js, PostgreSQL, and Supabase**. For mobile, **React Native with Expo** is my go-to. I'm also comfortable with **GraphQL, tRPC, Prisma**, and modern deployment platforms like **Vercel and Cloudflare**."
+      },
+      {
+        "question": "Are you available for freelance work?",
+        "answer": "Yes! I'm currently **open to freelance contracts and full-time roles**. Whether it's a short-term project or a long-term collaboration, I'm flexible and ready to discuss your needs. Feel free to reach out via the contact form or connect with me on LinkedIn!"
+      },
+      {
+        "question": "Do you have international experience?",
+        "answer": "Absolutely! I spent **2 years working at Kogama/ABOX in Stockholm, Sweden** as a Front-End & WebGL Developer. I've also collaborated remotely with international teams throughout my career. I'm comfortable working across time zones and with diverse, distributed teams."
+      },
+      {
+        "question": "Can you handle both design and development?",
+        "answer": "Yes! I have strong **UI/UX design skills** alongside my development expertise. I'm proficient with **Figma, Adobe XD, Illustrator, and Photoshop**. I can take a project from initial design concepts all the way through to production code — or collaborate seamlessly with dedicated designers."
+      },
+      {
+        "question": "How can I get in touch with you?",
+        "answer": "The easiest way is through the **contact form** on this site! You can also find me on **LinkedIn, GitHub**, or reach out via **email or WhatsApp**. I typically respond within 24 hours. Let's talk about your project!"
       }
     ]
   },

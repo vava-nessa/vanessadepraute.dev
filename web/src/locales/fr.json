@@ -229,6 +229,26 @@
       {
         "question": "Comment utilisez-vous l'IA dans votre développement ?",
         "answer": "L'IA est devenue une partie essentielle de ma façon de travailler ! J'utilise des outils comme **GitHub Copilot, Cursor, Claude Code** et d'autres au quotidien. Je maîtrise aussi l'écosystème IA plus large — **LangChain, bases de données vectorielles (Pinecone, pgvector)**, et différents fournisseurs de LLM comme OpenAI, Anthropic et Mistral. Cela me permet non seulement de coder plus vite, mais aussi d'intégrer des **fonctionnalités IA** dans les applications que je crée."
+      },
+      {
+        "question": "Quelle est votre stack technique préférée ?",
+        "answer": "J'adore travailler avec **React, Next.js, TypeScript et Tailwind CSS** pour le frontend. Pour le backend, j'utilise **Node.js, PostgreSQL et Supabase**. Pour le mobile, **React Native avec Expo** est mon choix de prédilection. Je suis aussi à l'aise avec **GraphQL, tRPC, Prisma**, et les plateformes de déploiement modernes comme **Vercel et Cloudflare**."
+      },
+      {
+        "question": "Êtes-vous disponible pour du travail freelance ?",
+        "answer": "Oui ! Je suis actuellement **ouverte aux contrats freelance et aux postes à temps plein**. Que ce soit pour un projet court terme ou une collaboration long terme, je suis flexible et prête à discuter de vos besoins. N'hésitez pas à me contacter via le formulaire ou sur LinkedIn !"
+      },
+      {
+        "question": "Avez-vous une expérience internationale ?",
+        "answer": "Absolument ! J'ai passé **2 ans chez Kogama/ABOX à Stockholm, Suède** en tant que Développeuse Front-End & WebGL. J'ai aussi collaboré à distance avec des équipes internationales tout au long de ma carrière. Je suis à l'aise pour travailler à travers les fuseaux horaires et avec des équipes diverses et distribuées."
+      },
+      {
+        "question": "Pouvez-vous gérer à la fois le design et le développement ?",
+        "answer": "Oui ! J'ai de solides **compétences en design UI/UX** en plus de mon expertise en développement. Je maîtrise **Figma, Adobe XD, Illustrator et Photoshop**. Je peux mener un projet des concepts de design initiaux jusqu'au code en production — ou collaborer harmonieusement avec des designers dédiés."
+      },
+      {
+        "question": "Comment puis-je vous contacter ?",
+        "answer": "Le plus simple est d'utiliser le **formulaire de contact** sur ce site ! Vous pouvez aussi me trouver sur **LinkedIn, GitHub**, ou me contacter par **email ou WhatsApp**. Je réponds généralement sous 24 heures. Parlons de votre projet !"
       }
     ]
   },

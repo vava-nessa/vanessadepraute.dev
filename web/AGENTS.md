@@ -9,6 +9,12 @@ Always read this file before starting any task in this repo.
 - This repo can host multiple apps; this file documents the website in this folder.
 - Paths below are relative to this `web/` folder unless they start with `../`.
 
+## Workflows
+
+When you need to do something specific, **ALWAYS** use the predefined workflows:
+- **AI workflows**: `../.agent/workflows/`
+- **Fix build workflow**: `../.agent/workflows/fixb.md`
+
 ## Architecture summary
 
 - Entry point: `src/main.tsx` (RouterProvider, ThemeProvider, Vercel Analytics).

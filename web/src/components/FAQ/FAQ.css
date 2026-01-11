@@ -8,6 +8,11 @@
     margin: 0 auto;
 }
 
+.faq-container-new {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
 .faq-header {
     text-align: center;
     margin-bottom: 3rem;
@@ -44,7 +49,7 @@
 }
 
 .faq-subtitle {
-    color: #a3a3a3;
+    color: var(--color-muted-foreground);
     font-size: 1.1rem;
     margin: 0;
 }
@@ -120,7 +125,7 @@
 .faq-question-text {
     font-size: 1.1rem;
     font-weight: 600;
-    color: white;
+    color: var(--color-primary);
     flex: 1;
     line-height: 1.4;
 }
@@ -166,7 +171,7 @@
 
 .faq-answer {
     padding: 0 1.5rem 1.5rem 1.5rem;
-    color: #d4d4d4;
+    color: var(--color-foreground);
     font-size: 1rem;
     line-height: 1.7;
     font-weight: 300;

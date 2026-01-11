@@ -13,7 +13,7 @@
 }
 
 .footer-icon-link {
-  color: white;
+  color: var(--color-primary);
   transition: all 0.3s ease-in-out;
   display: flex;
   flex-direction: column;
@@ -31,10 +31,25 @@
 }
 
 .footer-icon-link:hover {
-  color: var(--color-primary);
   transform: scale(1.2);
 }
 
-.footer-icon-link:hover .footer-icon-label {
-  color: var(--color-primary);
+/* Dark mode hover - slightly dimmed white */
+:root.dark-mode .footer-icon-link:hover,
+.dark .footer-icon-link:hover {
+  color: rgba(250, 250, 250, 0.7);
+}
+
+:root.dark-mode .footer-icon-link:hover .footer-icon-label,
+.dark .footer-icon-link:hover .footer-icon-label {
+  color: rgba(250, 250, 250, 0.7);
+}
+
+/* Light mode hover - darker/black */
+:root.light-mode .footer-icon-link:hover {
+  color: rgb(0, 0, 0);
+}
+
+:root.light-mode .footer-icon-link:hover .footer-icon-label {
+  color: rgb(0, 0, 0);
 }

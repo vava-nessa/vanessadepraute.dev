@@ -28,6 +28,7 @@ const ModelViewer = lazy(() => import("../components/ModelViewer/ModelViewer"));
 import ProjectCard from "../components/ProjectCard/ProjectCard";
 import { useContactModal } from "@/contexts/ContactModalContext";
 import outOfBurnImage from "../assets/out_of_burn_ui.png";
+import MetaBalls from "../components/ui/MetaBalls";
 
 const projectImages: Record<string, string> = {
   outOfBurn: outOfBurnImage,
@@ -481,6 +482,23 @@ function HomePage() {
             <ErrorBoundary>
               <FAQ />
             </ErrorBoundary>
+
+            {/* MetaBalls Decoration Section */}
+            <div className={`w-full h-[400px] my-20 rounded-2xl overflow-hidden ${isDarkMode ? 'bg-transparent' : 'bg-white'}`}>
+              <ErrorBoundary>
+                <MetaBalls
+                  color="#ff3d9a"
+                  cursorBallColor="#ff3d9a"
+                  speed={0.8}
+                  animationSize={39}
+                  ballCount={22}
+                  clumpFactor={1.5}
+                  hoverSmoothness={0.205}
+                  cursorBallSize={3}
+                  enableTransparency={true}
+                />
+              </ErrorBoundary>
+            </div>
 
             {/* Sentry Test Error Button - Development Only */}
             {/* Sentry Test Error Button - Removed for Production */

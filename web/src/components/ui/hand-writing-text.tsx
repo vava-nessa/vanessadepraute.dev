@@ -46,7 +46,7 @@ function HandWrittenTitle({
                            C 850 80, 950 180, 950 180"
                         fill="none"
                         strokeWidth="12"
-                        stroke="#ff7cfd"
+                        stroke="var(--color-primary)"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         variants={draw}
@@ -58,7 +58,7 @@ function HandWrittenTitle({
             <div className="relative text-center z-10 flex flex-col items-center justify-center select-none">
                 <motion.span
                     className={`${textSize} tracking-tighter flex items-center gap-2`}
-                    style={{ color: '#ff7cfd', userSelect: 'none' }}
+                    style={{ color: 'var(--color-primary)', userSelect: 'none' }}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5, duration: 0.8 }}

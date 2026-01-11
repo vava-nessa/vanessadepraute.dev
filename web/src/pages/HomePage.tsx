@@ -396,60 +396,61 @@ function HomePage() {
               <Star delay={3000} color="rgb(180, 79, 39)" />
             </div>
 
-            {/* Light Rays Section */}
-            <div className="w-full relative" style={{ height: '100vh', minHeight: '600px' }}>
-              <ErrorBoundary>
-                <LightRays
-                  raysOrigin="top-center"
-                  raysColor="#00ffff"
-                  raysSpeed={1.5}
-                  lightSpread={0.8}
-                  rayLength={1.2}
-                  followMouse={true}
-                  mouseInfluence={0.1}
-                  noiseAmount={0.1}
-                  distortion={0.05}
-                />
-              </ErrorBoundary>
+            {/* Light Rays Section with Projects */}
+            <div className="w-full relative py-20" style={{ minHeight: '600px' }}>
+              {/* LightRays as absolute positioned background */}
+              <div className="absolute inset-0 z-0">
+                <ErrorBoundary>
+                  <LightRays
+                    raysOrigin="top-center"
+                    raysColor="#00ffff"
+                    raysSpeed={1.5}
+                    lightSpread={0.8}
+                    rayLength={1.2}
+                    followMouse={true}
+                    mouseInfluence={0.1}
+                    noiseAmount={0.1}
+                    distortion={0.05}
+                  />
+                </ErrorBoundary>
+              </div>
 
-              {/* Projects Section */}
-              <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-auto">
-                <div className="w-full max-w-6xl mx-auto px-5">
-                  <div className="text-center mb-12">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-                      {t("projects.title")}
-                    </h2>
-                    <p className="text-neutral-400 text-lg">
-                      {t("projects.subtitle")}
-                    </p>
-                  </div>
+              {/* Projects Section - flows naturally */}
+              <div className="relative z-10 w-full max-w-6xl mx-auto px-5">
+                <div className="text-center mb-12">
+                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+                    {t("projects.title")}
+                  </h2>
+                  <p className="text-neutral-400 text-lg">
+                    {t("projects.subtitle")}
+                  </p>
+                </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {(t("projects.items", { returnObjects: true }) as Array<{
-                      id: string;
-                      link: string;
-                      github: string;
-                      name: string;
-                      year: string;
-                      status: string;
-                      description: string;
-                      techStack: string[];
-                      highlights: string[];
-                    }>).map((project, index) => (
-                      <ProjectCard
-                        key={index}
-                        name={project.name}
-                        year={project.year}
-                        status={project.status}
-                        description={project.description}
-                        techStack={project.techStack}
-                        highlights={project.highlights}
-                        image={project.id ? projectImages[project.id] : undefined}
-                        link={project.link}
-                        github={project.github}
-                      />
-                    ))}
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {(t("projects.items", { returnObjects: true }) as Array<{
+                    id: string;
+                    link: string;
+                    github: string;
+                    name: string;
+                    year: string;
+                    status: string;
+                    description: string;
+                    techStack: string[];
+                    highlights: string[];
+                  }>).map((project, index) => (
+                    <ProjectCard
+                      key={index}
+                      name={project.name}
+                      year={project.year}
+                      status={project.status}
+                      description={project.description}
+                      techStack={project.techStack}
+                      highlights={project.highlights}
+                      image={project.id ? projectImages[project.id] : undefined}
+                      link={project.link}
+                      github={project.github}
+                    />
+                  ))}
                 </div>
               </div>
             </div>

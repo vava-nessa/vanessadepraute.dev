@@ -185,6 +185,44 @@ The homepage features a dedicated projects section showcasing featured work.
 4. If adding an image, import it in `HomePage.tsx` and add to the `projectImages` mapping
 5. The component will automatically render the new project with all features
 
+## 3D Model Viewer
+
+The website features an interactive 3D model viewer (`src/components/ModelViewer/ModelViewer.tsx`) that adapts to the user's device.
+
+### Features
+
+- **Adaptive Input**: Automatically detects device type and uses appropriate input method
+  - **Desktop**: Mouse movement controls model rotation
+  - **Mobile**: Gyroscope/device orientation controls model rotation
+- **Smooth Interpolation**: Both input methods use smooth lerp-based transitions
+- **Permission Handling**: Automatically requests DeviceOrientation permission on iOS 13+ devices
+- **Configurable**: Extensive camera and interaction configuration options
+
+### Usage Example
+
+```tsx
+<ModelViewer
+  modelPath="/toon_cat_free.glb"
+  playAnimation={true}
+  cameraConfig={{
+    followMouse: true,           // Enable mouse/gyroscope following
+    mouseFollowSpeed: 0.2,       // Interpolation speed (0-1)
+    mouseFollowRange: 0.45,      // Max rotation range in radians
+    mouseFollowAxis: 'both'      // 'x', 'y', or 'both'
+  }}
+/>
+```
+
+### Mobile Gyroscope
+
+On mobile devices, the component:
+1. Detects mobile via user agent and screen width
+2. Requests DeviceOrientation permission (required for iOS 13+)
+3. Maps device tilt angles (beta/gamma) to model rotation
+4. Uses the same smooth interpolation as desktop mouse movement
+
+The gyroscope sensitivity is automatically calibrated for natural interaction.
+
 ## Notes
 
 - Use pnpm only (this repo has a `pnpm-lock.yaml`).

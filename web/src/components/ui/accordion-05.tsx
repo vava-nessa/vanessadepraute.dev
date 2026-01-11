@@ -23,12 +23,12 @@ export function Accordion05({ items, defaultValue = "1" }: Accordion05Props) {
       <Accordion type="single" defaultValue={defaultValue} collapsible className="w-full">
         {items.map((item) => (
           <AccordionItem value={item.id} key={item.id} className="last:border-b">
-            <AccordionTrigger className="text-left pl-6 md:pl-14 overflow-hidden duration-200 hover:no-underline cursor-pointer -space-y-6 data-[state=open]:space-y-0 [&>svg]:hidden group">
+            <AccordionTrigger className="text-left pl-6 md:pl-14 overflow-hidden duration-200 hover:no-underline cursor-pointer -space-y-6 data-[state=open]:space-y-0 [&>svg]:hidden">
               <div className="flex flex-1 items-start gap-4">
-                <p className="text-xs text-muted-foreground group-data-[state=open]:text-primary">{item.id}</p>
+                <p className="text-xs text-muted-foreground transition-colors">{item.id}</p>
                 <h1
                   className={cn(
-                    "uppercase relative text-left text-3xl md:text-5xl text-muted-foreground group-data-[state=open]:text-primary"
+                    "uppercase relative text-left text-3xl md:text-5xl text-muted-foreground transition-colors"
                   )}
                 >
                   {item.question}

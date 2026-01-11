@@ -313,7 +313,7 @@ function DebugDataUpdater({
   return null;
 }
 
-// Mouse follower - rotates model with mouse
+// Mouse follower - rotates model with mouse on desktop, gyroscope on mobile
 function MouseFollower({
   modelRef,
   config,
@@ -323,8 +323,80 @@ function MouseFollower({
 }) {
   const mouse = useRef({ x: 0, y: 0 });
   const targetMouse = useRef({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
+  const [permissionGranted, setPermissionGranted] = useState(false);
 
+  // Detect if device is mobile
   useEffect(() => {
+    const checkMobile = () => {
+      const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+        (window.innerWidth <= 768);
+      setIsMobile(mobile);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Request permission for iOS devices and set up gyroscope
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const requestPermission = async () => {
+      // Check if DeviceOrientationEvent is available
+      if (typeof DeviceOrientationEvent === 'undefined') {
+        console.warn('DeviceOrientation is not supported on this device');
+        return;
+      }
+
+      // For iOS 13+ devices, we need to request permission
+      if (
+        typeof (DeviceOrientationEvent as any).requestPermission === 'function'
+      ) {
+        try {
+          const permission = await (DeviceOrientationEvent as any).requestPermission();
+          setPermissionGranted(permission === 'granted');
+        } catch (error) {
+          console.warn('DeviceOrientation permission denied:', error);
+        }
+      } else {
+        // For non-iOS or older iOS, permission is granted by default
+        setPermissionGranted(true);
+      }
+    };
+
+    // Auto-request permission (or wait for user interaction on iOS)
+    requestPermission();
+  }, [isMobile]);
+
+  // Set up gyroscope listener for mobile
+  useEffect(() => {
+    if (!isMobile || !permissionGranted) return;
+
+    const handleOrientation = (event: DeviceOrientationEvent) => {
+      // beta: front-to-back tilt in degrees (-180 to 180)
+      // gamma: left-to-right tilt in degrees (-90 to 90)
+      const beta = event.beta || 0;  // X-axis rotation
+      const gamma = event.gamma || 0; // Y-axis rotation
+
+      // Normalize to -1 to 1 range
+      // Beta range: -90 to 90 (we'll use a smaller range for better control)
+      // Gamma range: -45 to 45
+      targetMouse.current.y = Math.max(-1, Math.min(1, beta / 45));
+      targetMouse.current.x = Math.max(-1, Math.min(1, gamma / 45));
+    };
+
+    window.addEventListener('deviceorientation', handleOrientation);
+    return () => {
+      window.removeEventListener('deviceorientation', handleOrientation);
+    };
+  }, [isMobile, permissionGranted]);
+
+  // Set up mouse listener for desktop
+  useEffect(() => {
+    if (isMobile) return;
+
     const handleMouseMove = (event: MouseEvent) => {
       // Normalize mouse to -1 to 1 based on window size
       targetMouse.current.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -335,12 +407,12 @@ function MouseFollower({
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, []);
+  }, [isMobile]);
 
   useFrame(() => {
     if (!modelRef.current) return;
 
-    // Smooth mouse interpolation towards the global target
+    // Smooth interpolation towards the target (works for both mouse and gyroscope)
     mouse.current.x += (targetMouse.current.x - mouse.current.x) * config.mouseFollowSpeed;
     mouse.current.y += (targetMouse.current.y - mouse.current.y) * config.mouseFollowSpeed;
 
@@ -811,7 +883,7 @@ export default function ModelViewer({
               />
             </Suspense>
 
-            {/* Mouse follower - rotates model with mouse */}
+            {/* Mouse follower - rotates model with mouse (desktop) or gyroscope (mobile) */}
             {mergedCameraConfig.followMouse && (
               <MouseFollower modelRef={modelRef} config={mergedCameraConfig} />
             )}

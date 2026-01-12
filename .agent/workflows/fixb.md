@@ -53,10 +53,10 @@ MANUAL INTERVENTION REQUIRED
 	5.	Repeat until build succeeds (max 10 iterations)
 
 ✅ When the build is fixed
-	•	Send exactly 3 relevant emojis in the chat (alone on their own line)
-	•	Then, in the next chat message, tell in chat:
+Tell in chat on a single line, starting with ✅ and followed by exactly 3 relevant emojis:
 
-BAWS ! BUILD IZ FIXED !
+Example format:
+✅ 🔧🚀✨ BAWS ! BUILD IZ FIXED !
 
 ⸻
 
@@ -66,10 +66,10 @@ BAWS ! BUILD IZ FIXED !
 	3.	Push to remote repository
 
 ✅ When the push is completed
-	•	Send exactly 3 relevant emojis in the chat (alone on their own line)
-	•	Then, in the next chat message, tell in chat:
+Tell in chat on a single line, starting with ✅ and followed by exactly 3 relevant emojis:
 
-BAWS ! I PUSHED TO GITZUB !
+Example format:
+✅ 📦⬆️🚀 BAWS ! I PUSHED TO GITZUB !
 
 ⸻
 
@@ -80,10 +80,10 @@ BAWS ! I PUSHED TO GITZUB !
 (non-blocking, report only)
 
 ✅ When production is verified
-	•	Send exactly 3 relevant emojis in the chat (alone on their own line)
-	•	Then, in the next chat message, tell in chat:
+Tell in chat on a single line, starting with ✅ and followed by exactly 3 relevant emojis:
 
-BAWS ! WEBSITE IS ON VERCEL !
+Example format:
+✅ 🌍⚡🚀 BAWS ! WEBSITE IS ON VERCEL !
 
 ⸻
 
@@ -153,10 +153,10 @@ Total time: ~X minutes
 ⸻
 
 🏁 On Success
-	•	Send the following in chat (single message):
 
-🎉🚀✨🏆💪🔥👑⚡🌟💯
-OK BAWS. JAWB IS DONE. GREAT SUCCESS
+Tell in chat on a single line:
+
+✅ 🎉🚀✨ BAWS. JAWB IS DONE. GREAT SUCCESS
 
 ⸻
 

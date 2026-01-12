@@ -11,25 +11,45 @@ const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 // Terminal-style loading fallback component
 const PageLoader = () => {
+  const [show, setShow] = React.useState(true);
   const [fadeOut, setFadeOut] = React.useState(false);
+  const startTimeRef = React.useRef(Date.now());
 
   React.useEffect(() => {
-    // Trigger fade out when component is about to unmount
+    const minDisplayTime = 300; // Minimum display time in ms
+
     return () => {
-      setFadeOut(true);
+      const elapsed = Date.now() - startTimeRef.current;
+      const remainingTime = Math.max(0, minDisplayTime - elapsed);
+
+      // Wait for minimum display time, then start fadeout
+      setTimeout(() => {
+        setFadeOut(true);
+        // Hide completely after fadeout animation
+        setTimeout(() => {
+          setShow(false);
+        }, 500);
+      }, remainingTime);
     };
   }, []);
+
+  if (!show) return null;
 
   return (
     <div
       style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        minHeight: "100vh",
         backgroundColor: "#000",
         opacity: fadeOut ? 0 : 1,
-        transition: "opacity 0.5s ease-out"
+        transition: "opacity 0.5s ease-out",
+        zIndex: 9999
       }}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
@@ -41,7 +61,7 @@ const PageLoader = () => {
             color: "#00ff00",
             fontSize: "2rem",
             fontFamily: "monospace",
-            animation: "blink 1s step-end infinite"
+            animation: "blink 0.5s step-end infinite"
           }}
         >
           _

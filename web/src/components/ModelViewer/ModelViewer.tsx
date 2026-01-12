@@ -313,125 +313,93 @@ function DebugDataUpdater({
   return null;
 }
 
-// Mouse follower - rotates model with mouse on desktop, gyroscope on mobile
+// Mouse follower - rotates model with mouse on desktop, scroll-based tilt on all devices
 function MouseFollower({
   modelRef,
   config,
+  containerRef,
 }: {
   modelRef: React.RefObject<THREE.Group | null>;
   config: typeof CAMERA_CONFIG;
+  containerRef: React.RefObject<HTMLDivElement | null>;
 }) {
   const mouse = useRef({ x: 0, y: 0 });
   const targetMouse = useRef({ x: 0, y: 0 });
-  const [isMobile, setIsMobile] = useState(false);
-  const [permissionGranted, setPermissionGranted] = useState(false);
+  const scrollTilt = useRef(0);
+  const targetScrollTilt = useRef(0);
+  const isVisible = useRef(false);
+  const scrollStartY = useRef(0);
 
-  // Detect if device is mobile
+  // Set up IntersectionObserver to detect when component enters viewport
   useEffect(() => {
-    const checkMobile = () => {
-      const mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-        (window.innerWidth <= 768);
-      setIsMobile(mobile);
+    if (!containerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !isVisible.current) {
+            // Just became visible - record current scroll position
+            isVisible.current = true;
+            scrollStartY.current = window.scrollY;
+          } else if (!entry.isIntersecting) {
+            isVisible.current = false;
+          }
+        });
+      },
+      { threshold: 0, rootMargin: '0px' } // Trigger at 1px visibility
+    );
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, [containerRef]);
+
+  // Set up scroll listener for tilt effect
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!isVisible.current) return;
+
+      // Calculate scroll progress since the component became visible
+      const scrollDelta = window.scrollY - scrollStartY.current;
+
+      // Normalize to a range (0 to 1) based on scroll amount
+      // 300px of scroll = full tilt effect
+      const maxScrollRange = 300;
+      const normalizedScroll = Math.max(0, Math.min(1, scrollDelta / maxScrollRange));
+
+      // Apply a subtle tilt (negative value = looking from above)
+      targetScrollTilt.current = normalizedScroll * 0.3; // 0.3 radians max (~17 degrees)
     };
 
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Request permission for iOS devices regarding DeviceOrientation
+  // Set up mouse listener for horizontal rotation (desktop only)
   useEffect(() => {
-    if (!isMobile) return;
-
-    const requestPermission = async () => {
-      // Check if DeviceOrientationEvent is defined
-      if (typeof DeviceOrientationEvent === 'undefined') return;
-
-      // For iOS 13+ devices, we need to request permission via user interaction
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const requestPermissionFn = (DeviceOrientationEvent as any).requestPermission;
-
-      if (typeof requestPermissionFn === 'function') {
-        // We need a user interaction
-        const handleInteraction = async () => {
-          try {
-            const permission = await requestPermissionFn();
-            if (permission === 'granted') {
-              setPermissionGranted(true);
-            }
-          } catch (error) {
-            console.warn('DeviceOrientation permission error:', error);
-          } finally {
-            // Remove listeners after attempt
-            window.removeEventListener('click', handleInteraction);
-            window.removeEventListener('touchend', handleInteraction);
-          }
-        };
-
-        window.addEventListener('click', handleInteraction);
-        window.addEventListener('touchend', handleInteraction);
-
-        return () => {
-          window.removeEventListener('click', handleInteraction);
-          window.removeEventListener('touchend', handleInteraction);
-        };
-      } else {
-        // Non-iOS 13+ devices usually don't need explicit permission
-        setPermissionGranted(true);
-      }
-    };
-
-    requestPermission();
-  }, [isMobile]);
-
-  // Set up gyroscope listener for mobile
-  useEffect(() => {
-    if (!isMobile || !permissionGranted) return;
-
-    const handleOrientation = (event: DeviceOrientationEvent) => {
-      // beta: front-to-back tilt in degrees (-180 to 180)
-      // gamma: left-to-right tilt in degrees (-90 to 90)
-      const beta = event.beta || 0;  // X-axis rotation
-      const gamma = event.gamma || 0; // Y-axis rotation
-
-      // Normalize to -1 to 1 range
-      // Beta range: -90 to 90 (we'll use a smaller range for better control)
-      // Gamma range: -45 to 45
-      targetMouse.current.y = Math.max(-1, Math.min(1, beta / 45));
-      targetMouse.current.x = Math.max(-1, Math.min(1, gamma / 45));
-    };
-
-    window.addEventListener('deviceorientation', handleOrientation);
-    return () => {
-      window.removeEventListener('deviceorientation', handleOrientation);
-    };
-  }, [isMobile, permissionGranted]);
-
-  // Set up mouse listener for desktop
-  useEffect(() => {
-    if (isMobile) return;
-
     const handleMouseMove = (event: MouseEvent) => {
-      // Normalize mouse to -1 to 1 based on window size
+      // Normalize mouse X to -1 to 1 based on window size
       targetMouse.current.x = (event.clientX / window.innerWidth) * 2 - 1;
-      targetMouse.current.y = -(event.clientY / window.innerHeight) * 2 + 1;
     };
 
     window.addEventListener("mousemove", handleMouseMove);
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
     };
-  }, [isMobile]);
+  }, []);
 
   useFrame(() => {
     if (!modelRef.current) return;
 
-    // Smooth interpolation towards the target (works for both mouse and gyroscope)
+    // Smooth interpolation for mouse (horizontal rotation)
     mouse.current.x += (targetMouse.current.x - mouse.current.x) * config.mouseFollowSpeed;
-    mouse.current.y += (targetMouse.current.y - mouse.current.y) * config.mouseFollowSpeed;
 
+    // Smooth interpolation for scroll tilt (vertical tilt)
+    scrollTilt.current += (targetScrollTilt.current - scrollTilt.current) * config.mouseFollowSpeed;
+
+    // Apply rotations
     if (config.mouseFollowAxis === "x" || config.mouseFollowAxis === "both") {
-      modelRef.current.rotation.x = -mouse.current.y * config.mouseFollowRange;
+      // Scroll-based tilt (view from above as you scroll down)
+      modelRef.current.rotation.x = -scrollTilt.current;
     }
     if (config.mouseFollowAxis === "y" || config.mouseFollowAxis === "both") {
       modelRef.current.rotation.y = mouse.current.x * config.mouseFollowRange;
@@ -899,7 +867,7 @@ export default function ModelViewer({
 
             {/* Mouse follower - rotates model with mouse (desktop) or gyroscope (mobile) */}
             {mergedCameraConfig.followMouse && (
-              <MouseFollower modelRef={modelRef} config={mergedCameraConfig} />
+              <MouseFollower modelRef={modelRef} config={mergedCameraConfig} containerRef={canvasRef} />
             )}
 
             {/* Debug data updater */}

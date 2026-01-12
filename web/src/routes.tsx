@@ -9,72 +9,126 @@ const HomePage = lazy(() => import("./pages/HomePage"));
 const BlogPage = lazy(() => import("./pages/BlogPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
-// Terminal-style loading fallback component
-const PageLoader = () => {
-  const [show, setShow] = React.useState(true);
-  const [fadeOut, setFadeOut] = React.useState(false);
+// Terminal-style loading component
+const TerminalLoader = () => (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "#000",
+      zIndex: 9999
+    }}
+  >
+    <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+      <span style={{ color: "#00ff00", fontSize: "2rem", fontFamily: "monospace" }}>
+        &gt;
+      </span>
+      <span
+        style={{
+          color: "#00ff00",
+          fontSize: "2rem",
+          fontFamily: "monospace",
+          animation: "terminal-blink 0.5s step-end infinite"
+        }}
+      >
+        _
+      </span>
+    </div>
+    <style>{`
+      @keyframes terminal-blink {
+        0%, 50% { opacity: 1; }
+        51%, 100% { opacity: 0; }
+      }
+    `}</style>
+  </div>
+);
+
+// Wrapper component that manages the fadeout transition
+const SuspenseWithFadeout = ({ children }: { children: React.ReactNode }) => {
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [showLoader, setShowLoader] = React.useState(true);
   const startTimeRef = React.useRef(Date.now());
 
-  React.useEffect(() => {
-    const minDisplayTime = 300; // Minimum display time in ms
+  const handleLoaded = React.useCallback(() => {
+    const elapsed = Date.now() - startTimeRef.current;
+    const minDisplayTime = 300;
+    const remainingTime = Math.max(0, minDisplayTime - elapsed);
 
-    return () => {
-      const elapsed = Date.now() - startTimeRef.current;
-      const remainingTime = Math.max(0, minDisplayTime - elapsed);
-
-      // Wait for minimum display time, then start fadeout
+    // Wait for minimum display time, then start fadeout
+    setTimeout(() => {
+      setIsLoading(false);
+      // Remove loader from DOM after fadeout completes
       setTimeout(() => {
-        setFadeOut(true);
-        // Hide completely after fadeout animation
-        setTimeout(() => {
-          setShow(false);
-        }, 500);
-      }, remainingTime);
-    };
+        setShowLoader(false);
+      }, 500);
+    }, remainingTime);
   }, []);
 
-  if (!show) return null;
-
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#000",
-        opacity: fadeOut ? 0 : 1,
-        transition: "opacity 0.5s ease-out",
-        zIndex: 9999
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-        <span style={{ color: "#00ff00", fontSize: "2rem", fontFamily: "monospace" }}>
-          &gt;
-        </span>
-        <span
+    <>
+      <Suspense fallback={<TerminalLoader />}>
+        <div style={{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.3s ease-in' }}>
+          {children}
+        </div>
+        <LoadedTrigger onLoaded={handleLoaded} />
+      </Suspense>
+      {showLoader && (
+        <div
           style={{
-            color: "#00ff00",
-            fontSize: "2rem",
-            fontFamily: "monospace",
-            animation: "blink 0.5s step-end infinite"
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#000",
+            opacity: isLoading ? 1 : 0,
+            transition: "opacity 0.5s ease-out",
+            zIndex: 9999,
+            pointerEvents: isLoading ? 'auto' : 'none'
           }}
         >
-          _
-        </span>
-      </div>
-      <style>{`
-        @keyframes blink {
-          0%, 50% { opacity: 1; }
-          51%, 100% { opacity: 0; }
-        }
-      `}</style>
-    </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+            <span style={{ color: "#00ff00", fontSize: "2rem", fontFamily: "monospace" }}>
+              &gt;
+            </span>
+            <span
+              style={{
+                color: "#00ff00",
+                fontSize: "2rem",
+                fontFamily: "monospace",
+                animation: "terminal-blink 0.5s step-end infinite"
+              }}
+            >
+              _
+            </span>
+          </div>
+          <style>{`
+            @keyframes terminal-blink {
+              0%, 50% { opacity: 1; }
+              51%, 100% { opacity: 0; }
+            }
+          `}</style>
+        </div>
+      )}
+    </>
   );
+};
+
+// Component that triggers onLoaded after mounting
+const LoadedTrigger = ({ onLoaded }: { onLoaded: () => void }) => {
+  React.useEffect(() => {
+    onLoaded();
+  }, [onLoaded]);
+  return null;
 };
 
 // Wrap createBrowserRouter with Sentry for error tracking
@@ -89,9 +143,9 @@ const routes = sentryCreateBrowserRouter([
     path: "/:lang",
     element: (
       <Layout>
-        <Suspense fallback={<PageLoader />}>
+        <SuspenseWithFadeout>
           <HomePage />
-        </Suspense>
+        </SuspenseWithFadeout>
       </Layout>
     ),
   },
@@ -99,9 +153,9 @@ const routes = sentryCreateBrowserRouter([
     path: "/:lang/blog",
     element: (
       <Layout>
-        <Suspense fallback={<PageLoader />}>
+        <SuspenseWithFadeout>
           <BlogPage />
-        </Suspense>
+        </SuspenseWithFadeout>
       </Layout>
     ),
   },
@@ -109,9 +163,9 @@ const routes = sentryCreateBrowserRouter([
     path: "*",
     element: (
       <Layout>
-        <Suspense fallback={<PageLoader />}>
+        <SuspenseWithFadeout>
           <NotFoundPage />
-        </Suspense>
+        </SuspenseWithFadeout>
       </Layout>
     ),
   },

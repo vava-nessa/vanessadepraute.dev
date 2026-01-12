@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Renderer, Program, Mesh, Triangle, Transform, Vec3, Camera } from 'ogl';
+import { useTheme } from '@/contexts/ThemeContext';
 
 type MetaBallsProps = {
   color?: string;
@@ -129,6 +130,7 @@ const MetaBalls: React.FC<MetaBallsProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isInteracting, setIsInteracting] = React.useState(false);
+  const { theme } = useTheme();
 
   useEffect(() => {
     const container = containerRef.current;
@@ -329,14 +331,16 @@ const MetaBalls: React.FC<MetaBallsProps> = ({
           cursor: isInteracting ? 'grabbing' : 'grab'
         }}
       />
-      {/* Vignette overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.7) 50%, rgba(0, 0, 0, 1) 100%)',
-          zIndex: 1
-        }}
-      />
+      {/* Vignette overlay - only in dark mode */}
+      {theme === 'dark' && (
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.7) 50%, rgba(0, 0, 0, 1) 100%)',
+            zIndex: 1
+          }}
+        />
+      )}
     </div>
   );
 };

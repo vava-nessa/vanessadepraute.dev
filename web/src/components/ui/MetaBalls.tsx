@@ -312,15 +312,32 @@ const MetaBalls: React.FC<MetaBallsProps> = ({
 
   return (
     <div
-      ref={containerRef}
-      className="w-full h-full relative transition-all duration-200"
+      className="relative w-full h-full"
       style={{
         touchAction: 'none',
         userSelect: 'none',
-        WebkitUserSelect: 'none',
-        cursor: isInteracting ? 'grabbing' : 'grab'
+        WebkitUserSelect: 'none'
       }}
-    />
+    >
+      <div
+        ref={containerRef}
+        className="w-full h-full relative transition-all duration-200"
+        style={{
+          touchAction: 'none',
+          userSelect: 'none',
+          WebkitUserSelect: 'none',
+          cursor: isInteracting ? 'grabbing' : 'grab'
+        }}
+      />
+      {/* Vignette overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.7) 50%, rgba(0, 0, 0, 1) 100%)',
+          zIndex: 1
+        }}
+      />
+    </div>
   );
 };
 

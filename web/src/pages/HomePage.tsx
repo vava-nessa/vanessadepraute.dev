@@ -504,7 +504,7 @@ function HomePage() {
             </ErrorBoundary>
 
             {/* MetaBalls Decoration Section */}
-            <div className={`w-full h-[400px] my-20 rounded-2xl overflow-hidden ${isDarkMode ? 'bg-transparent' : 'bg-white'}`}>
+            <div className={`w-full md:max-w-[500px] md:mx-auto h-[400px] my-20 rounded-2xl overflow-hidden ${isDarkMode ? 'bg-transparent' : 'bg-white'}`}>
               <ErrorBoundary>
                 <MetaBalls
                   color={primaryColor}

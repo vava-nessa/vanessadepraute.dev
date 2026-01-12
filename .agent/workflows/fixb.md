@@ -1,67 +1,163 @@
 ---
-description: # BUILD FIX MODE
+description: # BUILD/FIX/PUSH/CHECK TO PRODUCTION
 ---
 
-# BUILD FIX MODE
+🚀 BUILD / FIX / PUSH / CHECK TO PRODUCTION
 
-## Objective
-Fix build errors without altering project logic or behavior.
+🎯 Objective
 
-## Strict Rules
-- **DO NOT** refactor, optimize or "improve" code
-- **DO NOT** modify structure or architecture
-- **DO NOT** add features or dependencies
-- **ONLY** fix what breaks the build
+Fix build errors without altering project logic or behavior, then deploy to production and verify deployment success.
 
-## Process
-1. Run `pnpm build`
-2. Analyze returned errors
-3. Apply minimal fix required
-4. Re-run `pnpm build`
-5. Repeat until build succeeds
+🛑 Strict Rules
 
-## Success Criteria
-- ✅ Build passes without errors
-- ✅ Critical warnings resolved
-- ⚠️ Non-blocking warnings tolerated (ESLint style, non-urgent deprecation notices)
+❌ DO NOT refactor, optimize, or "improve" code
 
-## Emoji Reference for Fixes
-- 🔌 Import/Export issues
-- 📦 Missing dependencies
-- 🔗 Type errors
-- 🏷️ Missing props/attributes
-- 📝 Syntax errors
-- ⚙️ Config issues
-- 🎨 CSS/Style errors
-- 🔑 Environment variables
-- 🗂️ File/Path errors
-- 🧩 Module resolution
+❌ DO NOT modify structure or architecture
 
-## Final Report
-Once complete, provide a structured report:
-```
-## 🔧 Build Fix Report
+❌ DO NOT add features or dependencies
 
-**Status:** ✅ Success | ❌ Failed
+✅ ONLY fix what breaks the build
 
-**Fixes applied:**
-1. 🔌 [file:line] Brief fix description
-2. 📦 [file:line] Brief fix description
-3. 🔗 [file:line] Brief fix description
+🔢 MAX 10 iterations — if exceeded, STOP and report: Manual intervention required
 
-**Remaining warnings (tolerated):**
-- [file] Warning description
+🚨 Warning Classification
 
-**Iterations:** X build cycles
-```
+🚫 BLOCKING (must fix)
 
-## On Success
-When build passes with no errors, end with:
-```
-🎉🚀✨🏆💪🔥👑⚡🌟💯
+TypeScript errors
 
-OK BAWS. JAWB IS DONE.
-```
+Missing exports / imports
 
-## Start
-Run `pnpm build` now and begin debugging.
+Runtime errors
+
+Build‑breaking syntax errors
+
+✅ TOLERATED (ignore)
+
+ESLint style warnings
+
+Deprecation notices (non‑urgent)
+
+Unused variable warnings
+
+Formatting warnings
+
+🧭 Process
+
+🧱 Phase 1: Build Fix
+
+Run pnpm build
+
+Analyze returned errors
+
+Apply minimal fix required
+
+Re‑run pnpm build
+
+Repeat until build succeeds (max 10 iterations)
+
+When this is done, generate 3 related emojis and write : BAWS ! BUILD IZ FIXED !
+
+🚀 Phase 2: Deploy to Production
+
+Run pnpm build one final time (sanity check)
+
+Commit changes with a descriptive message + emoji (see reference below)
+
+Push to remote repository
+
+When this is done, generate 3 related emojis and write : BAWS ! I PUSHED TO GITZUB !
+
+🔍 Phase 3: Verify Production
+
+Poll Vercel deployment status every 15s (max 5 minutes)
+
+Verify deployment state is READY
+
+HTTP GET on production URL → expect 200 OK (non‑blocking, report only)
+
+When this is done, generate 3 related emojis and write : BAWS ! WEBSITE IS ON VERCEL !
+
+😎 Emoji Reference for Fixes
+
+🔌 Import / Export issues
+
+📦 Missing dependencies
+
+🔗 Type errors
+
+🏷️ Missing props / attributes
+
+📝 Syntax errors
+
+⚙️ Config issues
+
+🎨 CSS / Style errors
+
+🔑 Environment variables
+
+🗂️ File / Path errors
+
+🧩 Module resolution
+
+🧾 Commit Message Format
+
+[Emoji] Fix build: brief description of what was fixed
+
+Example
+
+🔗 Fix build: resolve type errors in ModelViewer component
+
+📊 Final Report
+
+🔧 Build Fix & Deployment Report
+
+Build Status: ✅ Success | ❌ Failed
+
+Deployment Status: ✅ READY | ⏳ Building | ❌ Error
+
+Health Check: ✅ 200 OK | ⚠️ [status code] (non‑blocking)
+
+🛠️ Fixes applied
+
+🔌 [file:line] Brief fix description
+
+📦 [file:line] Brief fix description
+
+🔗 [file:line] Brief fix description
+
+⚠️ Remaining warnings (tolerated)
+
+[file] Warning description
+
+🌍 Deployment details
+
+Commit SHA: [sha]
+
+Deployment ID: [id]
+
+Production URL: [url]
+
+Deployment Status: READY | ERROR
+
+HTTP Status: 200 | xxx
+
+Iterations: X / 10 build cycles
+
+Total time: ~X minutes
+
+🏁 On Success write :  🎉🚀✨🏆💪🔥👑⚡🌟💯 OK BAWS. JAWB IS DONE. GREAT SUCCESS
+
+🚨 On Max Iterations Exceeded :
+⚠️ MANUAL INTERVENTION REQUIRED
+
+Build could not be fixed after 10 iterations.
+Last error: [error message]
+Files modified: [list]
+
+Please review manually.
+
+▶️ Start
+
+Run pnpm build now and begin the build / fix / push / check cycle.
+

@@ -313,66 +313,16 @@ function DebugDataUpdater({
   return null;
 }
 
-// Mouse follower - rotates model with mouse on desktop, scroll-based tilt on all devices
+// Mouse follower - rotates model with mouse on desktop
 function MouseFollower({
   modelRef,
   config,
-  containerRef,
 }: {
   modelRef: React.RefObject<THREE.Group | null>;
   config: typeof CAMERA_CONFIG;
-  containerRef: React.RefObject<HTMLDivElement | null>;
 }) {
   const mouse = useRef({ x: 0, y: 0 });
   const targetMouse = useRef({ x: 0, y: 0 });
-  const scrollTilt = useRef(0);
-  const targetScrollTilt = useRef(0);
-  const isVisible = useRef(false);
-  const scrollStartY = useRef(0);
-
-  // Set up IntersectionObserver to detect when component enters viewport
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !isVisible.current) {
-            // Just became visible - record current scroll position
-            isVisible.current = true;
-            scrollStartY.current = window.scrollY;
-          } else if (!entry.isIntersecting) {
-            isVisible.current = false;
-          }
-        });
-      },
-      { threshold: 0, rootMargin: '0px' } // Trigger at 1px visibility
-    );
-
-    observer.observe(containerRef.current);
-    return () => observer.disconnect();
-  }, [containerRef]);
-
-  // Set up scroll listener for tilt effect
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!isVisible.current) return;
-
-      // Calculate scroll progress since the component became visible
-      const scrollDelta = window.scrollY - scrollStartY.current;
-
-      // Normalize to a range (0 to 1) based on scroll amount
-      // 300px of scroll = full tilt effect
-      const maxScrollRange = 300;
-      const normalizedScroll = Math.max(0, Math.min(1, scrollDelta / maxScrollRange));
-
-      // Apply a subtle tilt (negative value = looking from above)
-      targetScrollTilt.current = normalizedScroll * 0.3; // 0.3 radians max (~17 degrees)
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Set up mouse listener for horizontal rotation (desktop only)
   useEffect(() => {
@@ -393,14 +343,7 @@ function MouseFollower({
     // Smooth interpolation for mouse (horizontal rotation)
     mouse.current.x += (targetMouse.current.x - mouse.current.x) * config.mouseFollowSpeed;
 
-    // Smooth interpolation for scroll tilt (vertical tilt)
-    scrollTilt.current += (targetScrollTilt.current - scrollTilt.current) * config.mouseFollowSpeed;
-
-    // Apply rotations
-    if (config.mouseFollowAxis === "x" || config.mouseFollowAxis === "both") {
-      // Scroll-based tilt (view from above as you scroll down)
-      modelRef.current.rotation.x = -scrollTilt.current;
-    }
+    // Apply rotation on Y axis (horizontal mouse movement)
     if (config.mouseFollowAxis === "y" || config.mouseFollowAxis === "both") {
       modelRef.current.rotation.y = mouse.current.x * config.mouseFollowRange;
     }
@@ -521,43 +464,10 @@ export default function ModelViewer({
   const [isLightMode, setIsLightMode] = useState(false);
   const [copyFeedback, setCopyFeedback] = useState<string | null>(null);
 
-  // Temporarily enable controls on mount, then disable them
-  const [controlsActive, setControlsActive] = useState(false);
-  const [modelLoaded, setModelLoaded] = useState(false);
-
-  // Handle model loaded callback
+  // Handle model loaded callback (kept for potential future use)
   const handleModelLoaded = () => {
-    setModelLoaded(true);
+    // Model is now loaded - can be used for loading states if needed
   };
-
-  // Sequence: Wait for model -> wait 500ms -> enable controls -> wait 100ms -> disable controls
-  useEffect(() => {
-    if (modelLoaded && enableOrbitControls && !debug) {
-      // Wait 500ms after model is loaded
-      const timer1 = setTimeout(() => {
-        // Enable controls
-        setControlsActive(true);
-
-        // Wait 100ms then disable
-        const timer2 = setTimeout(() => {
-          setControlsActive(false);
-        }, 100);
-
-        return () => clearTimeout(timer2);
-      }, 500);
-
-      return () => clearTimeout(timer1);
-    }
-  }, [modelLoaded, enableOrbitControls, debug]);
-
-  // Keep controls enabled when debug mode is active
-  useEffect(() => {
-    if (debug && enableOrbitControls) {
-      setControlsActive(true);
-    } else if (!debug && enableOrbitControls && modelLoaded) {
-      setControlsActive(false);
-    }
-  }, [debug, enableOrbitControls, modelLoaded]);
 
   useEffect(() => {
     const checkTheme = () => {
@@ -865,16 +775,16 @@ export default function ModelViewer({
               />
             </Suspense>
 
-            {/* Mouse follower - rotates model with mouse (desktop) or gyroscope (mobile) */}
+            {/* Mouse follower - rotates model with mouse (desktop) */}
             {mergedCameraConfig.followMouse && (
-              <MouseFollower modelRef={modelRef} config={mergedCameraConfig} containerRef={canvasRef} />
+              <MouseFollower modelRef={modelRef} config={mergedCameraConfig} />
             )}
 
             {/* Debug data updater */}
             {debug && <DebugDataUpdater onUpdate={updateDebugInfo} modelRef={modelRef} />}
 
-            {/* Optional orbit controls if explicitly enabled */}
-            {controlsActive && (
+            {/* Orbit controls - full 360° viewing when enabled */}
+            {enableOrbitControls && (
               <OrbitControls
                 makeDefault
                 enableZoom={enableZoom}

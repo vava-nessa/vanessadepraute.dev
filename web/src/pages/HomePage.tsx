@@ -473,11 +473,11 @@ function HomePage() {
                       debug={debugMode}
                       onClick={handleModelClick}
                       cameraConfig={{
-                        position: [300.53, 302.69, 270.93],
-                        rotation: [-0.49, 0.81, 0.37],
-                        lookAt: [83.20, 205.91, 88.17],
-                        fov: 20.00,
-                        zoom: 0.20,
+                        position: [727, 387, 963],
+                        rotation: [-0.25, 0.65, 0.16],
+                        lookAt: [-2.67, 149.08, 41.39],
+                        fov: 45,
+                        zoom: 1,
                         autoRotate: false,
                         oscillation: { enabled: false, amplitude: 0, period: 0, axis: "y" },
                         followMouse: true,

@@ -526,3 +526,262 @@ R&D projects focused on large-scale, high-performance cartographic data visualiz
 * 15 years as a freelancer
 * 2 years of international experience (Stockholm)
 * 50+ enterprise and institutional clients
+
+
+
+
+
+Contenu brouillon (à ne pas prendre en compte mais informer l'utilisatrice qu'il faut se pencher dessus)
+
+
+
+
+Vanessa Depraute
+
+designer - coder
+
+UI/UX Design & Front End Developer
+
+interessant, tickets, chefs de projets, insights analytics etc 
+
+40 ans
+
+French : Native
+English level : B2
+Espagnol : A1
+learning portuguese and chineese
+Expérience
+
+Full Stack Web Developer
+Freelance Work
+Paris, France
+2010-Present
+Worked for many customers blablah
+
+
+
+Front-end & WebGL Developer
+Kogama
+Stockholm, Sweden
+2020-2022
+Engineered real-time multiplayer gaming features using React.js and WebGL, driving performance improvements and user experience enhancements.
+
+
+
+Video Broadcast & Stream Technician
+Livee & other video broadcast companies
+2005-Present
+
+Total, Orange, Canal +, Airbus, DELL, L'oréal, Carrefour, SNCF,
+Renault, AXA, La Poste, TF1, SPIE, SENSIOLABS, Auchan, BPCE, 
+Radio France, Vinci, Allianz, Caisse des Dépôts and many more…
+
+
+
+Pas de formation, j’ai appris par le graphisme to dev
+j’ai pas un parcours classique je m’y suis interessée et j’ai progressivement migré vers ce métier, années aprés années
+mission que j’ai fait petit à petit j’ai travaillé avec des developpeurs chauds qui m’ont appris puis j’ai été ensuite autonome pour faire des projets seule, notamment avec livee
+
+
+Factuel : mission / clients
+webinar, networking, SPIE / Total / Labos pharmaceutiques / CRM : petites applis, youtuble - like pour EDF, google keep like, etc…
+pour certains projets je collaborais avec des designers et d’autres dev, pour d’autres je fais tout.
+
+Likely
+
+Suéde : abox/kogama : composants sur la monétisation, les menus d’options du jeu, un menu de selection de briques et de modéles 3D, optimisation du rendu (fort gain de FPS) du aux draw calls, et une mauvaise config, migration vers babylonjs, standardisé l’utilisation de prettier, etc,
+
+ travail en équipe à l’étranger
+
+Likely : emojis reactions : admin/client/messages/stats
+
+réactions emojis en overlay sur un live vidéo, un peu comme sur twitch, tiktok etc…
+
+analyse des stats via ia
+
+
+appli de scan d’event livee conf.app
+
+CRM 
+
+et event app
+
+Chat system, event app : entiérement developpé seule, utilisée parfois par des grands groupes, par le biais de boite de vidéo pour qui je travaille, je suis actuellement en train de la refaire entiérement sur nextjs, tailwind, shadcn
+
+
+projet perso en cours sur 
+deck.gl  / mapbox  / maplibre / 
+
+
+
+
+VERCEL
+
+Technos utilisées, front ?
+
+poser des questions intelligentes sur l’indexation des data 
+
+Pouvez-vous décrire l'architecture sous-jacente de l'indexation des data dans votre plateforme ? Quelles technologies ou algorithmes utilisez-vous pour garantir une recherche rapide et précise ?"
+"Comment gérez-vous la synchronisation des données provenant de sources multiples (Notion, Slack, GitHub, etc.) pour les indexer de manière cohérente ?"
+"Comment assurez-vous l’actualisation en temps réel de l’index des données lorsque des modifications sont apportées aux documents ou aux flux de travail ?"
+"Quelles stratégies mettez-vous en œuvre pour optimiser la performance et minimiser la latence lors de l’interrogation de grands volumes de données ?"
+
+
+problématique de données française avec des IA agnostic etc
+
+des missions qui ressemblent à ce qu’il me demande : 
+j’utilise bcp cursor/copilot/windsurf
+
+petite friction au démarrage de votre projet mais un gain de temps ensuite monstrueux, je pense que les efforts devraient se focus un petit peu sur la réduction de cette friction pour réduire le drop d’utilisation en début de projet
+
+
+
+Amélioration de l’UI notamment sur ci et ça
+
+idées démo/wizard
+
+peut etre créer des custom buttons ou autre chose que le language naturel pour interagir avec ces données : morning overview, weekly overview, “ou en est ce projet?” etc 
+
+Intégration d’un système de suggestions proactives
+👉 L’interface pourrait analyser l’historique et le contexte pour proposer automatiquement des actions ou des améliorations à l’utilisateur (ex. “Essayez de consulter vos rapports de performance via l’onglet Analytics”). l’ia pourrait, aprés indexation des données, réfléchir a quelque chose de pertinent et le proposer aux users lors des premiers jours d’utilisation de dust
+
+Gamification pour personnes non technique
+
+
+Texte d’intro 
+
+Hello World! 👋🏻 
+Web developer with over 10 years of experience, I have had the opportunity to participate in numerous back-end and front-end projects for both large corporations and small startups. I help you develop your tech product: Specialized in web/mobile app development challenges, I support you through all stages of your application creation, and I can also assist with your existing projects. Self-taught, I am always seeking new challenges to expand my knowledge and continuously train myself in the latest technologies to improve the products I develop. 
+Diligent and thorough, I take pride in delivering quality work within allocated timeframes. Creative and highly attentive to your expectations and needs, I bring strong proposals to help improve your project and its implementation. 
+
+
+
+
+Contact me to connect via Google Meet over a nice coffee to discuss your project or just talk tech - it's always a pleasure! ☕️
+
+
+
+clients pour qui j’ai bossé a classer
+
+2014 
+2015
+2016
+2017
+2018
+Fortunéo
+Orange
+Malakoff Médéric
+Conseil Général du Val d’oise
+P.M.U
+Nétinéo 
+Renault
+Eurohealth
+Otsuka
+Arsep
+ADIE
+Cegos
+Allianz
+Formations Buralistes
+GL Events
+Janssen
+Axis
+Radio France
+Barreau de Paris
+La Tribune
+Total
+CNES
+Smart Pitchfork Festival
+
+
+Larena Santé
+Satis
+CapCom
+Terre d’Azur
+Caisse d’epargne
+Look Voyages
+Caldeyris
+SNCF
+Heavent
+Ibis
+La Poste Immobilier
+BabyMoov
+Bordeaux Chesnel
+Ministére des finances
+CNAV
+Canal +
+Invivo
+ENGIE
+Daher
+DLL Athlon
+EPMA
+AFER
+TF1
+ING DIRECT
+UCANNS
+ERDF
+PILEJE
+SPIE
+SENSIOLABS
+OPERA DE PARIS
+
+
+CNAF
+CSC
+ECHOSENS
+ARRAHLM
+CARE-INSIGHTS
+CITYA
+SANOFLORE
+ROYAL CANIN
+AUCHAN
+CAISSE DES DEPOTS
+BPCE
+
+
+Renault Alpine
+CNIEL
+Carrefour
+Conseil Général  Pays de la loire
+Ville d’Antony
+Vinci
+DELL
+Azilis
+EDHEC (Amsterdam)
+
+
+Loréal
+TDF
+Synerpa
+Suez
+Just’ Debout
+AXA
+Pole Emploi
+Airbus
+Epson
+
+
+
+
+
+
+Parcours 
+mettre sur quoi j’ai bossé
+
+
+
+Travaillé dans la vidéo  / Evenementiel / Graphiste depuis 2005
+
+2012 J’ai commencé à évoluer vers le code en commençant par des sites wordpress / ecommerce
+
+2015 
+
+2016 USA Orlando etc
+
+2021 *
+
+
+
+
+derniéres missions
+
+

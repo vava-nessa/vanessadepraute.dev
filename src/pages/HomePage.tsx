@@ -209,17 +209,6 @@ function HomePage() {
 
         <div id="app-content-wrapper" className="relative z-10">
           <div id="app-wrapper" className="wrapper w-full flex flex-col px-5 pb-5">
-            {/* Construction Warning Banner - Only in Production */}
-            {import.meta.env.PROD && (
-              <div className="w-full max-w-[1200px] mx-auto pt-4 px-5">
-                <div className="bg-red-500/10 border border-red-500 rounded-lg px-4 py-3 mb-4">
-                  <p className="text-red-500 text-center text-sm md:text-base font-medium">
-                    ⚠️ Website under construction / not finished yet
-                  </p>
-                </div>
-              </div>
-            )}
-
             {/* Header Section */}
             <div id="header-section" className="w-full max-w-[1200px] mx-auto px-5 pt-12">
               <div id="header-content" className="flex flex-col lg:flex-row items-center gap-8 mb-8">

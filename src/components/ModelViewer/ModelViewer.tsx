@@ -702,9 +702,9 @@ export default function ModelViewer({
             // Canvas configuration
             gl={{
               antialias: true,
-              pixelRatio: window.devicePixelRatio,
               alpha: true,
             }}
+            dpr={window.devicePixelRatio}
             onCreated={({ gl }) => {
               try {
                 gl.setClearColor(0x000000, 0); // Transparent background

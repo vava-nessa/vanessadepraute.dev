@@ -1,0 +1,11 @@
+# robots.txt for vanessadepraute.dev
+# Allow all web crawlers to access the site
+User-agent: *
+Allow: /
+
+# Disallow specific paths
+Disallow: /_vercel/
+Disallow: /*.json$
+
+# Sitemap location (if you have one)
+# Sitemap: https://www.vanessadepraute.dev/sitemap.xml

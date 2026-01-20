@@ -37,13 +37,9 @@ export default defineConfig({
         manualChunks: (id) => {
           // Vendor chunks - separate large libraries
           if (id.includes("node_modules")) {
-            // React ecosystem (core)
-            if (id.includes("react/") || id.includes("react-dom/")) {
+            // React ecosystem
+            if (id.includes("react") || id.includes("react-dom") || id.includes("react-router")) {
               return "vendor-react";
-            }
-            // React Router
-            if (id.includes("react-router")) {
-              return "vendor-router";
             }
             // Three.js and 3D libraries
             if (id.includes("three") || id.includes("@react-three")) {
@@ -61,25 +57,9 @@ export default defineConfig({
             if (id.includes("@vercel")) {
               return "vendor-vercel";
             }
-            // Animation libraries
-            if (id.includes("framer-motion") || id.includes("motion/")) {
-              return "vendor-animation";
-            }
-            // GSAP
-            if (id.includes("gsap")) {
-              return "vendor-gsap";
-            }
-            // UI Libraries - Radix UI and components
-            if (id.includes("@radix-ui") || id.includes("class-variance-authority")) {
-              return "vendor-ui";
-            }
-            // Assistant UI
-            if (id.includes("@assistant-ui")) {
-              return "vendor-assistant";
-            }
-            // Utilities and helpers
-            if (id.includes("clsx") || id.includes("tailwind-merge") || id.includes("lucide-react")) {
-              return "vendor-utils";
+            // Framer Motion
+            if (id.includes("framer-motion")) {
+              return "vendor-framer";
             }
             // Other vendors
             return "vendor-other";
@@ -87,7 +67,7 @@ export default defineConfig({
         },
       },
     },
-    // Increase chunk size warning limit to 1000 kB (from default 500 kB)
-    chunkSizeWarningLimit: 1000,
+    // Increase chunk size warning limit to 6000 kB (vendor-other is large due to dependency tree)
+    chunkSizeWarningLimit: 6000,
   },
 });

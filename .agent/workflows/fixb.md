@@ -128,9 +128,9 @@ Health Check:
 
 🛠️ Fixes applied
 
-🔌 [file:line] Brief fix description
-📦 [file:line] Brief fix description
-🔗 [file:line] Brief fix description
+🔌 `file:line` Brief fix description
+📦 `file:line` Brief fix description
+🔗 `file:line` Brief fix description
 
 ⸻
 

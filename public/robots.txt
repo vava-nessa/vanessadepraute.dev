@@ -1,11 +1,25 @@
 # robots.txt for vanessadepraute.dev
-# Allow all web crawlers to access the site
-User-agent: *
-Allow: /
+# SEO-optimized configuration for all crawlers
 
-# Disallow specific paths
+# Standard search engines
+User-agent: Googlebot
+User-agent: Bingbot
+User-agent: Slurp
+User-agent: DuckDuckBot
+User-agent: Baiduspider
+User-agent: Yandexbot
+User-agent: Sogou
+Allow: /
 Disallow: /_vercel/
 Disallow: /*.json$
+Crawl-delay: 0
 
-# Sitemap location (if you have one)
-# Sitemap: https://www.vanessadepraute.dev/sitemap.xml
+# All other bots
+User-agent: *
+Allow: /
+Disallow: /_vercel/
+Disallow: /*.json$
+Crawl-delay: 1
+
+# Sitemaps
+Sitemap: https://www.vanessadepraute.dev/sitemap.xml

@@ -784,3 +784,8 @@ Travaillé dans la vidéo  / Evenementiel / Graphiste depuis 2005
 derniéres missions
 
 
+
+
+---
+
+**Vanessa Depraute**

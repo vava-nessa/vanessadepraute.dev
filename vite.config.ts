@@ -33,41 +33,9 @@ export default defineConfig({
           // Configuration par défaut pour les autres fichiers
           return "assets/[name].[hash].[ext]";
         },
-        // Manual chunks for better code-splitting
-        manualChunks: (id) => {
-          // Vendor chunks - separate large libraries
-          if (id.includes("node_modules")) {
-            // React ecosystem
-            if (id.includes("react") || id.includes("react-dom") || id.includes("react-router")) {
-              return "vendor-react";
-            }
-            // Three.js and 3D libraries
-            if (id.includes("three") || id.includes("@react-three")) {
-              return "vendor-three";
-            }
-            // i18n
-            if (id.includes("i18next") || id.includes("react-i18next")) {
-              return "vendor-i18n";
-            }
-            // Sentry
-            if (id.includes("@sentry")) {
-              return "vendor-sentry";
-            }
-            // Vercel analytics
-            if (id.includes("@vercel")) {
-              return "vendor-vercel";
-            }
-            // Framer Motion
-            if (id.includes("framer-motion")) {
-              return "vendor-framer";
-            }
-            // Other vendors
-            return "vendor-other";
-          }
-        },
       },
     },
-    // Increase chunk size warning limit to 6000 kB (vendor-other is large due to dependency tree)
+    // Increase chunk size warning limit to 6000 kB (large bundles are acceptable for this project)
     chunkSizeWarningLimit: 6000,
   },
 });

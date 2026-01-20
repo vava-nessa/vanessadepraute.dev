@@ -11,8 +11,9 @@ export default function ContactButton() {
 
   return (
     <button
-      onClick={openModal}
-      className="group relative mx-auto flex items-center justify-center rounded-full px-4 py-1.5 shadow-[inset_0_-8px_10px_#8fdfff1f] transition-shadow duration-500 ease-out hover:shadow-[inset_0_-5px_10px_#8fdfff3f] "
+        onClick={openModal}
+        aria-label={t("footer.contact")}
+        className="group relative mx-auto flex items-center justify-center rounded-full px-4 py-1.5 shadow-[inset_0_-8px_10px_#8fdfff1f] transition-shadow duration-500 ease-out hover:shadow-[inset_0_-5px_10px_#8fdfff3f] "
     >
       <span
         className={cn(

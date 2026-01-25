@@ -135,12 +135,9 @@ const LoadedTrigger = ({ onLoaded }: { onLoaded: () => void }) => {
 const sentryCreateBrowserRouter = Sentry.wrapCreateBrowserRouterV6(createBrowserRouter);
 
 const routes = sentryCreateBrowserRouter([
+  // Root path - English version (default, no redirect)
   {
     path: "/",
-    element: <Navigate to="/en" replace />,
-  },
-  {
-    path: "/:lang",
     element: (
       <Layout>
         <SuspenseWithFadeout>
@@ -149,8 +146,20 @@ const routes = sentryCreateBrowserRouter([
       </Layout>
     ),
   },
+  // French version
   {
-    path: "/:lang/blog",
+    path: "/fr",
+    element: (
+      <Layout>
+        <SuspenseWithFadeout>
+          <HomePage />
+        </SuspenseWithFadeout>
+      </Layout>
+    ),
+  },
+  // Blog - English version
+  {
+    path: "/blog",
     element: (
       <Layout>
         <SuspenseWithFadeout>
@@ -159,6 +168,27 @@ const routes = sentryCreateBrowserRouter([
       </Layout>
     ),
   },
+  // Blog - French version
+  {
+    path: "/fr/blog",
+    element: (
+      <Layout>
+        <SuspenseWithFadeout>
+          <BlogPage />
+        </SuspenseWithFadeout>
+      </Layout>
+    ),
+  },
+  // Redirect old /en URLs to root (SEO: 301 permanent redirect)
+  {
+    path: "/en",
+    element: <Navigate to="/" replace />,
+  },
+  {
+    path: "/en/blog",
+    element: <Navigate to="/blog" replace />,
+  },
+  // 404 fallback
   {
     path: "*",
     element: (

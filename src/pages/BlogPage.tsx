@@ -1,24 +1,30 @@
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "../App.css";
 import LanguageSwitcher from "../components/LanguageSwitcher/LanguageSwitcher.tsx";
 import ControlsBar from "../components/ControlsBar/ControlsBar.tsx";
 import { AnimatedThemeToggler } from "../components/ui/animated-theme-toggler";
 import { useEffect } from "react";
+import SEOHead from "../components/SEOHead/SEOHead";
 
 function BlogPage() {
   const { t, i18n } = useTranslation();
-  const { lang } = useParams();
+  const location = useLocation();
 
-  // Initialiser la langue basée sur la route
+  // Detect language from URL path: /fr/* = French, otherwise = English
   useEffect(() => {
-    if (lang === "fr" || lang === "en") {
-      i18n.changeLanguage(lang);
+    const isFrench = location.pathname.startsWith("/fr");
+    const detectedLang = isFrench ? "fr" : "en";
+
+    if (i18n.language !== detectedLang) {
+      i18n.changeLanguage(detectedLang);
     }
-  }, [lang, i18n]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
 
   return (
     <>
+      <SEOHead />
       <ControlsBar>
         <LanguageSwitcher />
         <div className="controls-separator" />

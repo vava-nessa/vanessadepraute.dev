@@ -14,7 +14,9 @@ export default function NotFoundPage() {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          navigate(`/${i18n.language}`);
+          // Redirect to root for English, /fr for French
+          const redirectPath = i18n.language === "fr" ? "/fr" : "/";
+          navigate(redirectPath);
           return 0;
         }
         return prev - 1;

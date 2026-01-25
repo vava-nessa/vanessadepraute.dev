@@ -20,12 +20,20 @@ pnpm dev
 
 - Entry point: `src/main.tsx` (RouterProvider, ThemeProvider, Vercel Analytics)
 - Routing: `src/routes.tsx`
-  - `/` redirects to `/en`
-  - `/:lang` renders `HomePage`
-  - `/:lang/blog` renders `BlogPage`
+  - `/` renders `HomePage` (English version, no redirect)
+  - `/fr` renders `HomePage` (French version)
+  - `/blog` renders `BlogPage` (English version)
+  - `/fr/blog` renders `BlogPage` (French version)
+  - `/en` and `/en/blog` redirect to `/` and `/blog` (301 permanent redirects for SEO compatibility)
   - `*` renders `NotFoundPage`
 - Layout: `src/components/Layout/Layout.tsx` wraps pages and adds a global blur layer.
 - i18n: `src/i18n/config.ts` + `src/locales/en.json` and `src/locales/fr.json`.
+  - Language detection: based on URL path (`/fr/*` = French, otherwise = English)
+  - No automatic redirects (SEO-friendly approach)
+- SEO: `src/components/SEOHead/SEOHead.tsx` manages multilingual SEO
+  - Automatically generates `hreflang` tags for language alternatives
+  - Helps Google understand and index both language versions
+  - Included in `HomePage` and `BlogPage`
 - Theme: `src/contexts/ThemeContext.tsx` toggles `dark-mode` / `light-mode` on `documentElement`.
 - Styling: Tailwind v4 + custom CSS (`src/index.css`, `src/App.css`, and component CSS files).
   - **Brand Colors**: defined in `src/index.css` as `--color-primary` and `--color-secondary`.
@@ -43,6 +51,48 @@ pnpm dev
 - `src/TerminalDemo.tsx` and `src/components/TerminalInterests.tsx` - terminal-style content blocks
 - `src/contexts/ThemeContext.tsx` - theme state and persistence
 - `src/i18n/config.ts` - language setup (route-driven)
+
+## Internationalization & SEO
+
+### URL Structure
+
+The site uses a clean, SEO-friendly URL structure:
+
+- **English (default)**: `/` and `/blog`
+- **French**: `/fr` and `/fr/blog`
+- **Legacy redirects**: `/en/*` → `/*` (301 permanent redirects)
+
+### Language Detection
+
+Language is detected from the URL path in each page component:
+- Pages use `useLocation()` to detect if the path starts with `/fr`
+- If detected, `i18n.changeLanguage("fr")` is called
+- Otherwise, defaults to English
+
+### SEO Implementation
+
+**Component**: `src/components/SEOHead/SEOHead.tsx`
+
+Automatically generates `hreflang` tags for multilingual SEO:
+
+```html
+<link rel="alternate" hreflang="en" href="https://vanessadepraute.dev/" />
+<link rel="alternate" hreflang="fr" href="https://vanessadepraute.dev/fr" />
+<link rel="alternate" hreflang="x-default" href="https://vanessadepraute.dev/" />
+```
+
+This tells Google:
+- The relationship between language versions
+- Which version to show for each language preference
+- The default version for unmatched languages
+
+### Benefits
+
+- ✅ No redirect on root path (Google can index `/`)
+- ✅ Clean URLs without language prefixes for English
+- ✅ Proper `hreflang` tags for international SEO
+- ✅ 301 redirects preserve existing `/en` links
+- ✅ Standard web convention (root = primary language)
 
 ## Tooling and config
 

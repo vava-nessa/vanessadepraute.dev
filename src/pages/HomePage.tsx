@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "../App.css";
 import CoderGirl from "../components/CoderGirl/CoderGirl.tsx";
 import TechStack from "../components/TechStack/TechStack.tsx";
@@ -29,6 +29,7 @@ import ProjectCard from "../components/ProjectCard/ProjectCard";
 import { useContactModal } from "@/contexts/ContactModalContext";
 import outOfBurnImage from "../assets/out_of_burn_ui.png";
 import MetaBalls from "../components/ui/MetaBalls";
+import SEOHead from "../components/SEOHead/SEOHead";
 
 const projectImages: Record<string, string> = {
   outOfBurn: outOfBurnImage,
@@ -38,21 +39,25 @@ function HomePage() {
   const { handleError } = useErrorHandler("HomePage");
   const { openModal } = useContactModal();
   const { t, i18n } = useTranslation();
-  const { lang } = useParams();
+  const location = useLocation();
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [debugMode, setDebugMode] = useState(false);
   const clickCountRef = useState({ count: 0, timeout: null as NodeJS.Timeout | null })[0];
 
-  // Initialiser la langue basée sur la route
+  // Detect language from URL path: /fr/* = French, otherwise = English
   useEffect(() => {
     try {
-      if (lang === "fr" || lang === "en") {
-        i18n.changeLanguage(lang);
+      const isFrench = location.pathname.startsWith("/fr");
+      const detectedLang = isFrench ? "fr" : "en";
+
+      if (i18n.language !== detectedLang) {
+        i18n.changeLanguage(detectedLang);
       }
     } catch (error) {
       handleError(error, { action: "change_language" });
     }
-  }, [lang, i18n, handleError]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
 
   // Randomize roles: 2 important, 1 secondary (except first is always "Developer"/"Développeuse")
   const shuffledRoles = useMemo(() => {
@@ -188,6 +193,7 @@ function HomePage() {
       duration={1100}
       extraScale={1.8}
     >
+      <SEOHead />
       <ControlsBar>
         <LanguageSwitcher />
         <div className="controls-separator" />

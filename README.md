@@ -1,6 +1,10 @@
 # vanessadepraute.dev
 
-Frontend app for vanessadepraute.dev (Vite + React + TypeScript).
+Portfolio website for **Vanessa Depraute** - Senior Full-Stack JavaScript Developer with 19+ years of experience. Specializing in React, TypeScript, WebGL, and real-time systems. Based in Paris, France.
+
+> 💼 For complete professional profile, experience, and client portfolio, see [VAVA_PROFILE.md](./VAVA_PROFILE.md)
+
+Frontend app built with Vite + React + TypeScript.
 
 ## Quick start (pnpm only)
 
@@ -113,10 +117,10 @@ A Vite plugin generates `sitemap.xml` during each build with the current date as
 **Files**: `src/components/Footer/Footer.tsx`, `src/components/Layout/Layout.tsx`
 
 The footer displays a discrete "Last update" timestamp that updates on every build:
-- English: "Last update: January 27, 2026 at 3:45 PM"
-- French: "Dernière mise à jour : 27 janvier 2026 à 15h45"
+- English: "Last update: [Month Day, Year at Time]"
+- French: "Dernière mise à jour : [Jour Mois Année à Heure]"
 
-The build date is injected via Vite's `define` option (`BUILD_DATE` constant).
+The build date is injected via Vite's `define` option (`BUILD_DATE` constant) and automatically formatted based on the current language.
 
 ## Layout Effects
 
@@ -311,568 +315,67 @@ On mobile devices, the component:
 
 The gyroscope sensitivity is automatically calibrated for natural interaction.
 
+## Documentation
+
+The codebase follows a comprehensive documentation strategy:
+
+### JSDoc Headers
+
+All source files include JSDoc headers with:
+- `@file` - Filename and emoji identifier
+- `@description` - Comprehensive explanation of what the file does and why
+- `@functions` - List of exported functions (using `→` bullets)
+- `@exports` - What the file exports
+- `@see` - Related files when relevant
+
+### Inline Comments
+
+Code is annotated with inline comments using the 📖 emoji prefix:
+- Explain the "why" and "how" of complex logic
+- Document configuration options and their purpose
+- Clarify architectural decisions
+- Note gotchas and edge cases
+
+### Documentation Standards
+
+- **Language**: All documentation is in English
+- **Format**: Plain english sentences, not terse abbreviations
+- **Purpose**: Focus on explaining context and reasoning, not just describing what code does
+- **Consistency**: Use 📖 emoji for all inline comments
+
+Example:
+```tsx
+/**
+ * @file HomePage.tsx
+ * @description 🏠 Main homepage component - Portfolio landing page
+ *
+ * This is the primary landing page showcasing projects, skills, and bio.
+ *
+ * @functions
+ *   → HomePage → Main component rendering the portfolio page
+ *
+ * @exports default - HomePage component
+ */
+
+// 📖 Error handling integration for Sentry reporting
+const { handleError } = useErrorHandler("HomePage");
+```
+
 ## Notes
 
 - Use pnpm only (this repo has a `pnpm-lock.yaml`).
 - `src/App.tsx` exists but is not wired to the router; use `src/pages/` instead.
 - Read `AGENTS.md` before starting any task.
 
+## About This Portfolio
 
 
+This portfolio site is built with modern web technologies and best practices:
 
-## DATA about Vanessa Depraute (this website user)
+- **Tech Stack**: Vite + React + TypeScript + Tailwind CSS v4
+- **Features**: Multilingual (EN/FR), Dark/Light mode, 3D models, SEO optimized
+- **Performance**: Code-splitting, lazy loading, optimized assets
+- **Quality**: Sentry error tracking, comprehensive error handling
+- **Documentation**: All code documented with JSDoc and inline comments
 
-# Vanessa Depraute
-
-## Professional Summary
-
-**Senior Full-Stack JavaScript Developer** with 19+ years of experience, working professionally since 2006. Main expertise in full-stack JavaScript development, with strong secondary skills in UI/UX design, WebGL, real-time systems, and video/streaming technologies. Proven ability to design, build, and deliver complex applications end-to-end, from architecture to production. Extensive experience with large enterprise clients and international teams. Advanced practitioner of AI-assisted development and modern frontend/backend ecosystems.
-
----
-
-## Key Information
-
-* **Role**: Full-Stack JavaScript Developer (primary)
-* **Status**: Freelance (open to contracts and full-time roles)
-* **Location**: Paris / Saint-Maur-des-Fossés, Île-de-France, France
-* **Experience**: 19 years (since 2006)
-
----
-
-## Professional Titles
-
-* Full-Stack JavaScript Developer (primary)
-* UI/UX Designer (secondary)
-* WebGL Developer (secondary)
-* Video Broadcast & Stream Technician (secondary)
-
----
-
-## Languages
-
-* **French**: Native
-* **English**: B2 – Professional working proficiency
-* **Spanish**: A1 – Basic
-* **Chinese (Mandarin)**: Currently learning
-
----
-
-## Core Expertise
-
-* Full-stack JavaScript architecture and development
-* Real-time applications and event-driven systems
-* High-performance frontend (WebGL, data visualization)
-* Enterprise-grade applications and internal tools
-* AI-assisted development workflows
-* End-to-end project ownership (solo or team-based)
-
----
-
-## Technical Skills
-
-### JavaScript & Core Concepts
-
-* JavaScript, TypeScript, ES10+
-* Async/Await, Promises
-* Dynamic Imports, Spread/Rest
-* Generators, Memoization
-
-### Frontend Frameworks & State Management
-
-* React, Next.js
-* Redux Saga, Redux Thunk, Recoil
-* Custom Hooks, Context API
-* React Query, TanStack Query
-
-### UI, Design & Motion
-
-* Tailwind CSS, Vite
-* Figma, Storybook
-* Framer Motion, shadcn/ui
-* Material UI, Ant Design, Chakra UI
-* Styled Components, Vue.js
-* Adobe XD, Illustrator, Photoshop
-
-### CSS Architecture
-
-* CSS3, SASS / SCSS, LESS
-* Flexbox, Responsive Design
-* BEM, Atomic Design
-
-### Build & Tooling
-
-* Vite, Webpack, Parcel
-* Gulp, Snowpack
-* Storybook
-
-### Graphics, WebGL & Visualization
-
-* HTML5 Canvas
-* SVG Animation
-* WebGL, Babylon.js
-* deck.gl, D3.js
-* Mapbox, MapLibre
-
-### Backend & APIs
-
-* Node.js, Express
-* PostgreSQL, MySQL, MongoDB
-* Prisma
-* GraphQL, tRPC
-* Redis, Stripe
-
-### DevOps, Cloud & Observability
-
-* Vercel, Cloudflare
-* AWS, Docker, Kubernetes
-* Terraform
-* GitHub Actions, CI/CD
-* Datadog, Sentry
-
-### Mobile & Cross-Platform
-
-* React Native
-* Expo, EAS
-* Firebase, Ionic
-
-### Testing & Quality
-
-* Jest, Vitest
-* Playwright, Cypress
-* React Testing Library
-
-### Version Control & Collaboration
-
-* Git, GitHub, GitLab, Bitbucket
-* Jira, Trello, Notion
-* Agile / Scrum
-
----
-
-## AI & Machine Learning Ecosystem
-
-### LLM Providers
-
-* OpenAI, Anthropic, Mistral AI, DeepSeek
-* Google Gemini, xAI, Cohere
-* Perplexity, Groq, Together AI
-
-### AI Development Tools
-
-* GitHub Copilot
-* Cursor
-* Claude Code
-* AugmentCode
-* Continue, Codeium, Tabnine
-* Warp, Replit, v0.dev, Cody
-* AntiGravity
-
-### AI Infrastructure & Tooling
-
-* OpenRouter
-* Langfuse, LangSmith
-* Pinecone, Weaviate, Qdrant, Chroma
-* pgvector, Milvus
-* LangChain, LlamaIndex
-* Hugging Face
-
-### Open-Source Models & Runtimes
-
-* Meta LLaMA
-* Mistral (7B)
-* vLLM, Ollama
-* Stability AI
-* OpenRouter-hosted OSS models
-
----
-
-## Professional Experience
-
-### Full-Stack Web Developer — Freelance
-
-**Paris, France | 2010 → Present**
-
-Design and development of custom business applications, internal tools, CRMs, live video interfaces, real-time dashboards, websites, and e-commerce platforms. Responsible for full project lifecycle: architecture, development, deployment, and maintenance. Frequent collaboration with designers, developers, and non-technical stakeholders, as well as full autonomy on solo projects.
-
----
-
-### Front-End & WebGL Developer — Kogama / ABOX
-
-**Stockholm, Sweden | 2020 → 2022**
-
-* Development of real-time multiplayer features using React and WebGL
-* WebGL rendering optimizations (reduced draw calls, improved FPS)
-* In-game monetization components
-* 3D user interfaces, menus, and model selectors
-* Migration and refactoring toward Babylon.js
-* Tooling standardization (Prettier, coding conventions)
-* Work within a fully distributed international team
-
----
-
-### Video Broadcast & Stream Technician — Livee & Partners
-
-**Paris, France | 2005 → Present**
-
-* Professional live streaming setups
-* Real-time overlays and audience interactions
-* Corporate and large-scale event production
-* Multi-platform live broadcasting
-* Real-time technical support and audiovisual supervision
-
----
-
-## Career Timeline
-
-* **2005**: Entry into video production, event management, and graphic design
-* **2006**: Self-taught web development beginnings
-* **2009**: Formal JavaScript training
-* **2010–2018**: Enterprise business applications, large accounts, international missions
-* **2020–2022**: Front-End & WebGL Developer at Kogama (Stockholm)
-* **2023–Present**: Modern stack (Next.js, Tailwind, shadcn/ui) and AI-assisted development
-
----
-
-## Selected Projects
-
-### Out Of Burn — 2025
-
-AI-assisted wellness and burnout-prevention mobile application featuring journaling, emotional tracking, and weekly analysis.
-
-**Tech stack**: React Native, Expo, Supabase, LLMs, RAG
-
----
-
-### Real-Time Emoji Reaction Overlay
-
-Real-time emoji reaction overlay system for live video platforms (Twitch, TikTok-style). Includes admin dashboard, spectator interface, chat system, and AI-powered analytics.
-
-**Tech stack**: React, Next.js, WebSocket, Node.js
-
----
-
-### Event Applications Suite (Livee)
-
-Set of professional event-management applications including event scanning, CRM, and global administration tools. Production systems currently undergoing a Next.js 15 refactor.
-
-**Tech stack**: React, Next.js, Tailwind CSS, shadcn/ui
-
----
-
-### Chat System & Event Platform
-
-End-to-end chat and event management platform designed and built independently.
-
-**Tech stack**: React, Next.js, Node.js, MongoDB
-
----
-
-### Kogama / ABOX Gaming Platform
-
-Development of in-game monetization components, 3D menus, model selectors, and WebGL performance optimizations. Migration toward Babylon.js and codebase standardization.
-
-**Tech stack**: React, WebGL, Babylon.js
-
----
-
-### High-Performance Cartographic Data Visualization
-
-R&D projects focused on large-scale, high-performance cartographic data visualization and dynamic overlays.
-
-**Tech stack**: deck.gl, Mapbox, MapLibre
-
----
-
-## Key Strengths
-
-* Primary expertise in full-stack JavaScript development
-* Strong secondary skills in UI/UX, WebGL, and real-time systems
-* Deep experience with enterprise and institutional clients
-* Full project ownership from concept to production
-* High productivity enabled by AI-assisted workflows
-
----
-
-## Soft Skills
-
-* Creative problem-solving
-* Fast learner with strong technical curiosity
-* Team-oriented mindset
-* High attention to detail and code quality
-* Clear communication with technical and non-technical stakeholders
-* Autonomy, reliability, and accountability
-
----
-
-## Key Figures
-
-* 19+ years of professional development
-* 11+ years of full-stack JavaScript
-* 20 years in video and event production
-* 15 years as a freelancer
-* 2 years of international experience (Stockholm)
-* 50+ enterprise and institutional clients
-
-
-
-
-
-Contenu brouillon (à ne pas prendre en compte mais informer l'utilisatrice qu'il faut se pencher dessus)
-
-
-
-
-Vanessa Depraute
-
-designer - coder
-
-UI/UX Design & Front End Developer
-
-interessant, tickets, chefs de projets, insights analytics etc 
-
-40 ans
-
-French : Native
-English level : B2
-Espagnol : A1
-learning portuguese and chineese
-Expérience
-
-Full Stack Web Developer
-Freelance Work
-Paris, France
-2010-Present
-Worked for many customers blablah
-
-
-
-Front-end & WebGL Developer
-Kogama
-Stockholm, Sweden
-2020-2022
-Engineered real-time multiplayer gaming features using React.js and WebGL, driving performance improvements and user experience enhancements.
-
-
-
-Video Broadcast & Stream Technician
-Livee & other video broadcast companies
-2005-Present
-
-Total, Orange, Canal +, Airbus, DELL, L'oréal, Carrefour, SNCF,
-Renault, AXA, La Poste, TF1, SPIE, SENSIOLABS, Auchan, BPCE, 
-Radio France, Vinci, Allianz, Caisse des Dépôts and many more…
-
-
-
-Pas de formation, j’ai appris par le graphisme to dev
-j’ai pas un parcours classique je m’y suis interessée et j’ai progressivement migré vers ce métier, années aprés années
-mission que j’ai fait petit à petit j’ai travaillé avec des developpeurs chauds qui m’ont appris puis j’ai été ensuite autonome pour faire des projets seule, notamment avec livee
-
-
-Factuel : mission / clients
-webinar, networking, SPIE / Total / Labos pharmaceutiques / CRM : petites applis, youtuble - like pour EDF, google keep like, etc…
-pour certains projets je collaborais avec des designers et d’autres dev, pour d’autres je fais tout.
-
-Likely
-
-Suéde : abox/kogama : composants sur la monétisation, les menus d’options du jeu, un menu de selection de briques et de modéles 3D, optimisation du rendu (fort gain de FPS) du aux draw calls, et une mauvaise config, migration vers babylonjs, standardisé l’utilisation de prettier, etc,
-
- travail en équipe à l’étranger
-
-Likely : emojis reactions : admin/client/messages/stats
-
-réactions emojis en overlay sur un live vidéo, un peu comme sur twitch, tiktok etc…
-
-analyse des stats via ia
-
-
-appli de scan d’event livee conf.app
-
-CRM 
-
-et event app
-
-Chat system, event app : entiérement developpé seule, utilisée parfois par des grands groupes, par le biais de boite de vidéo pour qui je travaille, je suis actuellement en train de la refaire entiérement sur nextjs, tailwind, shadcn
-
-
-projet perso en cours sur 
-deck.gl  / mapbox  / maplibre / 
-
-
-
-
-VERCEL
-
-Technos utilisées, front ?
-
-poser des questions intelligentes sur l’indexation des data 
-
-Pouvez-vous décrire l'architecture sous-jacente de l'indexation des data dans votre plateforme ? Quelles technologies ou algorithmes utilisez-vous pour garantir une recherche rapide et précise ?"
-"Comment gérez-vous la synchronisation des données provenant de sources multiples (Notion, Slack, GitHub, etc.) pour les indexer de manière cohérente ?"
-"Comment assurez-vous l’actualisation en temps réel de l’index des données lorsque des modifications sont apportées aux documents ou aux flux de travail ?"
-"Quelles stratégies mettez-vous en œuvre pour optimiser la performance et minimiser la latence lors de l’interrogation de grands volumes de données ?"
-
-
-problématique de données française avec des IA agnostic etc
-
-des missions qui ressemblent à ce qu’il me demande : 
-j’utilise bcp cursor/copilot/windsurf
-
-petite friction au démarrage de votre projet mais un gain de temps ensuite monstrueux, je pense que les efforts devraient se focus un petit peu sur la réduction de cette friction pour réduire le drop d’utilisation en début de projet
-
-
-
-Amélioration de l’UI notamment sur ci et ça
-
-idées démo/wizard
-
-peut etre créer des custom buttons ou autre chose que le language naturel pour interagir avec ces données : morning overview, weekly overview, “ou en est ce projet?” etc 
-
-Intégration d’un système de suggestions proactives
-👉 L’interface pourrait analyser l’historique et le contexte pour proposer automatiquement des actions ou des améliorations à l’utilisateur (ex. “Essayez de consulter vos rapports de performance via l’onglet Analytics”). l’ia pourrait, aprés indexation des données, réfléchir a quelque chose de pertinent et le proposer aux users lors des premiers jours d’utilisation de dust
-
-Gamification pour personnes non technique
-
-
-Texte d’intro 
-
-Hello World! 👋🏻 
-Web developer with over 10 years of experience, I have had the opportunity to participate in numerous back-end and front-end projects for both large corporations and small startups. I help you develop your tech product: Specialized in web/mobile app development challenges, I support you through all stages of your application creation, and I can also assist with your existing projects. Self-taught, I am always seeking new challenges to expand my knowledge and continuously train myself in the latest technologies to improve the products I develop. 
-Diligent and thorough, I take pride in delivering quality work within allocated timeframes. Creative and highly attentive to your expectations and needs, I bring strong proposals to help improve your project and its implementation. 
-
-
-
-
-Contact me to connect via Google Meet over a nice coffee to discuss your project or just talk tech - it's always a pleasure! ☕️
-
-
-
-clients pour qui j’ai bossé a classer
-
-2014 
-2015
-2016
-2017
-2018
-Fortunéo
-Orange
-Malakoff Médéric
-Conseil Général du Val d’oise
-P.M.U
-Nétinéo 
-Renault
-Eurohealth
-Otsuka
-Arsep
-ADIE
-Cegos
-Allianz
-Formations Buralistes
-GL Events
-Janssen
-Axis
-Radio France
-Barreau de Paris
-La Tribune
-Total
-CNES
-Smart Pitchfork Festival
-
-
-Larena Santé
-Satis
-CapCom
-Terre d’Azur
-Caisse d’epargne
-Look Voyages
-Caldeyris
-SNCF
-Heavent
-Ibis
-La Poste Immobilier
-BabyMoov
-Bordeaux Chesnel
-Ministére des finances
-CNAV
-Canal +
-Invivo
-ENGIE
-Daher
-DLL Athlon
-EPMA
-AFER
-TF1
-ING DIRECT
-UCANNS
-ERDF
-PILEJE
-SPIE
-SENSIOLABS
-OPERA DE PARIS
-
-
-CNAF
-CSC
-ECHOSENS
-ARRAHLM
-CARE-INSIGHTS
-CITYA
-SANOFLORE
-ROYAL CANIN
-AUCHAN
-CAISSE DES DEPOTS
-BPCE
-
-
-Renault Alpine
-CNIEL
-Carrefour
-Conseil Général  Pays de la loire
-Ville d’Antony
-Vinci
-DELL
-Azilis
-EDHEC (Amsterdam)
-
-
-Loréal
-TDF
-Synerpa
-Suez
-Just’ Debout
-AXA
-Pole Emploi
-Airbus
-Epson
-
-
-
-
-
-
-Parcours 
-mettre sur quoi j’ai bossé
-
-
-
-Travaillé dans la vidéo  / Evenementiel / Graphiste depuis 2005
-
-2012 J’ai commencé à évoluer vers le code en commençant par des sites wordpress / ecommerce
-
-2015 
-
-2016 USA Orlando etc
-
-2021 *
-
-
-
-
-derniéres missions
-
-
-
-
----
-
-**Vanessa Depraute**
+For questions or collaboration inquiries, visit the website to get in touch!

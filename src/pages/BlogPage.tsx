@@ -1,3 +1,30 @@
+/**
+ * @file BlogPage.tsx
+ * @description 📝 Blog page component - Currently showing "Coming Soon" placeholder
+ *
+ * This page will eventually display blog posts about web development, tech, and projects.
+ * For now, it serves as a placeholder with multilingual support and SEO optimization.
+ *
+ * 🌐 Multilingual Support:
+ * Language is detected from URL path:
+ *   - /blog → English
+ *   - /fr/blog → French
+ *
+ * 🎨 Features:
+ *   → SEO Head with hreflang tags for Google indexing
+ *   → ControlsBar with language and theme switchers
+ *   → Responsive design matching the main site aesthetic
+ *   → "Coming Soon" message in both languages
+ *
+ * @functions
+ *   → BlogPage → Main blog page component
+ *
+ * @exports default - BlogPage component
+ *
+ * @see ../components/SEOHead/SEOHead.tsx - SEO metadata management
+ * @see ../components/ControlsBar/ControlsBar.tsx - Top navigation controls
+ */
+
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "../App.css";
@@ -8,10 +35,13 @@ import { useEffect } from "react";
 import SEOHead from "../components/SEOHead/SEOHead";
 
 function BlogPage() {
+  // 📖 i18n translation hook for multilingual content
   const { t, i18n } = useTranslation();
+  // 📖 React Router location for URL-based language detection
   const location = useLocation();
 
-  // Detect language from URL path: /fr/* = French, otherwise = English
+  // 📖 Effect: Detect language from URL path and apply i18n change
+  // URL structure: /fr/blog → French, /blog → English
   useEffect(() => {
     const isFrench = location.pathname.startsWith("/fr");
     const detectedLang = isFrench ? "fr" : "en";

@@ -1,3 +1,46 @@
+/**
+ * @file HomePage.tsx
+ * @description 🏠 Main homepage component - Portfolio landing page
+ *
+ * This is the primary landing page of the portfolio site, showcasing:
+ * - Hero section with animated role typing effect
+ * - Bio section with CoderGirl 3D illustration
+ * - Featured projects (Out Of Burn, etc.)
+ * - Tech stack visualizations (scrolling bands + extended grid)
+ * - Interactive 3D cat model with gyroscope/mouse control
+ * - Testimonials and social proof
+ * - FAQ section
+ * - MetaBalls decoration
+ *
+ * 🌐 Multilingual Support:
+ * Language is detected from URL path (/fr = French, otherwise = English)
+ * and applied via i18next's changeLanguage().
+ *
+ * 🎨 Theme Support:
+ * The page adapts to dark/light mode with dynamic Aurora background colors.
+ * Brand colors are fetched from CSS variables for consistency.
+ *
+ * 🎮 Easter Eggs:
+ * - 15 rapid clicks on the 3D model toggles debug mode (shows camera controls)
+ * - Click sparks follow cursor with brand color
+ *
+ * 🔧 Key Features:
+ *   → Role shuffling algorithm (2 important, 1 secondary pattern)
+ *   → Dynamic brand color injection from CSS variables
+ *   → Lazy loading of heavy components (ModelViewer)
+ *   → Error boundaries around critical sections
+ *   → Responsive layout with mobile/tablet/desktop breakpoints
+ *
+ * @functions
+ *   → HomePage → Main component rendering the portfolio page
+ *
+ * @exports default - HomePage component
+ *
+ * @see ../components/CoderGirl/CoderGirl.tsx - 3D coder illustration
+ * @see ../components/ModelViewer/ModelViewer.tsx - Interactive 3D model viewer
+ * @see ../contexts/ThemeContext.tsx - Theme management
+ */
+
 import { useState, useEffect, useMemo, lazy, Suspense } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
@@ -23,7 +66,7 @@ import LightRays from "../components/LightRays/LightRays";
 import FAQ from "../components/FAQ";
 import Footer from "../components/Footer/Footer";
 import { ErrorBoundary } from "../components/ErrorBoundary/ErrorBoundary";
-// Lazy load ModelViewer (heavy 3D component)
+// 📖 Lazy load ModelViewer (heavy 3D component) - Reduces initial bundle size
 const ModelViewer = lazy(() => import("../components/ModelViewer/ModelViewer"));
 import ProjectCard from "../components/ProjectCard/ProjectCard";
 import { useContactModal } from "@/contexts/ContactModalContext";
@@ -31,20 +74,29 @@ import outOfBurnImage from "../assets/out_of_burn_ui.png";
 import MetaBalls from "../components/ui/MetaBalls";
 import SEOHead from "../components/SEOHead/SEOHead";
 
+// 📖 Project images mapping - Maps project IDs to imported image assets
 const projectImages: Record<string, string> = {
   outOfBurn: outOfBurnImage,
 };
 
 function HomePage() {
+  // 📖 Error handling integration for Sentry reporting
   const { handleError } = useErrorHandler("HomePage");
+  // 📖 Contact modal controls (opens the contact form overlay)
   const { openModal } = useContactModal();
+  // 📖 i18n translation hook for multilingual content
   const { t, i18n } = useTranslation();
+  // 📖 React Router location for URL-based language detection
   const location = useLocation();
+  // 📖 Track current theme mode for Aurora background color adaptation
   const [isDarkMode, setIsDarkMode] = useState(true);
+  // 📖 Debug mode shows camera controls on 3D model (activated via easter egg)
   const [debugMode, setDebugMode] = useState(false);
+  // 📖 Click counter for easter egg detection (15 rapid clicks)
   const clickCountRef = useState({ count: 0, timeout: null as NodeJS.Timeout | null })[0];
 
-  // Detect language from URL path: /fr/* = French, otherwise = English
+  // 📖 Effect: Detect language from URL path and apply i18n change
+  // URL structure: /fr/* → French, otherwise → English
   useEffect(() => {
     try {
       const isFrench = location.pathname.startsWith("/fr");
@@ -59,7 +111,9 @@ function HomePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
-  // Randomize roles: 2 important, 1 secondary (except first is always "Developer"/"Développeuse")
+  // 📖 Memoized: Randomize role display pattern (2 important, 1 secondary)
+  // First role is ALWAYS "Developer"/"Développeuse" for brand consistency
+  // Then cycles through shuffled roles to show variety without repetition
   const shuffledRoles = useMemo(() => {
     try {
       const important = t("header.important_roles", { returnObjects: true }) as string[];
@@ -67,14 +121,15 @@ function HomePage() {
 
       if (!Array.isArray(important) || !Array.isArray(secondary)) return [];
 
-      // Shuffle important roles (excluding the first one which is always "Developer"/"Développeuse")
+      // 📖 Shuffle important roles using Fisher-Yates algorithm
+      // (excluding the first one which is always "Developer"/"Développeuse")
       const shuffledImportant = [...important];
       for (let i = shuffledImportant.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffledImportant[i], shuffledImportant[j]] = [shuffledImportant[j], shuffledImportant[i]];
       }
 
-      // Shuffle secondary roles
+      // 📖 Shuffle secondary roles (same algorithm)
       const shuffledSecondary = [...secondary];
       for (let i = shuffledSecondary.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -83,26 +138,27 @@ function HomePage() {
 
       const result: string[] = [];
 
-      // ALWAYS start with the FIRST important role (Developer/Développeuse)
+      // 📖 ALWAYS start with the FIRST important role (Developer/Développeuse)
       if (important.length > 0) {
         result.push(important[0]);
       }
 
-      // Then follow the 2 important / 1 secondary pattern with randomized roles
+      // 📖 Then follow the 2 important / 1 secondary pattern with randomized roles
+      // This creates variety while maintaining emphasis on primary skills
       let importantIndex = 0;
       let secondaryIndex = 0;
 
-      // We want to cycle through all roles, giving priority to showing variety
-      const totalCycles = Math.max(shuffledSecondary.length, 10); // Show at least 10 cycles
+      // 📖 Cycle through all roles, showing at least 10 cycles for long typing animation
+      const totalCycles = Math.max(shuffledSecondary.length, 10);
 
       for (let i = 0; i < totalCycles; i++) {
-        // Add 2 important roles (random from shuffled list)
+        // 📖 Add 2 important roles (cycles through shuffled list)
         result.push(shuffledImportant[importantIndex % shuffledImportant.length]);
         importantIndex++;
         result.push(shuffledImportant[importantIndex % shuffledImportant.length]);
         importantIndex++;
 
-        // Add 1 secondary role (random from shuffled list)
+        // 📖 Add 1 secondary role (cycles through shuffled list)
         result.push(shuffledSecondary[secondaryIndex % shuffledSecondary.length]);
         secondaryIndex++;
       }
@@ -114,7 +170,8 @@ function HomePage() {
     }
   }, [t, i18n.language, handleError]);
 
-  // Détecter le thème
+  // 📖 Effect: Detect and track theme changes from ThemeContext
+  // Watches for class changes on <html> element (dark-mode / light-mode)
   useEffect(() => {
     try {
       const checkTheme = () => {
@@ -122,10 +179,10 @@ function HomePage() {
         setIsDarkMode(!isLight);
       };
 
-      // Check initial theme
+      // 📖 Check initial theme on mount
       checkTheme();
 
-      // Observer les changements de thème
+      // 📖 Observer watches for theme toggle via ThemeContext
       const observer = new MutationObserver(checkTheme);
       observer.observe(document.documentElement, {
         attributes: true,
@@ -138,23 +195,26 @@ function HomePage() {
     }
   }, [handleError]);
 
-  // Easter egg: 15 rapid clicks to toggle debug mode
+  /**
+   * 📖 Easter egg: 15 rapid clicks on 3D model toggles debug mode
+   * Debug mode shows camera controls and position info for development
+   */
   const handleModelClick = () => {
     try {
       clickCountRef.count++;
 
-      // Clear previous timeout
+      // 📖 Clear previous timeout to allow rapid clicking
       if (clickCountRef.timeout) {
         clearTimeout(clickCountRef.timeout);
       }
 
-      // Check if we reached 15 clicks
+      // 📖 Check if we reached 15 clicks - toggle debug mode!
       if (clickCountRef.count >= 15) {
         setDebugMode((prev) => !prev);
         clickCountRef.count = 0;
         clickCountRef.timeout = null;
       } else {
-        // Reset counter after 2 seconds of inactivity
+        // 📖 Reset counter after 2 seconds of inactivity
         clickCountRef.timeout = setTimeout(() => {
           clickCountRef.count = 0;
           clickCountRef.timeout = null;
@@ -165,9 +225,12 @@ function HomePage() {
     }
   };
 
-  // Initialize with empty string to avoid "flash of wrong color" - will be populated by effect
+  // 📖 Primary brand color state - initialized empty to avoid flash of wrong color
+  // Will be populated by effect below after DOM is ready
   const [primaryColor, setPrimaryColor] = useState('');
 
+  // 📖 Effect: Read brand color from CSS variable for dynamic use
+  // Used by ClickSpark and MetaBalls for consistent branding
   useEffect(() => {
     const updateColor = () => {
       const color = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
@@ -176,8 +239,9 @@ function HomePage() {
       }
     };
 
+    // 📖 Read initial color
     updateColor();
-    // Re-check on theme change (though it should be constant, this is safer)
+    // 📖 Re-check on theme/style changes (defensive, color should be constant)
     const observer = new MutationObserver(updateColor);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style'] });
     return () => observer.disconnect();

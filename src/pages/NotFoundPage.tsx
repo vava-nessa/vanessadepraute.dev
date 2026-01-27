@@ -1,20 +1,50 @@
+/**
+ * @file NotFoundPage.tsx
+ * @description 🚫 404 Error page with automatic redirect
+ *
+ * This page is shown when users navigate to a non-existent route.
+ * Features a friendly message with profile picture and automatic redirect.
+ *
+ * 🎯 UX Features:
+ *   → Friendly apology message in speech bubble
+ *   → Large animated "404" text with gradient and glow effect
+ *   → 5-second countdown timer before redirect
+ *   → Auto-redirect to homepage (respects user's language preference)
+ *   → Profile picture for personal touch
+ *
+ * 🌐 Multilingual Redirect:
+ *   - French users → /fr
+ *   - Other users → / (English)
+ *
+ * @functions
+ *   → NotFoundPage → 404 error page with countdown redirect
+ *
+ * @exports default - NotFoundPage component
+ *
+ * @see ../routes.tsx - Routing configuration (catch-all route)
+ */
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "../App.css";
 
 export default function NotFoundPage() {
+  // 📖 React Router navigation for programmatic redirect
   const navigate = useNavigate();
+  // 📖 i18n for language-aware redirect path
   const { i18n } = useTranslation();
+  // 📖 Countdown state - decrements from 5 to 0 every second
   const [countdown, setCountdown] = useState(5);
 
+  // 📖 Effect: Start countdown timer and redirect when it reaches 0
   useEffect(() => {
-    // Countdown timer
+    // 📖 Interval runs every 1 second to decrement countdown
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          // Redirect to root for English, /fr for French
+          // 📖 Redirect to language-appropriate homepage
           const redirectPath = i18n.language === "fr" ? "/fr" : "/";
           navigate(redirectPath);
           return 0;
@@ -23,6 +53,7 @@ export default function NotFoundPage() {
       });
     }, 1000);
 
+    // 📖 Cleanup: Clear timer if component unmounts before redirect
     return () => clearInterval(timer);
   }, [navigate, i18n.language]);
 

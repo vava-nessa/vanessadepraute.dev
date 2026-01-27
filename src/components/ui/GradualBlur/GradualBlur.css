@@ -11,6 +11,8 @@
 
 .gradual-blur {
   isolation: isolate;
+  /* 📖 Smooth opacity transition for scroll-based fade effect (see Layout.tsx) */
+  transition: opacity 0.15s ease-out;
 }
 
 @supports not (backdrop-filter: blur(1px)) {

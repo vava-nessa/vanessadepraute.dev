@@ -94,6 +94,43 @@ This tells Google:
 - ✅ 301 redirects preserve existing `/en` links
 - ✅ Standard web convention (root = primary language)
 
+## Dynamic Sitemap & Build Date
+
+The site automatically generates SEO metadata at build time.
+
+### Sitemap Generation
+
+**File**: `vite.config.ts` (sitemapPlugin)
+
+A Vite plugin generates `sitemap.xml` during each build with the current date as `lastmod`. This signals to Google that the site is actively maintained.
+
+- Automatically updates `lastmod` to the build date
+- Includes all pages with proper `hreflang` tags
+- No manual maintenance required
+
+### Last Update Display
+
+**Files**: `src/components/Footer/Footer.tsx`, `src/components/Layout/Layout.tsx`
+
+The footer displays a discrete "Last update" timestamp that updates on every build:
+- English: "Last update: January 27, 2026 at 3:45 PM"
+- French: "Dernière mise à jour : 27 janvier 2026 à 15h45"
+
+The build date is injected via Vite's `define` option (`BUILD_DATE` constant).
+
+## Layout Effects
+
+### Blur Fade on Scroll
+
+**File**: `src/components/Layout/Layout.tsx`
+
+The bottom blur effect (`GradualBlur` component) fades out progressively when approaching the end of the page:
+- Full opacity when far from bottom
+- Starts fading at 400px from bottom
+- Fully invisible at 100px from bottom
+
+This creates a smoother experience and reveals the footer content without overlay.
+
 ## Tooling and config
 
 - Vite config: `vite.config.ts` (alias `@` -> `src`, `.glb` asset handling).

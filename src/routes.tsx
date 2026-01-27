@@ -1,15 +1,56 @@
+/**
+ * @file routes.tsx
+ * @description 🗺️ Application routing configuration with lazy loading and smooth transitions
+ * 
+ * This file defines all application routes and handles:
+ * - Lazy loading of page components for code-splitting
+ * - Terminal-style loading animation during page loads
+ * - Smooth fade transitions between pages
+ * - SEO-friendly URL structure (/, /fr, /blog, /fr/blog)
+ * - Legacy /en/* redirects to /* for backward compatibility
+ * 
+ * 🌐 URL Structure:
+ *   → `/` - English homepage (default)
+ *   → `/fr` - French homepage
+ *   → `/blog` - English blog
+ *   → `/fr/blog` - French blog
+ *   → `/en/*` - Redirects to `/*` (301 for SEO)
+ *   → `*` - 404 Not Found page
+ * 
+ * 🔧 Components:
+ *   → TerminalLoader - Blinking cursor animation shown during Suspense
+ *   → SuspenseWithFadeout - Wrapper that manages smooth page transitions
+ *   → LoadedTrigger - Helper component to detect when lazy component is mounted
+ * 
+ * @functions
+ *   → TerminalLoader → Displays a terminal-style loading animation
+ *   → SuspenseWithFadeout → Wraps children with fade transition logic
+ *   → LoadedTrigger → Triggers callback when component mounts
+ * 
+ * @exports routes - Sentry-wrapped browser router instance
+ * 
+ * @see ./pages/HomePage.tsx - Main homepage component
+ * @see ./pages/BlogPage.tsx - Blog page component
+ * @see ./pages/NotFoundPage.tsx - 404 page component
+ * @see ./components/Layout/Layout.tsx - Page layout wrapper
+ */
+
 import { Navigate, createBrowserRouter } from "react-router-dom";
 import * as Sentry from "@sentry/react";
 import { lazy, Suspense } from "react";
 import * as React from "react";
 import Layout from "./components/Layout/Layout";
 
-// Lazy load pages for code-splitting
+// 📖 Lazy load pages for code-splitting - each page becomes a separate chunk
 const HomePage = lazy(() => import("./pages/HomePage"));
 const BlogPage = lazy(() => import("./pages/BlogPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
-// Terminal-style loading component
+/**
+ * 📖 Terminal-style loading component
+ * Displays a blinking cursor (> _) on black background during page load.
+ * Styled to look like a terminal prompt to match the site's aesthetic.
+ */
 const TerminalLoader = () => (
   <div
     style={{
@@ -49,21 +90,33 @@ const TerminalLoader = () => (
   </div>
 );
 
-// Wrapper component that manages the fadeout transition
+/**
+ * 📖 Wrapper component that manages the fadeout transition
+ * 
+ * This component handles the smooth transition between page loads:
+ * 1. Shows the terminal loader initially
+ * 2. Waits for the lazy component to load (min 300ms for UX)
+ * 3. Fades out the loader while fading in the content
+ * 4. Removes the loader from DOM after fade completes (500ms)
+ * 
+ * @param children - The lazy-loaded page component to render
+ */
 const SuspenseWithFadeout = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [showLoader, setShowLoader] = React.useState(true);
   const startTimeRef = React.useRef(Date.now());
 
+  // 📖 Callback triggered when lazy component finishes loading
+  // Ensures minimum display time for smoother UX, then triggers fadeout
   const handleLoaded = React.useCallback(() => {
     const elapsed = Date.now() - startTimeRef.current;
-    const minDisplayTime = 300;
+    const minDisplayTime = 300; // 📖 Minimum time to show loader (prevents flash)
     const remainingTime = Math.max(0, minDisplayTime - elapsed);
 
-    // Wait for minimum display time, then start fadeout
+    // 📖 Wait for minimum display time, then start fadeout sequence
     setTimeout(() => {
       setIsLoading(false);
-      // Remove loader from DOM after fadeout completes
+      // 📖 Remove loader from DOM after fadeout animation completes (500ms)
       setTimeout(() => {
         setShowLoader(false);
       }, 500);
@@ -123,7 +176,11 @@ const SuspenseWithFadeout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-// Component that triggers onLoaded after mounting
+/**
+ * 📖 Helper component that triggers a callback after mounting
+ * Used to detect when the lazy-loaded component has finished loading.
+ * Renders nothing (null) - purely functional component.
+ */
 const LoadedTrigger = ({ onLoaded }: { onLoaded: () => void }) => {
   React.useEffect(() => {
     onLoaded();
@@ -131,11 +188,20 @@ const LoadedTrigger = ({ onLoaded }: { onLoaded: () => void }) => {
   return null;
 };
 
-// Wrap createBrowserRouter with Sentry for error tracking
+// 📖 Wrap createBrowserRouter with Sentry for automatic error tracking on route changes
 const sentryCreateBrowserRouter = Sentry.wrapCreateBrowserRouterV6(createBrowserRouter);
 
+/**
+ * 📖 Main router configuration
+ * 
+ * Route structure follows SEO best practices:
+ * - Root path (/) serves English content (no language prefix for default)
+ * - French content has /fr prefix
+ * - Old /en/* URLs redirect to /* for backward compatibility
+ * - All pages wrapped in Layout and SuspenseWithFadeout for consistent UX
+ */
 const routes = sentryCreateBrowserRouter([
-  // Root path - English version (default, no redirect)
+  // 📖 Root path - English version (default, no redirect for SEO)
   {
     path: "/",
     element: (
@@ -146,7 +212,7 @@ const routes = sentryCreateBrowserRouter([
       </Layout>
     ),
   },
-  // French version
+  // 📖 French version - accessible at /fr
   {
     path: "/fr",
     element: (
@@ -157,7 +223,7 @@ const routes = sentryCreateBrowserRouter([
       </Layout>
     ),
   },
-  // Blog - English version
+  // 📖 Blog - English version (no language prefix)
   {
     path: "/blog",
     element: (
@@ -168,7 +234,7 @@ const routes = sentryCreateBrowserRouter([
       </Layout>
     ),
   },
-  // Blog - French version
+  // 📖 Blog - French version
   {
     path: "/fr/blog",
     element: (
@@ -179,7 +245,7 @@ const routes = sentryCreateBrowserRouter([
       </Layout>
     ),
   },
-  // Redirect old /en URLs to root (SEO: 301 permanent redirect)
+  // 📖 Legacy redirects: /en/* → /* (301 permanent redirect for SEO compatibility)
   {
     path: "/en",
     element: <Navigate to="/" replace />,
@@ -188,7 +254,7 @@ const routes = sentryCreateBrowserRouter([
     path: "/en/blog",
     element: <Navigate to="/blog" replace />,
   },
-  // 404 fallback
+  // 📖 404 fallback - catches all unmatched routes
   {
     path: "*",
     element: (

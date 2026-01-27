@@ -1,3 +1,23 @@
+/**
+ * @file App.tsx
+ * @description 📱 Legacy application component (NOT currently used in routing)
+ * 
+ * ⚠️ IMPORTANT: This component exists but is NOT wired to the router.
+ * The actual pages are in src/pages/ and are used by src/routes.tsx instead.
+ * This file is kept for reference/backup purposes.
+ * 
+ * This component was the original main app before the routing refactor.
+ * It contains:
+ * - Header section with avatar and animated role titles
+ * - CoderGirl 3D illustration
+ * - TechStack scrolling bands
+ * - Testimonials and contact sections
+ * - Terminal interests section
+ * 
+ * @see ./pages/HomePage.tsx - The actual homepage used by the router
+ * @see ./routes.tsx - Current routing configuration
+ */
+
 import { useState, useEffect } from "react";
 import "./App.css";
 import { useTranslation } from "react-i18next";

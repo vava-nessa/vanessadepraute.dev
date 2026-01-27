@@ -1,3 +1,37 @@
+/**
+ * @file TerminalDemo.tsx
+ * @description 🖥️ Animated terminal component that cycles through coding scenarios
+ * 
+ * This component creates an immersive terminal experience by displaying:
+ * - Various coding scenarios (SSH, shadcn init, vim editing, pnpm commands)
+ * - Random cat GIFs as "reward" screens between coding sequences
+ * - Typing animations that simulate real terminal interactions
+ * 
+ * 🎬 Screen Pattern:
+ * The component follows a pattern: Code → Code → GIF → repeat
+ * This creates variety while ensuring the coding theme dominates.
+ * 
+ * ⏱️ Timing System:
+ * Each screen has:
+ *   - typingDuration: How long the typing animation takes
+ *   - duration: Total time the screen is visible
+ *   - content: Function that renders based on elapsed time
+ * 
+ * 🔧 Key Features:
+ *   → Memoized screen definitions to prevent re-renders
+ *   → Pattern-based random screen selection
+ *   → Smooth blank transitions between screens
+ *   → Error boundaries for robustness
+ * 
+ * @functions
+ *   → TerminalDemo → Main component managing the screen carousel
+ *   → transitionToNextScreen → Handles screen changes with pattern logic
+ * 
+ * @exports default - TerminalDemo component
+ * 
+ * @see ./registry/magicui/terminal.tsx - Terminal UI primitives
+ */
+
 import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import {
   AnimatedSpan,
@@ -5,7 +39,8 @@ import {
   TypingAnimation,
 } from "@/registry/magicui/terminal";
 
-// Array of cat GIFs to randomly select from
+// 📖 Array of cat GIFs - randomly selected for the "reward" screens
+// Mix of local files and Giphy URLs for variety
 const CAT_GIFS = [
   "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcjQxNG81cHZmOGdlZGl1NmdjYWdybDlrNnY0aHRrOGhrYXJiZDd5OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/65n8RPEa3r65q/giphy.gif",
   "/gifs/cat-celebrate.gif",
@@ -17,7 +52,17 @@ const CAT_GIFS = [
   "/gifs/cat-play.gif",
 ];
 
-// Define the sequence of screens to display in order
+/**
+ * 📖 Screen sequence type definition
+ * Each screen defines a terminal "scenario" with timing and content.
+ * 
+ * @property id - Unique identifier for the screen
+ * @property command - The command shown in the terminal (empty for GIF screens)
+ * @property typingDuration - Time (ms) for the typing animation to complete
+ * @property duration - Total time (ms) the screen is displayed
+ * @property maxVisibleLines - Optional: for scrolling terminal implementations
+ * @property content - Function that returns JSX based on timing state
+ */
 type ScreenSequence = {
   id: string;
   command: string;
@@ -31,26 +76,41 @@ type ScreenSequence = {
   ) => React.ReactNode;
 };
 
+/**
+ * 📖 Main Terminal Demo Component
+ * 
+ * Manages a carousel of terminal screens with:
+ * - Pattern-based cycling (code → code → gif → repeat)
+ * - Smooth transitions with 500ms blank screen between
+ * - Typing animations that reveal content progressively
+ * - Error handling for robustness
+ */
 export default function TerminalDemo() {
+  // 📖 Core state for screen management
   const [currentScreenIndex, setCurrentScreenIndex] = useState(0);
-  const [screenElapsedTime, setScreenElapsedTime] = useState(0); // Time elapsed since the current screen started
+  const [screenElapsedTime, setScreenElapsedTime] = useState(0); // 📖 Time since current screen started
   const [showScreen, setShowScreen] = useState(true);
   const [isInitialized, setIsInitialized] = useState(false);
   const [isTypingComplete, setIsTypingComplete] = useState(false);
+  
+  // 📖 GIF state - tracks current GIF URL and display pattern
   const [currentGifUrl, setCurrentGifUrl] = useState(() =>
     CAT_GIFS[Math.floor(Math.random() * CAT_GIFS.length)]
   );
-  const [patternPosition, setPatternPosition] = useState(0); // 0, 1 = code screens, 2 = gif screen
+  const [patternPosition, setPatternPosition] = useState(0); // 📖 0, 1 = code screens, 2 = gif screen
 
-  const screenStartTimeRef = useRef<number>(0); // Timestamp when the current screen started
+  // 📖 Refs for timer management - prevents memory leaks
+  const screenStartTimeRef = useRef<number>(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const screenTransitionTimerRef = useRef<NodeJS.Timeout | null>(null);
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Define all screen sequences separated by type - memoized to prevent recreation on every render
+  // 📖 Memoized screen definitions - prevents recreation on every render
+  // Separated into code screens and gif screens for pattern-based selection
   const { codeScreens, gifScreens } = useMemo(() => {
+    // 📖 Code screens: Various terminal scenarios
     const code: ScreenSequence[] = [
-    // Screen 1: SSH connect to server
+    // 📖 Screen 1: SSH connect to server
     {
       id: "ssh",
       command: "ssh deploy@site.dev",
@@ -101,7 +161,7 @@ export default function TerminalDemo() {
       ),
     },
 
-    // Screen 3: Initial shadcn init
+    // 📖 Screen 3: Initial shadcn init
     {
       id: "init",
       command: "shadcn-ui init",
@@ -152,7 +212,7 @@ export default function TerminalDemo() {
       ),
     },
 
-    // Screen 4: Button installation
+    // 📖 Screen 4: Button installation
     {
       id: "button",
       command: "shadcn-ui add button",
@@ -201,7 +261,7 @@ export default function TerminalDemo() {
       ),
     },
 
-    // Screen 5: Object Viewing/Debugging
+    // 📖 Screen 5: Object Viewing/Debugging
     {
       id: "data-objects",
       command: "node inspect types.ts",
@@ -261,7 +321,7 @@ export default function TerminalDemo() {
       ),
     },
 
-    // Screen 7: Code editor
+    // 📖 Screen 7: Code editor
     {
       id: "code-part1",
       command: "vim App.tsx",
@@ -354,7 +414,7 @@ export default function TerminalDemo() {
       ),
     },
 
-    // Screen 8: pnpm dev
+    // 📖 Screen 8: pnpm dev
     {
       id: "dev",
       command: "pnpm dev",
@@ -405,7 +465,7 @@ export default function TerminalDemo() {
       ),
     },
 
-    // Screen 9: pnpm build - Success
+    // 📖 Screen 9: pnpm build - Success
     {
       id: "fixed",
       command: "pnpm build",
@@ -452,9 +512,9 @@ export default function TerminalDemo() {
 
     ];
 
-    // Define GIF screens separately
+    // 📖 GIF screens: Reward/break screens with random cat GIFs
     const gif: ScreenSequence[] = [
-    // Fullscreen GIF - Display moment 1
+    // 📖 Fullscreen GIF - Display moment 1
     {
       id: "fullscreen-gif-1",
       command: "",
@@ -471,7 +531,7 @@ export default function TerminalDemo() {
       ),
     },
 
-    // Fullscreen GIF - Display moment 2
+    // 📖 Fullscreen GIF - Display moment 2
     {
       id: "fullscreen-gif-2",
       command: "",
@@ -491,17 +551,25 @@ export default function TerminalDemo() {
 
     // Return both arrays
     return { codeScreens: code, gifScreens: gif };
-  }, []); // Empty dependencies - screens never change
+  }, []); // 📖 Empty dependencies - screens never change during component lifetime
 
-  // Combined screen sequences - will be built dynamically based on pattern
+  // 📖 Combined screen sequences - built by concatenating code and gif arrays
   const screenSequences: ScreenSequence[] = useMemo(
     () => codeScreens.concat(gifScreens),
     [codeScreens, gifScreens]
   );
 
-  // Function to handle screen transitions with pattern-based randomization
+  /**
+   * 📖 Handles transition to the next screen with pattern-based selection
+   * 
+   * Pattern: 0 → 1 → 2 → 0 (code → code → gif → repeat)
+   * - Positions 0, 1: Random code screen
+   * - Position 2: Random GIF screen with new random GIF URL
+   * 
+   * Transition includes a 500ms blank screen for visual separation.
+   */
   const transitionToNextScreen = useCallback(() => {
-    // Clear timers related to the current screen
+    // 📖 Clear all timers related to the current screen
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
@@ -512,51 +580,47 @@ export default function TerminalDemo() {
     }
 
     try {
-      // Hide the current screen first for a blank transition
+      // 📖 Hide the current screen first for a blank transition
       setShowScreen(false);
 
-      // Schedule showing the next screen after a short delay
+      // 📖 Schedule showing the next screen after a short delay
       setTimeout(() => {
         try {
-          // Determine next screen based on pattern (0, 1 = code; 2 = gif)
+          // 📖 Determine next screen based on pattern (0, 1 = code; 2 = gif)
           const nextPatternPos = (patternPosition + 1) % 3; // Pattern cycles: 0 → 1 → 2 → 0
           let nextScreenIndex: number;
 
           if (nextPatternPos === 0 || nextPatternPos === 1) {
-            // Pick a random code screen
+            // 📖 Pick a random code screen
             const randomCodeIndex = Math.floor(Math.random() * codeScreens.length);
             nextScreenIndex = randomCodeIndex;
           } else {
-            // Pick a random GIF screen (pattern position === 2)
+            // 📖 Pick a random GIF screen (pattern position === 2)
             const randomGifIndex = Math.floor(Math.random() * gifScreens.length);
             nextScreenIndex = codeScreens.length + randomGifIndex;
-            // Pick a new random GIF URL
+            // 📖 Pick a new random GIF URL for variety
             setCurrentGifUrl(CAT_GIFS[Math.floor(Math.random() * CAT_GIFS.length)]);
           }
 
-          // Set the new screen index
+          // 📖 Set the new screen index and update pattern
           setCurrentScreenIndex(nextScreenIndex);
-
-          // Update pattern position
           setPatternPosition(nextPatternPos);
 
-          // Reset state for the new screen
+          // 📖 Reset state for the new screen
           setScreenElapsedTime(0);
           setIsTypingComplete(false);
-          screenStartTimeRef.current = Date.now(); // Record start time for the new screen
-          setShowScreen(true); // Show the new screen
+          screenStartTimeRef.current = Date.now();
+          setShowScreen(true);
         } catch (error) {
           console.error("Error setting up next screen:", error);
-          // Handle error, maybe try to recover or show an error state
         }
-      }, 500); // 0.5 second blank screen between transitions
+      }, 500); // 📖 500ms blank screen between transitions
     } catch (error) {
       console.error("Error initiating screen transition:", error);
-      // Handle error if hiding fails
     }
-  }, [patternPosition]); // Only patternPosition changes, screen counts are constant
+  }, [patternPosition]); // 📖 Only patternPosition changes, screen counts are constant
 
-  // Initialize the animation only once on mount
+  // 📖 Initialize the animation only once on mount
   useEffect(() => {
     if (!isInitialized) {
       try {
@@ -567,7 +631,7 @@ export default function TerminalDemo() {
         console.error("Error during initial setup:", error);
       }
     }
-    // Cleanup function to clear timers when the component unmounts
+    // 📖 Cleanup function to clear timers when the component unmounts
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
       if (screenTransitionTimerRef.current)
@@ -576,9 +640,9 @@ export default function TerminalDemo() {
     };
   }, [isInitialized]);
 
-  // Update screen elapsed time and handle typing/transitions for the current screen
+  // 📖 Update screen elapsed time and handle typing/transitions for the current screen
   useEffect(() => {
-    // Only run effects if initialized and the screen is visible
+    // 📖 Only run effects if initialized and the screen is visible
     if (!isInitialized || !showScreen) return;
 
     let localIntervalRef: NodeJS.Timeout | null = null;
@@ -589,22 +653,21 @@ export default function TerminalDemo() {
       const currentScreen = screenSequences[currentScreenIndex];
       if (!currentScreen) {
         console.error("Current screen data is missing.");
-        return; // Avoid further execution if screen data is invalid
+        return;
       }
 
-      // --- Screen Elapsed Time Update Interval ---
+      // 📖 Screen Elapsed Time Update Interval - updates every 50ms
       localIntervalRef = setInterval(() => {
         try {
           setScreenElapsedTime(Date.now() - screenStartTimeRef.current);
         } catch (error) {
           console.error("Error updating screen elapsed time:", error);
-          if (localIntervalRef) clearInterval(localIntervalRef); // Stop interval on error
+          if (localIntervalRef) clearInterval(localIntervalRef);
         }
-      }, 50); // Update elapsed time every 50ms
+      }, 50);
       intervalRef.current = localIntervalRef;
 
-      // --- Typing Completion Timer ---
-      // Clear previous timer before setting a new one
+      // 📖 Typing Completion Timer - marks when typing animation should finish
       if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
       localTypingTimerRef = setTimeout(() => {
         try {
@@ -615,12 +678,10 @@ export default function TerminalDemo() {
       }, currentScreen.typingDuration);
       typingTimerRef.current = localTypingTimerRef;
 
-      // --- Screen Transition Timer ---
-      // Clear previous timer before setting a new one
+      // 📖 Screen Transition Timer - triggers move to next screen after duration
       if (screenTransitionTimerRef.current)
         clearTimeout(screenTransitionTimerRef.current);
       localScreenTransitionTimerRef = setTimeout(() => {
-        // Ensure transition logic is wrapped in try...catch
         try {
           transitionToNextScreen();
         } catch (error) {
@@ -629,56 +690,48 @@ export default function TerminalDemo() {
       }, currentScreen.duration);
       screenTransitionTimerRef.current = localScreenTransitionTimerRef;
     } catch (error) {
-      console.error(
-        "Error setting up timers for screen:",
-        currentScreenIndex,
-        error
-      );
-      // Clear any timers that might have been set before the error
+      console.error("Error setting up timers for screen:", currentScreenIndex, error);
+      // 📖 Clear any timers that might have been set before the error
       if (localIntervalRef) clearInterval(localIntervalRef);
       if (localTypingTimerRef) clearTimeout(localTypingTimerRef);
       if (localScreenTransitionTimerRef)
         clearTimeout(localScreenTransitionTimerRef);
     }
 
-    // Cleanup function for this effect cycle
+    // 📖 Cleanup function for this effect cycle
     return () => {
       if (localIntervalRef) clearInterval(localIntervalRef);
       if (localTypingTimerRef) clearTimeout(localTypingTimerRef);
       if (localScreenTransitionTimerRef)
         clearTimeout(localScreenTransitionTimerRef);
     };
-  }, [currentScreenIndex, isInitialized, showScreen, transitionToNextScreen, screenSequences]); // Add transitionToNextScreen dependency
+  }, [currentScreenIndex, isInitialized, showScreen, transitionToNextScreen, screenSequences]);
 
-  // --- Render Logic ---
+  // 📖 --- Render Logic ---
   try {
-    // Ensure we have a valid screen to render
+    // 📖 Ensure we have a valid screen to render
     const currentScreen = screenSequences[currentScreenIndex];
     if (!currentScreen) {
-      // Handle the case where the screen data might be invalid or index out of bounds
-      console.error(
-        "Attempting to render an invalid screen index:",
-        currentScreenIndex
-      );
+      console.error("Attempting to render an invalid screen index:", currentScreenIndex);
       return <div>Error: Invalid screen configuration.</div>;
     }
 
     return (
       <>
-        {/* Conditionally render the Terminal based on showScreen */}
+        {/* 📖 Conditionally render the Terminal based on showScreen */}
         {showScreen && (
           <Terminal className="bg-black text-white">
-            {/* Render the content of the current screen */}
+            {/* 📖 Render the content of the current screen */}
             {currentScreen.content(screenElapsedTime, isTypingComplete, currentGifUrl)}
           </Terminal>
         )}
-        {/* Render nothing during the blank transition period */}
+        {/* 📖 Render blank black screen during the transition period */}
         {!showScreen && <div className="w-full h-full bg-black"></div>}
       </>
     );
   } catch (error) {
     console.error("Error rendering TerminalDemo component:", error);
-    // Render a fallback UI in case of a critical rendering error
+    // 📖 Fallback UI for critical rendering errors
     return (
       <div className="text-red-500 p-4">
         An error occurred while rendering the terminal demo. Please check the

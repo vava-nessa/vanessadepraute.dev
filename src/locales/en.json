@@ -265,5 +265,8 @@
     "sending": "Sending...",
     "sent": "Message Sent!",
     "socials": "Or connect with me directly:"
+  },
+  "footer": {
+    "lastUpdate": "Last update"
   }
 }

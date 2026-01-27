@@ -1,5 +1,11 @@
 /// <reference types="vite/client" />
 
+/**
+ * 📖 BUILD_DATE is injected by Vite at compile time (see vite.config.ts)
+ * Used in Footer to display "Last update: [date]" formatted by language
+ */
+declare const BUILD_DATE: string;
+
 // Declare GLB file modules
 declare module "*.glb" {
   const src: string;

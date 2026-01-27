@@ -1,4 +1,5 @@
 .footer {
+  position: relative; /* 📖 Required for absolute positioning of .footer-last-update */
   width: 100%;
   padding-top: 2rem;
   padding-bottom: 8rem;
@@ -52,4 +53,34 @@
 
 :root.light-mode .footer-icon-link:hover .footer-icon-label {
   color: rgb(0, 0, 0);
+}
+
+/* 📖 Discrete "Last update" text - positioned bottom right, subtle styling */
+.footer-last-update {
+  position: absolute;
+  bottom: 1rem;
+  right: 1.5rem;
+  font-size: 0.65rem;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  opacity: 0.4;
+  color: var(--color-primary);
+  transition: opacity 0.3s ease;
+}
+
+.footer-last-update:hover {
+  opacity: 0.7;
+}
+
+/* 📖 Mobile: center the text and reduce size */
+@media (max-width: 640px) {
+  .footer-last-update {
+    position: relative;
+    bottom: auto;
+    right: auto;
+    text-align: center;
+    width: 100%;
+    margin-top: 2rem;
+    font-size: 0.6rem;
+  }
 }

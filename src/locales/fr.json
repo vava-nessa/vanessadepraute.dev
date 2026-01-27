@@ -267,5 +267,8 @@
     "sending": "Envoi...",
     "sent": "Message Envoyé !",
     "socials": "Ou connectez-vous directement :"
+  },
+  "footer": {
+    "lastUpdate": "Dernière mise à jour"
   }
 }

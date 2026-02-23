@@ -53,35 +53,11 @@
       "Vous avez un projet en tête ? **Parlons-en.**"
     ]
   },
-  "outOfBurn": {
-    "title": "Je travaille actuellement sur mon propre projet appelé **Out Of Burn** : une application de coaching bien-être pour **web, iOS et Android** conçue pour aider les gens à se remettre du burnout et à le prévenir.",
-    "description": "Application mobile de bien-être et prévention du burnout assistée par IA, avec journaling, suivi émotionnel et analyse hebdomadaire alimentée par LLMs et RAG. Conçue pour vous aider à récupérer, vous reconstruire et maintenir votre équilibre."
-  },
   "projects": {
     "title": "Projets Phares",
     "subtitle": "Travaux récents et projets en cours",
     "items": [
-      {
-        "id": "outOfBurn",
-        "link": "https://outofburn.app",
-        "github": "",
-        "name": "Out Of Burn",
-        "year": "2025",
-        "status": "En Développement",
-        "description": "Application mobile de bien-être et prévention du burnout assistée par IA, avec journaling, suivi émotionnel et analyse hebdomadaire alimentée par LLMs et RAG.",
-        "techStack": [
-          "React Native",
-          "Expo",
-          "Supabase",
-          "LLMs",
-          "RAG"
-        ],
-        "highlights": [
-          "Multiplateforme",
-          "Propulsé par IA",
-          "Bien-être"
-        ]
-      },
+
       {
         "id": "likely",
         "link": "",

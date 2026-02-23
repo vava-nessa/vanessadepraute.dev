@@ -41,21 +41,21 @@
  * @see ../contexts/ThemeContext.tsx - Theme management
  */
 
-import { useState, useEffect, useMemo, lazy, Suspense } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import "../App.css";
 import CoderGirl from "../components/CoderGirl/CoderGirl.tsx";
-import TechStack from "../components/TechStack/TechStack.tsx";
-import TechStackExtended from "../components/TechStackExtended/TechStackExtended.tsx";
+// import TechStack from "../components/TechStack/TechStack.tsx";
+// import TechStackExtended from "../components/TechStackExtended/TechStackExtended.tsx";
 import LanguageSwitcher from "../components/LanguageSwitcher/LanguageSwitcher.tsx";
 import ControlsBar from "../components/ControlsBar/ControlsBar.tsx";
 import { AnimatedThemeToggler } from "../components/ui/animated-theme-toggler";
 import { AnimatedSoundToggler } from "../components/ui/animated-sound-toggler";
-import { Testimonials } from "../components/Testimonials/Testimonials.tsx";
-import Star from "../components/Star/Star.tsx";
+// import { Testimonials } from "../components/Testimonials/Testimonials.tsx";
+// import Star from "../components/Star/Star.tsx";
 import TextType from "../components/TextType";
-import ContactButton from "../components/ContactButton";
+// import ContactButton from "../components/ContactButton";
 import { ClickSpark } from "../components/ClickSpark";
 import { HandWrittenTitle } from "../components/ui/hand-writing-text";
 import Aurora from "../components/Aurora";
@@ -63,20 +63,20 @@ import profilePicture from "../assets/profilepicture.webp";
 import { useErrorHandler } from "@/hooks/useErrorHandler";
 // import * as Sentry from "@sentry/react";
 import LightRays from "../components/LightRays/LightRays";
-import FAQ from "../components/FAQ";
+// import FAQ from "../components/FAQ";
 import Footer from "../components/Footer/Footer";
 import { ErrorBoundary } from "../components/ErrorBoundary/ErrorBoundary";
 // 📖 Lazy load ModelViewer (heavy 3D component) - Reduces initial bundle size
-const ModelViewer = lazy(() => import("../components/ModelViewer/ModelViewer"));
+// const ModelViewer = lazy(() => import("../components/ModelViewer/ModelViewer"));
 import ProjectCard from "../components/ProjectCard/ProjectCard";
 import { useContactModal } from "@/contexts/ContactModalContext";
-import outOfBurnImage from "../assets/out_of_burn_ui.png";
+// import outOfBurnImage from "../assets/out_of_burn_ui.png";
 import MetaBalls from "../components/ui/MetaBalls";
 import SEOHead from "../components/SEOHead/SEOHead";
 
 // 📖 Project images mapping - Maps project IDs to imported image assets
 const projectImages: Record<string, string> = {
-  outOfBurn: outOfBurnImage,
+  // outOfBurn: outOfBurnImage,
 };
 
 function HomePage() {
@@ -91,9 +91,9 @@ function HomePage() {
   // 📖 Track current theme mode for Aurora background color adaptation
   const [isDarkMode, setIsDarkMode] = useState(true);
   // 📖 Debug mode shows camera controls on 3D model (activated via easter egg)
-  const [debugMode, setDebugMode] = useState(false);
+  // const [debugMode, setDebugMode] = useState(false);
   // 📖 Click counter for easter egg detection (15 rapid clicks)
-  const clickCountRef = useState({ count: 0, timeout: null as NodeJS.Timeout | null })[0];
+  // const clickCountRef = useState({ count: 0, timeout: null as NodeJS.Timeout | null })[0];
 
   // 📖 Effect: Detect language from URL path and apply i18n change
   // URL structure: /fr/* → French, otherwise → English
@@ -199,6 +199,7 @@ function HomePage() {
    * 📖 Easter egg: 15 rapid clicks on 3D model toggles debug mode
    * Debug mode shows camera controls and position info for development
    */
+  /*
   const handleModelClick = () => {
     try {
       clickCountRef.count++;
@@ -224,6 +225,7 @@ function HomePage() {
       handleError(error, { action: "model_click_easter_egg" });
     }
   };
+  */
 
   // 📖 Primary brand color state - initialized empty to avoid flash of wrong color
   // Will be populated by effect below after DOM is ready
@@ -397,221 +399,127 @@ function HomePage() {
 
 
             </div>
-
-            {/* Out Of Burn Project Section */}
-            <div id="out-of-burn-section" className="w-full max-w-[1200px] mx-auto px-5 py-20">
-              <div className="flex flex-col lg:flex-row gap-8 items-center lg:items-start">
-                {/* Image placeholder on the left */}
-                <div className="flex-shrink-0 w-full lg:w-[400px] h-[600px] flex items-center justify-center">
-                  <img
-                    src={outOfBurnImage}
-                    alt="Out Of Burn App Interface"
-                    className="w-full h-full object-contain filter drop-shadow-2xl"
-                  />
-                </div>
-
-                {/* Text content on the right */}
-                <div className="flex-1 flex flex-col gap-6">
-                  <p
-                    className="text-neutral-300 text-base md:text-lg leading-relaxed font-light"
-                    dangerouslySetInnerHTML={{
-                      __html: t("outOfBurn.title").replace(/\*\*(.*?)\*\*/g, '<strong class="text-brand-primary font-semibold">$1</strong>')
-                    }}
-                  />
-                  <p className="text-neutral-300 text-base md:text-lg leading-relaxed font-light">
-                    {t("outOfBurn.description")}
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
 
-          {/* TechStack Band */}
-          <ErrorBoundary>
-            <TechStack />
-          </ErrorBoundary>
+          {/* Out Of Burn Project Section - REMOVED */}
+          {/* TechStack Band - REMOVED */}
 
-          {/* Social Proof & Contact */}
-          <div id="social-proof-section" className="w-full flex flex-col items-center py-10">
-            <div id="testimonials-container" className="flex justify-center mb-10">
+          {/* Light Rays Section with Projects */}
+          <div className="w-full relative py-20" style={{ minHeight: '600px' }}>
+            {/* LightRays as absolute positioned background */}
+            <div className="absolute inset-0 z-0">
               <ErrorBoundary>
-                <Testimonials />
-              </ErrorBoundary>
-            </div>
-
-            <p id="expert-text" className="text-neutral-500 text-center my-8 uppercase tracking-widest font-medium">
-              {t("expert")}
-            </p>
-
-            <div id="contact-button-container" className="flex justify-center items-center mb-8">
-              <ContactButton />
-            </div>
-
-            <div id="stars-container" className="flex justify-center items-center mb-12">
-              <Star delay={1800} color="rgb(235, 190, 68)" />
-              <Star delay={2100} color="rgb(245, 180, 105)" />
-              <Star delay={2400} color="rgb(238, 175, 92)" />
-              <Star delay={2700} color="rgb(201, 126, 64)" />
-              <Star delay={3000} color="rgb(180, 79, 39)" />
-            </div>
-
-            {/* Light Rays Section with Projects */}
-            <div className="w-full relative py-20" style={{ minHeight: '600px' }}>
-              {/* LightRays as absolute positioned background */}
-              <div className="absolute inset-0 z-0">
-                <ErrorBoundary>
-                  <LightRays
-                    raysOrigin="top-center"
-                    raysColor="#00ffff"
-                    raysSpeed={1.5}
-                    lightSpread={0.8}
-                    rayLength={1.2}
-                    followMouse={true}
-                    mouseInfluence={0.1}
-                    noiseAmount={0.1}
-                    distortion={0.05}
-                  />
-                </ErrorBoundary>
-              </div>
-
-              {/* Projects Section - flows naturally */}
-              <div className="relative z-10 w-full max-w-6xl mx-auto px-5">
-                <div className="text-center mb-12">
-                  <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-                    {t("projects.title")}
-                  </h2>
-                  <p className="text-neutral-400 text-lg">
-                    {t("projects.subtitle")}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {(t("projects.items", { returnObjects: true }) as Array<{
-                    id: string;
-                    link: string;
-                    github: string;
-                    name: string;
-                    year: string;
-                    status: string;
-                    description: string;
-                    techStack: string[];
-                    highlights: string[];
-                  }>).map((project, index) => (
-                    <ProjectCard
-                      key={index}
-                      name={project.name}
-                      year={project.year}
-                      status={project.status}
-                      description={project.description}
-                      techStack={project.techStack}
-                      highlights={project.highlights}
-                      image={project.id ? projectImages[project.id] : undefined}
-                      link={project.link}
-                      github={project.github}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Booking Section */}
-
-            {/* Toon Cat Section */}
-            <div id="toon-cat-section" className="w-full mb-20">
-              <div className="w-full h-[400px]">
-                <ErrorBoundary>
-                  <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-neutral-400">Loading 3D model...</div>}>
-                    <ModelViewer
-                      modelPath="/toon_cat_free.glb"
-                      playAnimation={true}
-                      width="100%"
-                      height="100%"
-                      enableOrbitControls={true}
-                      enableZoom={true}
-                      autoFit={false}
-                      debug={debugMode}
-                      onClick={handleModelClick}
-                      cameraConfig={{
-                        position: [727, 387, 963],
-                        rotation: [-0.25, 0.65, 0.16],
-                        lookAt: [-2.67, 149.08, 41.39],
-                        fov: 45,
-                        zoom: 1,
-                        autoRotate: false,
-                        oscillation: { enabled: false, amplitude: 0, period: 0, axis: "y" },
-                        followMouse: true,
-                        mouseFollowSpeed: 0.2,
-                        mouseFollowRange: 0.45,
-                        mouseFollowAxis: 'both'
-                      }}
-                    />
-                  </Suspense>
-                </ErrorBoundary>
-              </div>
-            </div>
-
-            {/* Tech Stack Extended - Displayed directly */}
-            <div id="tech-stack-extended-section" className="w-full max-w-4xl mx-auto mt-20 mb-20 px-4">
-              <ErrorBoundary>
-                <TechStackExtended />
-              </ErrorBoundary>
-            </div>
-
-            {/* FAQ Section */}
-            <ErrorBoundary>
-              <FAQ />
-            </ErrorBoundary>
-
-            {/* MetaBalls Decoration Section */}
-            <div className={`w-full md:max-w-[500px] md:mx-auto h-[400px] my-20 rounded-2xl overflow-hidden ${isDarkMode ? 'bg-transparent' : 'bg-white'}`}>
-              <ErrorBoundary>
-                <MetaBalls
-                  color={primaryColor}
-                  cursorBallColor={primaryColor}
-                  speed={0.8}
-                  animationSize={39}
-                  ballCount={22}
-                  clumpFactor={1.5}
-                  hoverSmoothness={0.205}
-                  cursorBallSize={3}
-                  enableTransparency={true}
+                <LightRays
+                  raysOrigin="top-center"
+                  raysColor="#00ffff"
+                  raysSpeed={1.5}
+                  lightSpread={0.8}
+                  rayLength={1.2}
+                  followMouse={true}
+                  mouseInfluence={0.1}
+                  noiseAmount={0.1}
+                  distortion={0.05}
                 />
               </ErrorBoundary>
             </div>
 
-            {/* Sentry Test Error Button - Development Only */}
-            {/* Sentry Test Error Button - Removed for Production */
-            /*
-            {import.meta.env.DEV && (
-              <div className="w-full flex justify-center gap-4 pb-10">
-                <button
-                  onClick={() => {
-                    Sentry.logger.info("User triggered test error");
-                    throw new Error("This is your first error!");
-                  }}
-                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors"
-                >
-                  🐛 Break the world (Sync Error)
-                </button>
-                <button
-                  onClick={() => {
-                    Sentry.logger.info("User triggered async test error");
-                    // Async IIFE that throws - will be caught as unhandled rejection
-                    (async () => {
-                      throw new Error("This is an unhandled promise rejection!");
-                    })();
-                  }}
-                  className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-medium transition-colors"
-                >
-                  ⚡ Async Error (Promise Rejection)
-                </button>
+            {/* Projects Section - flows naturally */}
+            <div className="relative z-10 w-full max-w-6xl mx-auto px-5">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
+                  {t("projects.title")}
+                </h2>
+                <p className="text-neutral-400 text-lg">
+                  {t("projects.subtitle")}
+                </p>
               </div>
-            )}
-            */}
 
-            {/* Footer with social icons */}
-            <Footer />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {(t("projects.items", { returnObjects: true }) as Array<{
+                  id: string;
+                  link: string;
+                  github: string;
+                  name: string;
+                  year: string;
+                  status: string;
+                  description: string;
+                  techStack: string[];
+                  highlights: string[];
+                }>).map((project, index) => (
+                  <ProjectCard
+                    key={index}
+                    name={project.name}
+                    year={project.year}
+                    status={project.status}
+                    description={project.description}
+                    techStack={project.techStack}
+                    highlights={project.highlights}
+                    image={project.id ? projectImages[project.id] : undefined}
+                    link={project.link}
+                    github={project.github}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
+
+          {/* Booking Section - REMOVED */}
+
+          {/* Toon Cat Section - REMOVED */}
+
+          {/* Tech Stack Extended - REMOVED */}
+
+          {/* FAQ Section - REMOVED */}
+
+          {/* MetaBalls Decoration Section */}
+          <div className={`w-full md:max-w-[500px] md:mx-auto h-[400px] my-20 rounded-2xl overflow-hidden ${isDarkMode ? 'bg-transparent' : 'bg-white'}`}>
+            <ErrorBoundary>
+              <MetaBalls
+                color={primaryColor}
+                cursorBallColor={primaryColor}
+                speed={0.8}
+                animationSize={39}
+                ballCount={22}
+                clumpFactor={1.5}
+                hoverSmoothness={0.205}
+                cursorBallSize={3}
+                enableTransparency={true}
+              />
+            </ErrorBoundary>
+          </div>
+
+          {/* Sentry Test Error Button - Development Only */}
+          {/* Sentry Test Error Button - Removed for Production */
+          /*
+          {import.meta.env.DEV && (
+            <div className="w-full flex justify-center gap-4 pb-10">
+              <button
+                onClick={() => {
+                  Sentry.logger.info("User triggered test error");
+                  throw new Error("This is your first error!");
+                }}
+                className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors"
+              >
+                🐛 Break the world (Sync Error)
+              </button>
+              <button
+                onClick={() => {
+                  Sentry.logger.info("User triggered async test error");
+                  // Async IIFE that throws - will be caught as unhandled rejection
+                  (async () => {
+                    throw new Error("This is an unhandled promise rejection!");
+                  })();
+                }}
+                className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-medium transition-colors"
+              >
+                ⚡ Async Error (Promise Rejection)
+              </button>
+            </div>
+          )}
+          */}
+
+          {/* Footer with social icons */}
+          <Footer />
         </div>
       </div>
     </ClickSpark>

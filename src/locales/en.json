@@ -51,35 +51,11 @@
       "Got a project in mind? **Let's talk.**"
     ]
   },
-  "outOfBurn": {
-    "title": "I'm currently working on my own project called **Out Of Burn**: a wellness coaching app for **web, iOS, and Android** designed to help people recover from and prevent burnout.",
-    "description": "AI-assisted wellness and burnout-prevention mobile application featuring journaling, emotional tracking, and weekly analysis powered by LLMs and RAG. Designed to help you recover, rebuild, and maintain your balance."
-  },
   "projects": {
     "title": "Featured Projects",
     "subtitle": "Recent work and ongoing projects",
     "items": [
-      {
-        "id": "outOfBurn",
-        "link": "https://outofburn.app",
-        "github": "",
-        "name": "Out Of Burn",
-        "year": "2025",
-        "status": "In Development",
-        "description": "AI-assisted wellness and burnout-prevention mobile application featuring journaling, emotional tracking, and weekly analysis powered by LLMs and RAG.",
-        "techStack": [
-          "React Native",
-          "Expo",
-          "Supabase",
-          "LLMs",
-          "RAG"
-        ],
-        "highlights": [
-          "Cross-platform",
-          "AI-powered",
-          "Wellness focus"
-        ]
-      },
+
       {
         "id": "likely",
         "link": "",

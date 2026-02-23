@@ -45,7 +45,7 @@ export default function ContactModal() {
         },
         {
             icon: <FaGithub size={24} />,
-            href: "https://github.com/vavanesssa",
+            href: "https://github.com/vava-nessa",
             label: "GitHub",
             color: "hover:text-purple-500"
         }

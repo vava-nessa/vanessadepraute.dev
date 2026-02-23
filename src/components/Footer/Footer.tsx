@@ -64,7 +64,7 @@ const Footer = () => {
           <span className="footer-icon-label">LINKEDIN</span>
         </a>
         <a
-          href="https://github.com/vavanesssa"
+          href="https://github.com/vava-nessa"
           target="_blank"
           rel="noopener noreferrer"
           className="footer-icon-link"

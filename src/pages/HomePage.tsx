@@ -62,22 +62,22 @@ import Aurora from "../components/Aurora";
 import profilePicture from "../assets/profilepicture.webp";
 import { useErrorHandler } from "@/hooks/useErrorHandler";
 // import * as Sentry from "@sentry/react";
-import LightRays from "../components/LightRays/LightRays";
+// import LightRays from "../components/LightRays/LightRays";
 // import FAQ from "../components/FAQ";
 import Footer from "../components/Footer/Footer";
 import { ErrorBoundary } from "../components/ErrorBoundary/ErrorBoundary";
 // 📖 Lazy load ModelViewer (heavy 3D component) - Reduces initial bundle size
 // const ModelViewer = lazy(() => import("../components/ModelViewer/ModelViewer"));
-import ProjectCard from "../components/ProjectCard/ProjectCard";
+// import ProjectCard from "../components/ProjectCard/ProjectCard";
 import { useContactModal } from "@/contexts/ContactModalContext";
 // import outOfBurnImage from "../assets/out_of_burn_ui.png";
 import MetaBalls from "../components/ui/MetaBalls";
 import SEOHead from "../components/SEOHead/SEOHead";
 
-// 📖 Project images mapping - Maps project IDs to imported image assets
-const projectImages: Record<string, string> = {
-  // outOfBurn: outOfBurnImage,
-};
+// 📖 Project images mapping - Maps project IDs to imported image assets (removed)
+// const projectImages: Record<string, string> = {
+//   // outOfBurn: outOfBurnImage,
+// };
 
 function HomePage() {
   // 📖 Error handling integration for Sentry reporting
@@ -404,65 +404,7 @@ function HomePage() {
           {/* Out Of Burn Project Section - REMOVED */}
           {/* TechStack Band - REMOVED */}
 
-          {/* Light Rays Section with Projects */}
-          <div className="w-full relative py-20" style={{ minHeight: '600px' }}>
-            {/* LightRays as absolute positioned background */}
-            <div className="absolute inset-0 z-0">
-              <ErrorBoundary>
-                <LightRays
-                  raysOrigin="top-center"
-                  raysColor="#00ffff"
-                  raysSpeed={1.5}
-                  lightSpread={0.8}
-                  rayLength={1.2}
-                  followMouse={true}
-                  mouseInfluence={0.1}
-                  noiseAmount={0.1}
-                  distortion={0.05}
-                />
-              </ErrorBoundary>
-            </div>
-
-            {/* Projects Section - flows naturally */}
-            <div className="relative z-10 w-full max-w-6xl mx-auto px-5">
-              <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
-                  {t("projects.title")}
-                </h2>
-                <p className="text-neutral-400 text-lg">
-                  {t("projects.subtitle")}
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {(t("projects.items", { returnObjects: true }) as Array<{
-                  id: string;
-                  link: string;
-                  github: string;
-                  name: string;
-                  year: string;
-                  status: string;
-                  description: string;
-                  techStack: string[];
-                  highlights: string[];
-                }>).map((project, index) => (
-                  <ProjectCard
-                    key={index}
-                    name={project.name}
-                    year={project.year}
-                    status={project.status}
-                    description={project.description}
-                    techStack={project.techStack}
-                    highlights={project.highlights}
-                    image={project.id ? projectImages[project.id] : undefined}
-                    link={project.link}
-                    github={project.github}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-
+          {/* Light Rays Section removed */}
           {/* Booking Section - REMOVED */}
 
           {/* Toon Cat Section - REMOVED */}
